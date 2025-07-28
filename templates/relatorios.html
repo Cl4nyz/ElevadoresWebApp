@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Relatórios - Sistema de Gerenciamento de Elevadores{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-chart-bar"></i> Relatórios de Vendas</h2>
+    <div class="btn-group">
+        <button class="btn btn-outline-primary" onclick="exportarRelatorio()">
+            <i class="fas fa-download"></i> Exportar
+        </button>
+        <button class="btn btn-outline-success" onclick="atualizarDados()">
+            <i class="fas fa-sync"></i> Atualizar
+        </button>
+    </div>
+</div>
+
+<!-- Filtros e Opções de Visualização -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-filter"></i> Filtros e Visualização
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                <label for="filtroMes" class="form-label">Mês/Ano:</label>
+                <select class="form-select" id="filtroMes" onchange="filtrarDados()">
+                    <option value="">Todos os meses</option>
+                    <!-- Opções serão preenchidas via JavaScript -->
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="filtroEstado" class="form-label">Estado:</label>
+                <select class="form-select" id="filtroEstado" onchange="filtrarDados()">
+                    <option value="">Todos os estados</option>
+                    <!-- Opções serão preenchidas via JavaScript -->
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="tipoVisualizacao" class="form-label">Tipo de Visualização:</label>
+                <select class="form-select" id="tipoVisualizacao" onchange="atualizarExibicao()">
+                    <option value="estatisticas">Estatísticas por Estado</option>
+                    <option value="elevadores-mes">Elevadores por Mês</option>
+                    <option value="elevadores-estado">Elevadores por Estado</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary mt-4 w-100" onclick="filtrarDados()">
+                    <i class="fas fa-search"></i> Filtrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Seção de Estatísticas -->
+<div id="secaoEstatisticas">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-bar"></i> Vendas por Estado
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartVendasPorEstado" style="height: 400px;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-trophy"></i> Top 5 Estados
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div id="topEstados">
+                        <!-- Lista dos top 5 estados será inserida aqui -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card border-info mt-3">
+                <div class="card-header bg-info text-white">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-calculator"></i> Resumo Geral
+                    </h6>
+                </div>
+                <div class="card-body" id="resumoGeral">
+                    <!-- Resumo geral será inserido aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Seção de Listagem de Elevadores -->
+<div id="secaoListagem" style="display: none;">
+    <div id="conteudoListagem">
+        <!-- Conteúdo será gerado dinamicamente pelo JavaScript -->
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/relatorios.js') }}"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    carregarRelatorios();
+});
+</script>
+{% endblock %}
+
+<!-- Modal de Detalhes do Estado -->
+<div class="modal fade" id="modalDetalhesEstado" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-map-marker-alt"></i> <span id="nomeEstadoModal"></span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="conteudoDetalhesEstado">
+                <!-- Detalhes do estado serão inseridos aqui -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/relatorios.js') }}"></script>
+{% endblock %}

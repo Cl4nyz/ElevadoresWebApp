@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Contratos - Sistema de Gerenciamento de Elevadores{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-file-contract"></i> Gerenciamento de Contratos</h2>
+    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#contratoModal">
+        <i class="fas fa-plus"></i> Novo Contrato
+    </button>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped" id="contratosTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Data da Venda</th>
+                        <th>Data Entrega</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dados carregados via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Contrato -->
+<div class="modal fade" id="contratoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-file-contract"></i> <span id="modalTitle">Novo Contrato</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="contratoForm">
+                    <input type="hidden" id="contratoId">
+                    
+                    <div class="mb-3">
+                        <label for="cliente" class="form-label">Cliente *</label>
+                        <select class="form-select" id="cliente" required>
+                            <option value="">Selecione um cliente</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="dataVenda" class="form-label">Data da Venda</label>
+                        <input type="date" class="form-control" id="dataVenda">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="dataEntrega" class="form-label">Data de Entrega</label>
+                        <input type="date" class="form-control" id="dataEntrega">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-warning" onclick="salvarContrato()">
+                    <i class="fas fa-save"></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/contratos.js') }}"></script>
+{% endblock %}

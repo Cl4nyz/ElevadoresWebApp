@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Elevadores - Sistema de Gerenciamento de Elevadores{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-elevator"></i> Gerenciamento de Elevadores</h2>
+    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#elevadorModal">
+        <i class="fas fa-plus"></i> Novo Elevador
+    </button>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped" id="elevadoresTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Contrato</th>
+                        <th>Cabine</th>
+                        <th>Elevação (mm)</th>
+                        <th>Cor</th>
+                        <th>Data Entrega</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dados carregados via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Elevador -->
+<div class="modal fade" id="elevadorModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-elevator"></i> <span id="modalTitle">Novo Elevador</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="elevadorForm">
+                    <input type="hidden" id="elevadorId">
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="contrato" class="form-label">Contrato</label>
+                            <select class="form-select" id="contrato">
+                                <option value="">Selecione um contrato</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="cabine" class="form-label">Cabine *</label>
+                            <select class="form-select" id="cabine" required>
+                                <option value="">Selecione uma cabine</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="elevacao" class="form-label">Elevação (mm) *</label>
+                            <input type="number" class="form-control" id="elevacao" required min="1" step="1">
+                            <div class="form-text">Altura de elevação em milímetros</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="cor" class="form-label">Cor</label>
+                            <input type="text" class="form-control" id="cor" placeholder="Ex: Azul, Vermelho">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="novoContrato" class="form-label">Criar Novo Contrato</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="criarNovoContrato">
+                                <label class="form-check-label" for="criarNovoContrato">
+                                    Criar contrato automaticamente
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="novoContratoSection" style="display: none;">
+                        <hr>
+                        <h6><i class="fas fa-file-contract"></i> Dados do Novo Contrato</h6>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="clienteNovoContrato" class="form-label">Cliente *</label>
+                                <select class="form-select" id="clienteNovoContrato">
+                                    <option value="">Selecione um cliente</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="dataVendaNovo" class="form-label">Data da Venda</label>
+                                <input type="date" class="form-control" id="dataVendaNovo">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="dataEntregaNovo" class="form-label">Data de Entrega</label>
+                                <input type="date" class="form-control" id="dataEntregaNovo">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-info" onclick="salvarElevador()">
+                    <i class="fas fa-save"></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/elevadores.js') }}"></script>
+{% endblock %}
