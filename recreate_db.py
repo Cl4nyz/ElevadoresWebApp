@@ -67,7 +67,7 @@ def adicionar_dados_exemplo(conn):
         
         # Contratos
         cursor.execute("""
-            INSERT INTO contrato (data_inicio, data_entrega, id_cliente) VALUES
+            INSERT INTO contrato (data_venda, data_entrega, id_cliente) VALUES
             ('2024-01-15', '2024-12-15', (SELECT id FROM cliente WHERE nome = 'João Silva Santos')),
             ('2024-02-20', '2024-11-20', (SELECT id FROM cliente WHERE nome = 'Maria Oliveira Costa')),
             ('2024-03-10', '2025-01-10', (SELECT id FROM cliente WHERE nome = 'Pedro Henrique Lima')),

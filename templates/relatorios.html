@@ -6,9 +6,6 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2><i class="fas fa-chart-bar"></i> Relatórios de Vendas</h2>
     <div class="btn-group">
-        <button class="btn btn-outline-primary" onclick="exportarRelatorio()">
-            <i class="fas fa-download"></i> Exportar
-        </button>
         <button class="btn btn-outline-success" onclick="atualizarDados()">
             <i class="fas fa-sync"></i> Atualizar
         </button>
@@ -24,32 +21,103 @@
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="col-md-3">
-                <label for="filtroMes" class="form-label">Mês/Ano:</label>
-                <select class="form-select" id="filtroMes" onchange="filtrarDados()">
-                    <option value="">Todos os meses</option>
-                    <!-- Opções serão preenchidas via JavaScript -->
-                </select>
-            </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <label for="filtroEstado" class="form-label">Estado:</label>
-                <select class="form-select" id="filtroEstado" onchange="filtrarDados()">
+                <select class="form-select" id="filtroEstado">
                     <option value="">Todos os estados</option>
                     <!-- Opções serão preenchidas via JavaScript -->
                 </select>
             </div>
-            <div class="col-md-4">
-                <label for="tipoVisualizacao" class="form-label">Tipo de Visualização:</label>
-                <select class="form-select" id="tipoVisualizacao" onchange="atualizarExibicao()">
-                    <option value="estatisticas">Estatísticas por Estado</option>
-                    <option value="elevadores-mes">Elevadores por Mês</option>
-                    <option value="elevadores-estado">Elevadores por Estado</option>
+            <div class="col-md-2">
+                <label for="periodoVisualizacao" class="form-label">Período:</label>
+                <select class="form-select" id="periodoVisualizacao">
+                    <option value="ultimo-mes">Último mês</option>
+                    <option value="ultimos-3-meses">Últimos 3 meses</option>
+                    <option value="ultimos-6-meses">Últimos 6 meses</option>
+                    <option value="ultimo-ano" selected>Último ano</option>
+                    <option value="todos">Todos os períodos</option>
+                    <option value="personalizado">Personalizado</option>
+                </select>
+            </div>
+            <div class="col-md-2" id="periodoPersonalizado" style="display: none;">
+                <label for="dataInicio" class="form-label">Data Início:</label>
+                <input type="date" class="form-control" id="dataInicio">
+            </div>
+            <div class="col-md-2" id="periodoPersonalizadoFim" style="display: none;">
+                <label for="dataFim" class="form-label">Data Fim:</label>
+                <input type="date" class="form-control" id="dataFim">
+            </div>
+            <div class="col-md-2">
+                <label for="intervaloAmostras" class="form-label">Intervalo:</label>
+                <select class="form-select" id="intervaloAmostras">
+                    <option value="dia">Por dia</option>
+                    <option value="semana">Por semana</option>
+                    <option value="mes" selected>Por mês</option>
+                    <option value="trimestre">Por trimestre</option>
+                    <option value="ano">Por ano</option>
                 </select>
             </div>
             <div class="col-md-2">
-                <button class="btn btn-primary mt-4 w-100" onclick="filtrarDados()">
-                    <i class="fas fa-search"></i> Filtrar
-                </button>
+                <div class="row">
+                    <div class="col-6">
+                        <button class="btn btn-primary mt-4 w-100" onclick="filtrarDados()">
+                            <i class="fas fa-search"></i> Filtrar
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-outline-secondary mt-4 w-100" onclick="limparFiltros()">
+                            <i class="fas fa-times"></i> Limpar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Seção de Estatísticas Gerais -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-primary">
+            <div class="card-body text-center">
+                <div class="text-primary">
+                    <i class="fas fa-building fa-2x mb-3"></i>
+                </div>
+                <h4 class="card-title" id="totalElevadores">0</h4>
+                <p class="card-text text-muted">Total de Elevadores</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-success">
+            <div class="card-body text-center">
+                <div class="text-success">
+                    <i class="fas fa-users fa-2x mb-3"></i>
+                </div>
+                <h4 class="card-title" id="totalClientes">0</h4>
+                <p class="card-text text-muted">Total de Clientes</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-warning">
+            <div class="card-body text-center">
+                <div class="text-warning">
+                    <i class="fas fa-map fa-2x mb-3"></i>
+                </div>
+                <h4 class="card-title" id="totalEstados">0</h4>
+                <p class="card-text text-muted">Estados Ativos</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-info">
+            <div class="card-body text-center">
+                <div class="text-info">
+                    <i class="fas fa-ruler-vertical fa-2x mb-3"></i>
+                </div>
+                <h4 class="card-title" id="elevacaoMedia">0m</h4>
+                <p class="card-text text-muted">Elevação Média</p>
             </div>
         </div>
     </div>
@@ -62,7 +130,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title mb-0">
-                        <i class="fas fa-chart-bar"></i> Vendas por Estado
+                        <i class="fas fa-chart-line"></i> Vendas ao Longo do Tempo
                     </h5>
                 </div>
                 <div class="card-body">
@@ -105,16 +173,6 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{{ url_for('static', filename='js/relatorios.js') }}"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    carregarRelatorios();
-});
-</script>
-{% endblock %}
-
 <!-- Modal de Detalhes do Estado -->
 <div class="modal fade" id="modalDetalhesEstado" tabindex="-1">
     <div class="modal-dialog modal-lg">
@@ -131,9 +189,47 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 </div>
+
+<!-- Modal de Detalhes do Contrato -->
+<div class="modal fade" id="modalDetalhesContrato" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-file-contract"></i> Detalhes do Contrato
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="conteudoDetalhesContrato">
+                <!-- Detalhes do contrato serão inseridos aqui -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Controlar exibição do período personalizado
+document.addEventListener('DOMContentLoaded', function() {
+    const periodoSelect = document.getElementById('periodoVisualizacao');
+    const periodoPersonalizado = document.getElementById('periodoPersonalizado');
+    const periodoPersonalizadoFim = document.getElementById('periodoPersonalizadoFim');
+    
+    periodoSelect.addEventListener('change', function() {
+        if (this.value === 'personalizado') {
+            periodoPersonalizado.style.display = 'block';
+            periodoPersonalizadoFim.style.display = 'block';
+        } else {
+            periodoPersonalizado.style.display = 'none';
+            periodoPersonalizadoFim.style.display = 'none';
+        }
+    });
+});
+</script>
 <script src="{{ url_for('static', filename='js/relatorios.js') }}"></script>
 {% endblock %}

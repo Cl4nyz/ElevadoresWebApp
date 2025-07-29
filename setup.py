@@ -23,8 +23,8 @@ def setup_database():
     """Configura o banco de dados"""
     print("🗄️ Configurando banco de dados...")
     try:
-        from postgre import create_pg_connection, drop_all_tables, create_tables, end_pg_connection, insert_initial_data
-        
+        from postgre import create_database, create_pg_connection, drop_all_tables, create_tables, end_pg_connection, insert_initial_data
+        create_database()
         conn = create_pg_connection()
         if not conn:
             print("❌ Erro ao conectar com o banco de dados")
@@ -58,7 +58,7 @@ def setup_database():
         
         # Inserir contratos de exemplo
         cursor.execute("""
-            INSERT INTO contrato (data_inicio, data_entrega, id_cliente) VALUES
+            INSERT INTO contrato (data_venda, data_entrega, id_cliente) VALUES
             ('2024-01-15', '2024-12-15', 1),
             ('2024-02-20', '2024-11-20', 2),
             ('2024-03-10', '2025-01-10', 3);

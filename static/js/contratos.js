@@ -90,8 +90,8 @@ function renderizarTabelaContratos() {
         let status = '';
         let statusClass = '';
         const hoje = new Date();
-        // Corrigir timezone para evitar subtração de 1 dia
-        const dataEntrega = contrato.data_entrega ? new Date(contrato.data_entrega + 'T00:00:00') : null;
+        // Usar a nova função para criar data segura
+        const dataEntrega = contrato.data_entrega ? criarDataSegura(contrato.data_entrega) : null;
         
         if (!dataEntrega) {
             status = 'Sem data de entrega';
@@ -114,48 +114,16 @@ function renderizarTabelaContratos() {
             <td>${formatarData(contrato.data_entrega)}</td>
             <td><span class="badge ${statusClass}">${status}</span></td>
             <td>
-                <div class="btn-group" role="group">
-                    <button class="btn btn-sm btn-outline-primary" onclick="editarContrato(${contrato.id})" title="Editar">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="confirmarExclusao(() => excluirContrato(${contrato.id}))" title="Excluir">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
+                <button class="btn btn-sm btn-outline-primary me-2" onclick="editarContrato(${contrato.id})" title="Editar">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" onclick="confirmarExclusao(() => excluirContrato(${contrato.id}), 'Tem certeza que deseja excluir este contrato?')" title="Excluir">
+                    <i class="fas fa-trash"></i>
+                </button>
             </td>
         `;
         tbody.appendChild(row);
     });
-}
-
-// Função para calcular dias úteis
-function calcularDiasUteis() {
-    const dataInicio = document.getElementById('dataInicio').value;
-    const diasUteis = parseInt(document.getElementById('diasUteis').value);
-    
-    if (!dataInicio || !diasUteis) {
-        showToast('Preencha todos os campos obrigatórios', 'warning');
-        return;
-    }
-    
-    try {
-        const dataFinal = adicionarDiasUteis(new Date(dataInicio + 'T00:00:00'), diasUteis);
-        dataCalculada = dataFinal;
-        
-        const resultado = document.getElementById('resultadoCalculo');
-        const dataResultado = document.getElementById('dataResultado');
-        
-        dataResultado.innerHTML = `
-            <strong>Data final:</strong> ${dataFinal.toLocaleDateString('pt-BR')}<br>
-            <small class="text-muted">Considerando ${diasUteis} dias úteis a partir de ${new Date(dataInicio + 'T00:00:00').toLocaleDateString('pt-BR')}</small>
-        `;
-        
-        resultado.classList.remove('d-none');
-        document.getElementById('btnUsarData').disabled = false;
-        
-    } catch (error) {
-        showToast('Erro ao calcular data: ' + error.message, 'error');
-    }
 }
 
 // Função para adicionar dias úteis a uma data
@@ -166,9 +134,9 @@ function adicionarDiasUteis(dataInicio, diasUteis) {
     while (diasAdicionados < diasUteis) {
         dataAtual.setDate(dataAtual.getDate() + 1);
         
-        // Verifica se é dia útil (segunda a sexta)
+        // Verificar se é dia útil (segunda a sexta)
         const diaSemana = dataAtual.getDay();
-        if (diaSemana >= 1 && diaSemana <= 5) {
+        if (diaSemana !== 0 && diaSemana !== 6) {
             diasAdicionados++;
         }
     }
@@ -176,22 +144,7 @@ function adicionarDiasUteis(dataInicio, diasUteis) {
     return dataAtual;
 }
 
-// Função para usar data calculada
-function usarDataCalculada() {
-    if (dataCalculada) {
-        // Formatamos a data para o formato YYYY-MM-DD para o input date
-        const dataFormatada = dataCalculada.toISOString().split('T')[0];
-        document.getElementById('dataEntrega').value = dataFormatada;
-        
-        // Fechar modais
-        const modalCalculadora = bootstrap.Modal.getInstance(document.getElementById('calculadoraDiasModal'));
-        modalCalculadora.hide();
-        
-        showToast('Data de entrega atualizada com sucesso!', 'success');
-    }
-}
-
-// Função para calcular data de entrega automaticamente
+// Função para calcular data de entrega
 function calcularDataEntrega() {
     const dataVenda = document.getElementById('dataVenda').value;
     if (!dataVenda) {
@@ -199,12 +152,12 @@ function calcularDataEntrega() {
         return;
     }
     
-    // Calcular automaticamente 30 dias úteis
-    const dataFinal = adicionarDiasUteis(new Date(dataVenda + 'T00:00:00'), 30);
+    // Calcular automaticamente 30 dias úteis usando a nova função segura
+    const dataFinal = adicionarDiasUteis(criarDataSegura(dataVenda), 30);
     const dataFormatada = dataFinal.toISOString().split('T')[0];
     document.getElementById('dataEntrega').value = dataFormatada;
     
-    showToast('Data de entrega calculada: ' + dataFinal.toLocaleDateString('pt-BR'), 'info');
+    showToast('Data de entrega calculada: ' + formatarData(dataFormatada), 'info');
 }
 
 // Função para salvar novo cliente
@@ -230,7 +183,10 @@ async function salvarNovoCliente() {
     };
     
     try {
-        const novoCliente = await apiRequest('/api/clientes', 'POST', clienteData);
+        const novoCliente = await apiRequest('/api/clientes', {
+            method: 'POST',
+            body: JSON.stringify(clienteData)
+        });
         
         // Atualizar lista de clientes
         await carregarClientes();
@@ -248,33 +204,19 @@ async function salvarNovoCliente() {
         showToast('Cliente criado com sucesso!', 'success');
         
     } catch (error) {
+        console.error('Erro ao criar cliente:', error);
         showToast('Erro ao criar cliente: ' + error.message, 'error');
     }
 }
 
-// Função para formatar CPF
-function formatarCPF(event) {
-    let value = event.target.value.replace(/\D/g, '');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    event.target.value = value;
-}
-
-// Função para formatar CEP
-function formatarCEP(event) {
-    let value = event.target.value.replace(/\D/g, '');
-    value = value.replace(/(\d{5})(\d)/, '$1-$2');
-    event.target.value = value;
-}
-
-// Função para abrir modal de contrato
-function novoContrato() {
+// Função para adicionar novo contrato
+function adicionarContrato() {
     contratoAtual = null;
     document.getElementById('modalTitle').textContent = 'Novo Contrato';
-    limparFormulario('contratoForm');
+    document.getElementById('contratoForm').reset();
+    document.getElementById('contratoId').value = '';
     
-    // Definir data da venda como hoje
+    // Definir data de hoje como padrão
     const hoje = new Date().toISOString().split('T')[0];
     document.getElementById('dataVenda').value = hoje;
     
@@ -284,17 +226,17 @@ function novoContrato() {
 
 // Função para editar contrato
 function editarContrato(id) {
-    const contrato = contratos.find(c => c.id === id);
-    if (!contrato) return;
+    contratoAtual = contratos.find(c => c.id === id);
+    if (!contratoAtual) {
+        showToast('Contrato não encontrado', 'error');
+        return;
+    }
     
-    contratoAtual = contrato;
     document.getElementById('modalTitle').textContent = 'Editar Contrato';
-    
-    // Preencher formulário
-    document.getElementById('contratoId').value = contrato.id;
-    document.getElementById('cliente').value = contrato.id_cliente || '';
-    document.getElementById('dataVenda').value = contrato.data_venda || '';
-    document.getElementById('dataEntrega').value = contrato.data_entrega || '';
+    document.getElementById('contratoId').value = contratoAtual.id;
+    document.getElementById('cliente').value = contratoAtual.id_cliente;
+    document.getElementById('dataVenda').value = contratoAtual.data_venda || '';
+    document.getElementById('dataEntrega').value = contratoAtual.data_entrega || '';
     
     const modal = new bootstrap.Modal(document.getElementById('contratoModal'));
     modal.show();
@@ -313,10 +255,10 @@ async function salvarContrato() {
         data_entrega: document.getElementById('dataEntrega').value || null
     };
     
-    // Validar datas
+    // Validar datas se ambas estiverem preenchidas
     if (formData.data_venda && formData.data_entrega) {
-        const dataVenda = new Date(formData.data_venda + 'T00:00:00');
-        const dataEntrega = new Date(formData.data_entrega + 'T00:00:00');
+        const dataVenda = criarDataSegura(formData.data_venda);
+        const dataEntrega = criarDataSegura(formData.data_entrega);
         
         if (dataEntrega < dataVenda) {
             showToast('A data de entrega não pode ser anterior à data da venda', 'error');
@@ -327,11 +269,17 @@ async function salvarContrato() {
     try {
         if (contratoAtual) {
             // Atualizar contrato existente
-            await apiRequest(`/api/contratos/${contratoAtual.id}`, 'PUT', formData);
+            await apiRequest(`/api/contratos/${contratoAtual.id}`, {
+                method: 'PUT',
+                body: JSON.stringify(formData)
+            });
             showToast('Contrato atualizado com sucesso', 'success');
         } else {
             // Criar novo contrato
-            await apiRequest('/api/contratos', 'POST', formData);
+            await apiRequest('/api/contratos', {
+                method: 'POST',
+                body: JSON.stringify(formData)
+            });
             showToast('Contrato criado com sucesso', 'success');
         }
         
@@ -348,7 +296,9 @@ async function salvarContrato() {
 // Função para excluir contrato
 async function excluirContrato(id) {
     try {
-        await apiRequest(`/api/contratos/${id}`, 'DELETE');
+        await apiRequest(`/api/contratos/${id}`, {
+            method: 'DELETE'
+        });
         showToast('Contrato excluído com sucesso', 'success');
         carregarContratos();
     } catch (error) {
@@ -357,10 +307,150 @@ async function excluirContrato(id) {
     }
 }
 
-// Adicionar event listener para abrir modal com botão "Novo Contrato"
-document.addEventListener('DOMContentLoaded', function() {
-    const novoContratoBtn = document.querySelector('[data-bs-target="#contratoModal"]');
-    if (novoContratoBtn) {
-        novoContratoBtn.addEventListener('click', novoContrato);
+// Função para validar formulário
+function validarFormulario(formId) {
+    const form = document.getElementById(formId);
+    const inputs = form.querySelectorAll('input[required], select[required]');
+    
+    for (let input of inputs) {
+        if (!input.value.trim()) {
+            input.focus();
+            return false;
+        }
     }
+    return true;
+}
+
+// Função para mostrar modal de dias úteis
+function mostrarDialogoDiasUteis() {
+    const modal = new bootstrap.Modal(document.getElementById('diasUteisModal'));
+    
+    // Event listener para quando o modal for mostrado
+    document.getElementById('diasUteisModal').addEventListener('shown.bs.modal', function () {
+        calcularPreviewDiasUteis(); // Calcular preview inicial
+    }, { once: true });
+    
+    modal.show();
+}
+
+// Função para adicionar dias úteis
+function adicionarDiasUteis() {
+    const quantidadeDias = parseInt(document.getElementById('quantidadeDias').value);
+    const dataBase = document.getElementById('dataBase').value;
+    
+    if (!quantidadeDias || quantidadeDias <= 0) {
+        showToast('Por favor, informe uma quantidade válida de dias', 'error');
+        return;
+    }
+    
+    let dataInicial;
+    
+    if (dataBase === 'venda') {
+        const dataVenda = document.getElementById('dataVenda').value;
+        if (!dataVenda) {
+            showToast('Por favor, defina primeiro a data da venda', 'error');
+            return;
+        }
+        dataInicial = new Date(dataVenda + 'T00:00:00');
+    } else {
+        dataInicial = new Date();
+    }
+    
+    // Calcular a data com dias úteis
+    const dataFinal = calcularDataComDiasUteis(dataInicial, quantidadeDias);
+    
+    // Definir no campo de data de entrega
+    document.getElementById('dataEntrega').value = formatarDataParaInput(dataFinal);
+    
+    // Fechar modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('diasUteisModal'));
+    modal.hide();
+    
+    showToast(`${quantidadeDias} dias úteis adicionados. Data de entrega: ${formatarDataBrasileira(dataFinal)}`, 'success');
+}
+
+// Função para calcular data adicionando apenas dias úteis (segunda a sexta)
+function calcularDataComDiasUteis(dataInicial, diasUteis) {
+    let data = new Date(dataInicial);
+    let diasAdicionados = 0;
+    
+    while (diasAdicionados < diasUteis) {
+        data.setDate(data.getDate() + 1);
+        
+        // Verificar se é dia útil (1=segunda, 2=terça, ..., 5=sexta)
+        const diaSemana = data.getDay();
+        if (diaSemana >= 1 && diaSemana <= 5) {
+            diasAdicionados++;
+        }
+    }
+    
+    return data;
+}
+
+// Função para formatar data para input type="date" (YYYY-MM-DD)
+function formatarDataParaInput(data) {
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+}
+
+// Função para formatar data no padrão brasileiro (DD/MM/YYYY)
+function formatarDataBrasileira(data) {
+    const dia = String(data.getDate()).padStart(2, '0');
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const ano = data.getFullYear();
+    return `${dia}/${mes}/${ano}`;
+}
+
+// Função para calcular e mostrar preview de dias úteis
+function calcularPreviewDiasUteis() {
+    const quantidadeDias = parseInt(document.getElementById('quantidadeDias').value);
+    const dataBase = document.getElementById('dataBase').value;
+    const previewElement = document.getElementById('previewData');
+    const dataPreviewElement = document.getElementById('dataPreview');
+    
+    if (!quantidadeDias || quantidadeDias <= 0) {
+        previewElement.style.display = 'none';
+        return;
+    }
+    
+    let dataInicial;
+    let dataBaseTexto;
+    
+    if (dataBase === 'venda') {
+        const dataVenda = document.getElementById('dataVenda').value;
+        if (!dataVenda) {
+            previewElement.style.display = 'none';
+            return;
+        }
+        dataInicial = new Date(dataVenda + 'T00:00:00');
+        dataBaseTexto = 'data da venda';
+    } else {
+        dataInicial = new Date();
+        dataBaseTexto = 'hoje';
+    }
+    
+    const dataFinal = calcularDataComDiasUteis(dataInicial, quantidadeDias);
+    
+    // Mostrar preview
+    previewElement.style.display = 'block';
+    dataPreviewElement.textContent = `${formatarDataBrasileira(dataFinal)} (${quantidadeDias} dias úteis a partir de ${dataBaseTexto})`;
+}
+
+// Event listener para atualizar preview quando mudar os valores
+document.addEventListener('DOMContentLoaded', function() {
+    // Aguardar um pouco para garantir que o modal foi criado
+    setTimeout(() => {
+        const quantidadeInput = document.getElementById('quantidadeDias');
+        const dataBaseSelect = document.getElementById('dataBase');
+        
+        if (quantidadeInput) {
+            quantidadeInput.addEventListener('input', calcularPreviewDiasUteis);
+        }
+        
+        if (dataBaseSelect) {
+            dataBaseSelect.addEventListener('change', calcularPreviewDiasUteis);
+        }
+    }, 100);
 });

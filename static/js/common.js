@@ -59,9 +59,89 @@ function confirmarExclusao(callback, mensagem = 'Tem certeza que deseja excluir 
 // Função para formatar data
 function formatarData(data) {
     if (!data) return '-';
-    // Corrigir timezone para evitar subtração de 1 dia
-    const dataCorrigida = new Date(data + 'T00:00:00');
-    return dataCorrigida.toLocaleDateString('pt-BR');
+    
+    let dataObj;
+    
+    // Se a data já é um objeto Date
+    if (data instanceof Date) {
+        dataObj = data;
+    } else {
+        // Se é uma string, garantir que seja interpretada corretamente
+        // Adicionar 'T00:00:00' para evitar problemas de timezone
+        if (typeof data === 'string' && !data.includes('T')) {
+            dataObj = new Date(data + 'T00:00:00');
+        } else {
+            dataObj = new Date(data);
+        }
+    }
+    
+    // Verificar se a data é válida
+    if (isNaN(dataObj.getTime())) {
+        return '-';
+    }
+    
+    // Forçar formato brasileiro usando toLocaleDateString com configurações específicas
+    return dataObj.toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        timeZone: 'UTC'
+    });
+}
+
+// Função para converter data brasileira (DD/MM/YYYY) para formato ISO (YYYY-MM-DD)
+function converterDataBrParaISO(dataBr) {
+    if (!dataBr) return null;
+    
+    // Se já está no formato ISO (YYYY-MM-DD), retorna como está
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dataBr)) {
+        return dataBr;
+    }
+    
+    // Se está no formato brasileiro (DD/MM/YYYY)
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(dataBr)) {
+        const [dia, mes, ano] = dataBr.split('/');
+        return `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
+    }
+    
+    return null;
+}
+
+// Função para converter data ISO (YYYY-MM-DD) para formato brasileiro (DD/MM/YYYY)
+function converterDataISOParaBr(dataISO) {
+    if (!dataISO) return '';
+    
+    // Se já está no formato brasileiro (DD/MM/YYYY), retorna como está
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(dataISO)) {
+        return dataISO;
+    }
+    
+    // Se está no formato ISO (YYYY-MM-DD)
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dataISO)) {
+        const [ano, mes, dia] = dataISO.split('-');
+        return `${dia}/${mes}/${ano}`;
+    }
+    
+    return '';
+}
+
+// Função para garantir que a data seja interpretada corretamente
+function criarDataSegura(dataString) {
+    if (!dataString) return null;
+    
+    // Se é uma string no formato YYYY-MM-DD (formato padrão do input date)
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dataString)) {
+        return new Date(dataString + 'T00:00:00');
+    }
+    
+    // Se é uma string no formato DD/MM/YYYY
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(dataString)) {
+        const [dia, mes, ano] = dataString.split('/');
+        return new Date(ano, parseInt(mes) - 1, dia);
+    }
+    
+    // Tentar criar a data normalmente
+    return new Date(dataString + 'T00:00:00');
 }
 
 // Função para formatar CPF

@@ -241,3 +241,42 @@ body {
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
+
+/* Estilos para o modo tela cheia */
+body.fullscreen-mode {
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Ocultar elementos quando em tela cheia */
+body.fullscreen-mode .navbar,
+body.fullscreen-mode main.container {
+    display: none !important;
+}
+
+/* Estilo para o botão de tela cheia */
+#btnTelaCheia {
+    transition: all 0.3s ease;
+    border-color: #28a745 !important;
+    color: #28a745 !important;
+}
+
+#btnTelaCheia:hover {
+    transform: scale(1.05);
+    background-color: #28a745 !important;
+    color: white !important;
+}
+
+/* Estilo para o botão de tela cheia */
+#btnTelaCheia {
+    transition: all 0.3s ease;
+    border-color: #28a745 !important;
+    color: #28a745 !important;
+}
+
+#btnTelaCheia:hover {
+    transform: scale(1.05);
+    background-color: #28a745 !important;
+    color: white !important;
+}

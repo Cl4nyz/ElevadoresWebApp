@@ -5,10 +5,10 @@ Um sistema completo para gerenciamento de elevadores, clientes, contratos e cron
 ## 📋 Funcionalidades
 
 - ✅ **Gerenciamento de Clientes**: Cadastro completo com múltiplos endereços
-- ✅ **Gestão de Cabines**: Controle das especificações das cabines
 - ✅ **Contratos**: Gerenciamento de contratos com datas de início e entrega
 - ✅ **Elevadores**: Cadastro completo com especificações técnicas
 - ✅ **Calendário Interativo**: Visualização intuitiva das entregas programadas
+- ✅ **Relatórios**: Análise temporal de vendas com gráficos interativos
 - ✅ **Interface Responsiva**: Design moderno e adaptável
 
 ## 🛠️ Tecnologias Utilizadas
@@ -86,17 +86,12 @@ Um sistema completo para gerenciamento de elevadores, clientes, contratos e cron
 - **Gerenciar Endereços**: Múltiplos endereços por cliente
 - **Excluir Cliente**: Remove cliente e dados relacionados
 
-### 3. Cabines
-- **Cadastrar Cabine**: Especificar altura em centímetros
-- **Editar Cabine**: Modificar especificações
-- **Excluir Cabine**: Remove se não estiver em uso
-
-### 4. Contratos
+### 3. Contratos
 - **Novo Contrato**: Selecionar cliente e definir datas
 - **Editar Contrato**: Modificar datas e cliente
 - **Status Automático**: Visualização do status baseado nas datas
 
-### 5. Elevadores
+### 4. Elevadores
 - **Cadastrar Elevador**: 
   - Selecionar contrato existente ou criar novo
   - Especificar cabine, elevação e cor
@@ -104,10 +99,16 @@ Um sistema completo para gerenciamento de elevadores, clientes, contratos e cron
 - **Editar Elevador**: Modificar especificações
 - **Visualizar Detalhes**: Informações completas incluindo cliente
 
-### 6. Calendário
+### 5. Calendário
 - **Visualização Mensal/Semanal/Lista**
 - **Clique nos Eventos**: Ver detalhes completos
 - **Estatísticas**: Resumo de entregas e status
+
+### 6. Relatórios
+- **Análise Temporal**: Visualização de vendas ao longo do tempo
+- **Filtros Avançados**: Por estado, período e intervalo
+- **Gráficos Interativos**: Evolução de vendas de elevadores
+- **Estatísticas**: Resumo geral e top estados
 - **Cores Personalizadas**: Baseadas na cor do elevador
 
 ## 🗂️ Estrutura do Projeto
@@ -126,17 +127,18 @@ Sistema-Elevadores/
 │   └── js/
 │       ├── common.js    # Funções comuns
 │       ├── clientes.js  # Lógica de clientes
-│       ├── cabines.js   # Lógica de cabines
 │       ├── contratos.js # Lógica de contratos
 │       ├── elevadores.js# Lógica de elevadores
-│       └── calendario.js# Lógica do calendário
+│       ├── calendario.js# Lógica do calendário
+│       └── relatorios.js# Lógica de relatórios
 └── templates/
     ├── base.html        # Template base
     ├── index.html       # Página inicial
     ├── clientes.html    # Gerenciamento de clientes
-    ├── cabines.html     # Gerenciamento de cabines
     ├── contratos.html   # Gerenciamento de contratos
     ├── elevadores.html  # Gerenciamento de elevadores
+    ├── calendario.html  # Calendário interativo
+    └── relatorios.html  # Relatórios e análises
     └── calendario.html  # Calendário de entregas
 ```
 
@@ -174,12 +176,6 @@ Sistema-Elevadores/
 - `PUT /api/enderecos/<id>` - Atualizar endereço
 - `DELETE /api/enderecos/<id>` - Excluir endereço
 
-### Cabines
-- `GET /api/cabines` - Listar cabines
-- `POST /api/cabines` - Criar cabine
-- `PUT /api/cabines/<id>` - Atualizar cabine
-- `DELETE /api/cabines/<id>` - Excluir cabine
-
 ### Contratos
 - `GET /api/contratos` - Listar contratos
 - `POST /api/contratos` - Criar contrato
@@ -194,6 +190,12 @@ Sistema-Elevadores/
 
 ### Calendário
 - `GET /api/calendario` - Dados para calendário
+
+### Relatórios
+- `GET /api/relatorios/vendas-por-estado` - Vendas agrupadas por estado
+- `GET /api/relatorios/vendas-temporais` - Análise temporal de vendas
+- `GET /api/relatorios/opcoes-filtros` - Opções para filtros
+- `GET /api/relatorios/contratos-por-estado/<estado>` - Contratos de um estado específico
 
 ## 🐛 Solução de Problemas
 

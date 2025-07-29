@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS public.cabine
 CREATE TABLE IF NOT EXISTS public.contrato
 (
     id SERIAL PRIMARY KEY,
-    data_inicio date,
+    data_venda date,
     data_entrega date,
     id_cliente integer
 );

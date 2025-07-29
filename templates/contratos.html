@@ -5,7 +5,7 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2><i class="fas fa-file-contract"></i> Gerenciamento de Contratos</h2>
-    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#contratoModal">
+    <button class="btn btn-warning" onclick="adicionarContrato()">
         <i class="fas fa-plus"></i> Novo Contrato
     </button>
 </div>
@@ -60,7 +60,12 @@
                     
                     <div class="mb-3">
                         <label for="dataEntrega" class="form-label">Data de Entrega</label>
-                        <input type="date" class="form-control" id="dataEntrega">
+                        <div class="input-group">
+                            <input type="date" class="form-control" id="dataEntrega">
+                            <button type="button" class="btn btn-outline-primary" onclick="mostrarDialogoDiasUteis()" title="Adicionar dias úteis">
+                                <i class="fas fa-calendar-plus"></i> + Dias Úteis
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -68,6 +73,43 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-warning" onclick="salvarContrato()">
                     <i class="fas fa-save"></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Dias Úteis -->
+<div class="modal fade" id="diasUteisModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-calendar-plus"></i> Adicionar Dias Úteis
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="quantidadeDias" class="form-label">Quantidade de dias úteis:</label>
+                    <input type="number" class="form-control" id="quantidadeDias" value="20" min="1" max="365">
+                    <div class="form-text">Serão adicionados apenas dias úteis (segunda a sexta-feira)</div>
+                </div>
+                <div class="mb-3">
+                    <label for="dataBase" class="form-label">Data base:</label>
+                    <select class="form-select" id="dataBase">
+                        <option value="hoje">Hoje</option>
+                        <option value="venda">Data da Venda</option>
+                    </select>
+                </div>
+                <div class="alert alert-info" id="previewData" style="display: none;">
+                    <i class="fas fa-info-circle"></i> <strong>Data prevista:</strong> <span id="dataPreview"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="adicionarDiasUteis()">
+                    <i class="fas fa-plus"></i> Adicionar
                 </button>
             </div>
         </div>

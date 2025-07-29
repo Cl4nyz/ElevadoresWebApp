@@ -19,7 +19,7 @@
                         <th>ID</th>
                         <th>Cliente</th>
                         <th>Contrato</th>
-                        <th>Cabine</th>
+                        <th>Cabine (cm)</th>
                         <th>Elevação (mm)</th>
                         <th>Cor</th>
                         <th>Data Entrega</th>
@@ -71,7 +71,22 @@
                         </div>
                         <div class="col-md-6">
                             <label for="cor" class="form-label">Cor</label>
-                            <input type="text" class="form-control" id="cor" placeholder="Ex: Azul, Vermelho">
+                            <div class="row">
+                                <div class="col-8">
+                                    <select class="form-select" id="corSelect" onchange="alterarSelecaoCor()">
+                                        <option value="">Selecione uma cor</option>
+                                        <option value="Branco">Branco</option>
+                                        <option value="Cinza">Cinza</option>
+                                        <option value="Preto">Preto</option>
+                                        <option value="custom">Outra cor...</option>
+                                    </select>
+                                </div>
+                                <div class="col-4">
+                                    <div class="color-preview" id="colorPreview" style="width: 100%; height: 38px; border: 1px solid #ccc; border-radius: 4px; background-color: #f8f9fa;"></div>
+                                </div>
+                            </div>
+                            <input type="text" class="form-control mt-2" id="cor" placeholder="Digite uma cor personalizada" style="display: none;">
+                            <div class="form-text">Selecione uma das cores populares ou digite uma personalizada</div>
                         </div>
                     </div>
                     
@@ -125,5 +140,60 @@
 {% endblock %}
 
 {% block scripts %}
+<script>
+// Função para alterar seleção de cor
+function alterarSelecaoCor() {
+    const select = document.getElementById('corSelect');
+    const input = document.getElementById('cor');
+    const preview = document.getElementById('colorPreview');
+    
+    if (select.value === 'custom') {
+        input.style.display = 'block';
+        input.focus();
+        preview.style.backgroundColor = '#f8f9fa';
+    } else if (select.value === '') {
+        input.style.display = 'none';
+        input.value = '';
+        preview.style.backgroundColor = '#f8f9fa';
+    } else {
+        input.style.display = 'none';
+        input.value = select.value;
+        updateColorPreview(select.value);
+    }
+}
+
+// Função para atualizar preview da cor
+function updateColorPreview(cor) {
+    const preview = document.getElementById('colorPreview');
+    const colorMap = {
+        'Branco': '#FFFFFF',
+        'Cinza': '#808080',
+        'Preto': '#000000',
+        'Azul': '#0066CC',
+        'Verde': '#28A745',
+        'Vermelho': '#DC3545'
+    };
+    
+    const colorCode = colorMap[cor] || '#f8f9fa';
+    preview.style.backgroundColor = colorCode;
+    
+    // Adicionar borda mais escura para cores claras
+    if (cor === 'Branco') {
+        preview.style.border = '2px solid #ddd';
+    } else {
+        preview.style.border = '1px solid #ccc';
+    }
+}
+
+// Adicionar listener para input personalizado
+document.addEventListener('DOMContentLoaded', function() {
+    const customInput = document.getElementById('cor');
+    customInput.addEventListener('input', function() {
+        if (document.getElementById('corSelect').value === 'custom') {
+            document.getElementById('colorPreview').style.backgroundColor = '#f8f9fa';
+        }
+    });
+});
+</script>
 <script src="{{ url_for('static', filename='js/elevadores.js') }}"></script>
 {% endblock %}

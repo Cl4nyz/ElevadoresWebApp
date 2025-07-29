@@ -167,11 +167,21 @@ function renderizarTabelaElevadores() {
             `<span class="badge" style="background-color: ${elevador.cor.toLowerCase()}; color: ${obterCorTexto(elevador.cor)};">${elevador.cor}</span>` :
             '<span class="badge bg-secondary">Sem cor</span>';
         
+        // Formatação da cabine com unidade cm
+        let cabineTexto = 'N/A';
+        if (elevador.cabine_descricao) {
+            cabineTexto = elevador.cabine_descricao.includes('cm') ? 
+                elevador.cabine_descricao : 
+                `${elevador.cabine_descricao} cm`;
+        } else if (elevador.altura_cabine) {
+            cabineTexto = `${elevador.altura_cabine} cm`;
+        }
+        
         row.innerHTML = `
             <td>${elevador.id}</td>
             <td>${elevador.cliente_nome || 'N/A'}</td>
             <td>${elevador.id_contrato ? `#${elevador.id_contrato}` : 'N/A'}</td>
-            <td>${elevador.cabine_descricao || 'N/A'}</td>
+            <td>${cabineTexto}</td>
             <td>${elevador.elevacao} mm</td>
             <td>${corBadge}</td>
             <td>${formatarData(elevador.data_entrega)}</td>
@@ -179,6 +189,9 @@ function renderizarTabelaElevadores() {
                 <div class="btn-group" role="group">
                     <button class="btn btn-sm btn-outline-primary" onclick="editarElevador(${elevador.id})" title="Editar">
                         <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-success" onclick="gerarPDFElevador(${elevador.id})" title="Gerar PDF">
+                        <i class="fas fa-file-pdf"></i>
                     </button>
                     <button class="btn btn-sm btn-outline-danger" onclick="confirmarExclusao(() => excluirElevador(${elevador.id}))" title="Excluir">
                         <i class="fas fa-trash"></i>
@@ -195,6 +208,13 @@ function novoElevador() {
     elevadorAtual = null;
     document.getElementById('modalTitle').textContent = 'Novo Elevador';
     limparFormulario('elevadorForm');
+    
+    // Resetar campos de cor
+    document.getElementById('corSelect').value = '';
+    document.getElementById('cor').style.display = 'none';
+    document.getElementById('cor').value = '';
+    document.getElementById('colorPreview').style.backgroundColor = '#f8f9fa';
+    document.getElementById('colorPreview').style.border = '1px solid #ccc';
     
     // Resetar seção de novo contrato
     document.getElementById('criarNovoContrato').checked = false;
@@ -222,7 +242,32 @@ function editarElevador(id) {
     document.getElementById('contrato').value = elevador.id_contrato || '';
     document.getElementById('cabine').value = elevador.id_cabine;
     document.getElementById('elevacao').value = elevador.elevacao;
-    document.getElementById('cor').value = elevador.cor || '';
+    
+    // Configurar cor
+    const corValue = elevador.cor || '';
+    const corSelect = document.getElementById('corSelect');
+    const corInput = document.getElementById('cor');
+    
+    // Verificar se a cor está nas opções predefinidas
+    const coresPredefinidas = ['Branco', 'Cinza', 'Preto', 'Azul', 'Verde', 'Vermelho'];
+    if (coresPredefinidas.includes(corValue)) {
+        corSelect.value = corValue;
+        corInput.style.display = 'none';
+        corInput.value = corValue;
+        updateColorPreview(corValue);
+    } else if (corValue) {
+        // Cor personalizada
+        corSelect.value = 'custom';
+        corInput.style.display = 'block';
+        corInput.value = corValue;
+        document.getElementById('colorPreview').style.backgroundColor = '#f8f9fa';
+    } else {
+        // Sem cor definida
+        corSelect.value = '';
+        corInput.style.display = 'none';
+        corInput.value = '';
+        document.getElementById('colorPreview').style.backgroundColor = '#f8f9fa';
+    }
     
     // Não mostrar seção de novo contrato no modo edição
     document.getElementById('criarNovoContrato').checked = false;
@@ -323,6 +368,19 @@ async function excluirElevador(id) {
         console.error('Erro ao excluir elevador:', error);
         showToast('Erro ao excluir elevador: ' + error.message, 'error');
     }
+}
+
+// Função para gerar PDF do elevador
+function gerarPDFElevador(id) {
+    const elevador = elevadores.find(e => e.id === id);
+    if (!elevador) {
+        showToast('Elevador não encontrado', 'error');
+        return;
+    }
+    
+    // Abrir nova janela/aba com o PDF
+    const url = `/api/elevadores/${id}/pdf`;
+    window.open(url, '_blank');
 }
 
 // Adicionar event listener para abrir modal com botão "Novo Elevador"

@@ -13,6 +13,30 @@ PASSWORD = os.getenv('PG_PASSWORD')
 HOST = os.getenv('PG_HOST')
 PORT = os.getenv('PG_PORT')
 
+def create_database():
+    conn = psycopg2.connect(
+        dbname='postgres',
+        user=USER,
+        password=PASSWORD,
+        host=HOST,
+        port=PORT
+    )
+    conn.autocommit = True
+    cursor = conn.cursor()
+    try:
+        cursor.execute(f"SELECT 1 FROM pg_database WHERE datname = %s;", (NAME,))
+        exists = cursor.fetchone()
+        if not exists:
+            cursor.execute(f'CREATE DATABASE "{NAME}";')
+            print(f"Banco de dados '{NAME}' criado com sucesso.")
+        else:
+            print(f"Banco de dados '{NAME}' já existe.")
+    except Exception as e:
+        print(f"Erro ao criar banco de dados: {e}")
+    finally:
+        cursor.close()
+        conn.close()
+
 def create_pg_connection():
 	"""Cria uma conexão com o banco de dados PostgreSQL."""
 	try:
@@ -148,7 +172,7 @@ if __name__ == '__main__':
 
             # Inserir contratos
             cursor.execute("""
-                INSERT INTO contrato (data_inicio, data_entrega, id_cliente) VALUES
+                INSERT INTO contrato (data_venda, data_entrega, id_cliente) VALUES
                 ('2024-01-15', '2024-12-15', 1),
                 ('2024-02-20', '2024-11-20', 2),
                 ('2024-03-10', '2025-01-10', 3);
