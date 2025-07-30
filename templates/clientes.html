@@ -16,9 +16,9 @@
             <table class="table table-striped" id="clientesTable">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Nome</th>
-                        <th>CPF</th>
+                        <th data-sort="id">ID</th>
+                        <th data-sort="nome">Nome</th>
+                        <th data-sort="cpf">CPF</th>
                         <th>Endereços</th>
                         <th>Ações</th>
                     </tr>
@@ -188,7 +188,7 @@
                         </div>
                         <div class="col-md-2">
                             <label for="enderecoEstado" class="form-label">Estado *</label>
-                            <select class="form-control" id="enderecoEstado" required>
+                            <select class="form-select" id="enderecoEstado" required>
                                 <option value="">Selecione...</option>
                                 <option value="AC">AC - Acre</option>
                                 <option value="AL">AL - Alagoas</option>

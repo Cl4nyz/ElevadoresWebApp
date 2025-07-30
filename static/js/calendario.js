@@ -35,13 +35,52 @@ function inicializarCalendario() {
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek,listWeek'
+            right: '' // Remove os botões de visualização do FullCalendar
         },
         buttonText: {
-            today: 'Hoje',
-            month: 'Mês',
-            week: 'Semana',
-            list: 'Lista'
+            today: 'Hoje'
+        },
+        // Configurações para eventos de dia inteiro
+        allDaySlot: true,
+        slotLabelFormat: {
+            hour: 'numeric',
+            minute: '2-digit',
+            meridiem: false
+        },
+        // Configuração para visualização de lista sem horários
+        listDayFormat: {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        },
+        listDaySideFormat: false,
+        // Remover exibição de horários em todas as visualizações
+        displayEventTime: false,
+        // Configurações específicas para visualização por semana
+        views: {
+            timeGridWeek: {
+                allDaySlot: false, // Remove a linha "todo o dia"
+                slotMinTime: '00:00:00',
+                slotMaxTime: '24:00:00',
+                displayEventTime: false
+            },
+            dayGridWeek: {
+                displayEventTime: false // Remove horários na visualização de semana em grade
+            },
+            dayGridMonth: {
+                displayEventTime: false // Remove horários na visualização mensal
+            },
+            listWeek: {
+                displayEventTime: false // Remove horários na visualização de lista
+            }
+        },
+        // Configuração global para eventos
+        eventDisplay: 'block',
+        eventTimeFormat: {
+            hour: 'numeric',
+            minute: '2-digit',
+            meridiem: false
         },
         height: 'auto',
         events: [],
@@ -59,6 +98,16 @@ function inicializarCalendario() {
     });
     
     calendar.render();
+    
+    // Forçar remoção de horários após renderização
+    setTimeout(() => {
+        document.querySelectorAll('.fc-event-time').forEach(el => el.remove());
+        document.querySelectorAll('.fc-daygrid-event-time').forEach(el => el.remove());
+        document.querySelectorAll('.fc-list-event-time').forEach(el => el.remove());
+    }, 100);
+    
+    // Inicializar destaque do botão ativo
+    atualizarBotaoAtivo('dayGridMonth');
 }
 
 // Função para carregar eventos
@@ -68,6 +117,14 @@ async function carregarEventos() {
         calendar.removeAllEvents();
         calendar.addEventSource(eventos);
         atualizarEstatisticas();
+        
+        // Forçar remoção de horários após adicionar eventos
+        setTimeout(() => {
+            document.querySelectorAll('.fc-event-time').forEach(el => el.remove());
+            document.querySelectorAll('.fc-daygrid-event-time').forEach(el => el.remove());
+            document.querySelectorAll('.fc-list-event-time').forEach(el => el.remove());
+        }, 200);
+        
     } catch (error) {
         console.error('Erro ao carregar eventos:', error);
         showToast('Erro ao carregar eventos do calendário: ' + error.message, 'error');
@@ -203,17 +260,50 @@ function editarElevadorCalendario() {
     }
 }
 
+// Função para atualizar o destaque dos botões de visualização
+function atualizarBotaoAtivo(viewType) {
+    // Remover classe ativa de todos os botões
+    document.querySelectorAll('.btn-group .btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.classList.add('btn-outline-primary');
+        btn.classList.remove('btn-primary');
+    });
+    
+    // Adicionar classe ativa ao botão correspondente
+    let btnAtivo = null;
+    switch(viewType) {
+        case 'dayGridMonth':
+            btnAtivo = document.querySelector('button[onclick="visualizarMes()"]');
+            break;
+        case 'dayGridWeek':
+            btnAtivo = document.querySelector('button[onclick="visualizarSemana()"]');
+            break;
+        case 'listWeek':
+            btnAtivo = document.querySelector('button[onclick="visualizarLista()"]');
+            break;
+    }
+    
+    if (btnAtivo) {
+        btnAtivo.classList.add('active');
+        btnAtivo.classList.remove('btn-outline-primary');
+        btnAtivo.classList.add('btn-primary');
+    }
+}
+
 // Funções para mudar visualização
 function visualizarMes() {
     calendar.changeView('dayGridMonth');
+    atualizarBotaoAtivo('dayGridMonth');
 }
 
 function visualizarSemana() {
-    calendar.changeView('timeGridWeek');
+    calendar.changeView('dayGridWeek');
+    atualizarBotaoAtivo('dayGridWeek');
 }
 
 function visualizarLista() {
     calendar.changeView('listWeek');
+    atualizarBotaoAtivo('listWeek');
 }
 
 // Função para alternar tela cheia

@@ -5,3 +5,5 @@ flask-cors==4.0.0
 reportlab==4.0.4
 markdown2==2.4.12
 weasyprint==60.2
+pylatex==1.4.1
+requests==2.31.0

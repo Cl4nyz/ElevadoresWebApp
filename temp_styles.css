@@ -1,0 +1,24 @@
+/* Estilos para tabela de relatórios */
+.table thead th {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease;
+}
+
+.table thead th:hover {
+    background-color: #495057 !important;
+    color: white !important;
+}
+
+.table thead th i {
+    transition: transform 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa !important;
+}
+
+.badge.fs-6 {
+    font-size: 0.875rem !important;
+    padding: 0.5rem 0.75rem;
+}

@@ -16,13 +16,14 @@
             <table class="table table-striped" id="elevadoresTable">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Cliente</th>
-                        <th>Contrato</th>
-                        <th>Cabine (cm)</th>
-                        <th>Elevação (mm)</th>
-                        <th>Cor</th>
-                        <th>Data Entrega</th>
+                        <th data-sort="id">ID</th>
+                        <th data-sort="cliente_nome">Cliente</th>
+                        <th data-sort="id_contrato">Contrato</th>
+                        <th data-sort="cabine_descricao">Cabine (mm)</th>
+                        <th data-sort="elevacao">Elevação (mm)</th>
+                        <th data-sort="cor">Cor</th>
+                        <th data-sort="status">Status</th>
+                        <th data-sort="data_entrega">Data Entrega</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -36,7 +37,7 @@
 
 <!-- Modal Elevador -->
 <div class="modal fade" id="elevadorModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
@@ -48,81 +49,225 @@
                 <form id="elevadorForm">
                     <input type="hidden" id="elevadorId">
                     
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="contrato" class="form-label">Contrato</label>
-                            <select class="form-select" id="contrato">
-                                <option value="">Selecione um contrato</option>
-                            </select>
+                    <!-- Seção: Informações Básicas -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0"><i class="fas fa-info-circle"></i> Informações Básicas</h6>
                         </div>
-                        <div class="col-md-6">
-                            <label for="cabine" class="form-label">Cabine *</label>
-                            <select class="form-select" id="cabine" required>
-                                <option value="">Selecione uma cabine</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="elevacao" class="form-label">Elevação (mm) *</label>
-                            <input type="number" class="form-control" id="elevacao" required min="1" step="1">
-                            <div class="form-text">Altura de elevação em milímetros</div>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="cor" class="form-label">Cor</label>
-                            <div class="row">
-                                <div class="col-8">
-                                    <select class="form-select" id="corSelect" onchange="alterarSelecaoCor()">
-                                        <option value="">Selecione uma cor</option>
-                                        <option value="Branco">Branco</option>
-                                        <option value="Cinza">Cinza</option>
-                                        <option value="Preto">Preto</option>
-                                        <option value="custom">Outra cor...</option>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="id_contrato" class="form-label">Contrato *</label>
+                                    <div class="input-group">
+                                        <select class="form-select" id="id_contrato" name="id_contrato" required title="Selecione um contrato existente">
+                                            <option value="">Selecione um contrato...</option>
+                                        </select>
+                                        <button type="button" class="btn btn-outline-warning" onclick="abrirModalNovoContrato()" title="Criar novo contrato">
+                                            <i class="fas fa-file-contract"></i>
+                                        </button>
+                                    </div>
+                                    <small class="form-text text-muted">Escolha o contrato ao qual este elevador será vinculado</small>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="comando" class="form-label">Comando *</label>
+                                    <select class="form-select" id="comando" name="comando" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="Pressão constante">Pressão constante</option>
+                                        <option value="Automático">Automático</option>
                                     </select>
                                 </div>
-                                <div class="col-4">
-                                    <div class="color-preview" id="colorPreview" style="width: 100%; height: 38px; border: 1px solid #ccc; border-radius: 4px; background-color: #f8f9fa;"></div>
+                                <div class="col-md-3">
+                                    <label for="status" class="form-label">Status *</label>
+                                    <div class="input-group">
+                                        <select class="form-select" id="statusSelect" name="statusSelect" onchange="alterarSelecaoStatus()" required>
+                                            <option value="">Selecione...</option>
+                                            <option value="Não iniciado">Não iniciado</option>
+                                            <option value="Em produção">Em produção</option>
+                                            <option value="Pronto">Pronto</option>
+                                            <option value="Entregue">Entregue</option>
+                                            <option value="custom">Outro status...</option>
+                                        </select>
+                                        <input type="text" class="form-control" id="statusCustom" name="statusCustom" placeholder="Digite o status" style="display: none;">
+                                    </div>
                                 </div>
                             </div>
-                            <input type="text" class="form-control mt-2" id="cor" placeholder="Digite uma cor personalizada" style="display: none;">
-                            <div class="form-text">Selecione uma das cores populares ou digite uma personalizada</div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="porta_inferior" class="form-label">Porta Inferior</label>
+                                    <select class="form-select" id="porta_inferior" name="porta_inferior">
+                                        <option value="">Selecione...</option>
+                                        <option value="Direita">Direita</option>
+                                        <option value="Esquerda">Esquerda</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="porta_superior" class="form-label">Porta Superior</label>
+                                    <select class="form-select" id="porta_superior" name="porta_superior">
+                                        <option value="">Selecione...</option>
+                                        <option value="Direita">Direita</option>
+                                        <option value="Esquerda">Esquerda</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="cor" class="form-label">Cor</label>
+                                    <div class="input-group">
+                                        <select class="form-select" id="corSelect" name="corSelect" onchange="alterarSelecaoCor()">
+                                            <option value="">Selecione uma cor...</option>
+                                            <option value="Branco">Branco</option>
+                                            <option value="Preto">Preto</option>
+                                            <option value="Azul">Azul</option>
+                                            <option value="Verde">Verde</option>
+                                            <option value="Vermelho">Vermelho</option>
+                                            <option value="Amarelo">Amarelo</option>
+                                            <option value="Cinza">Cinza</option>
+                                            <option value="custom">Outra cor...</option>
+                                        </select>
+                                        <input type="text" class="form-control" id="corCustom" name="corCustom" placeholder="Digite a cor" style="display: none;">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="observacao" class="form-label">Observações</label>
+                                <textarea class="form-control" id="observacao" name="observacao" rows="3"></textarea>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="novoContrato" class="form-label">Criar Novo Contrato</label>
+
+                    <!-- Seção: Cabine -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0"><i class="fas fa-cube"></i> Cabine</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="altura" class="form-label">Altura (mm) *</label>
+                                    <input type="number" class="form-control" id="altura" name="altura" required min="1">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="largura" class="form-label">Largura (mm) *</label>
+                                    <input type="number" class="form-control" id="largura" name="largura" required min="1">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="profundidade" class="form-label">Profundidade (mm) *</label>
+                                    <input type="number" class="form-control" id="profundidade" name="profundidade" required min="1">
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="piso" class="form-label">Piso</label>
+                                    <select class="form-select" id="piso" name="piso">
+                                        <option value="">Selecione...</option>
+                                        <option value="Alumínio">Alumínio</option>
+                                        <option value="Borracha">Borracha</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="lado_entrada" class="form-label">Lado Entrada</label>
+                                    <select class="form-select" id="lado_entrada" name="lado_entrada">
+                                        <option value="">Selecione...</option>
+                                        <option value="Esquerdo">Esquerdo</option>
+                                        <option value="Direito">Direito</option>
+                                        <option value="Oposto">Oposto</option>
+                                    </select>
+                                    <small class="form-text text-muted">Em relação à coluna</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="lado_saida" class="form-label">Lado Saída</label>
+                                    <select class="form-select" id="lado_saida" name="lado_saida">
+                                        <option value="">Selecione...</option>
+                                        <option value="Esquerdo">Esquerdo</option>
+                                        <option value="Direito">Direito</option>
+                                        <option value="Oposto">Oposto</option>
+                                    </select>
+                                    <small class="form-text text-muted">Em relação à coluna</small>
+                                </div>
+                            </div>
+                            
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="criarNovoContrato">
-                                <label class="form-check-label" for="criarNovoContrato">
-                                    Criar contrato automaticamente
+                                <input class="form-check-input" type="checkbox" id="montada_cabine" name="montada_cabine">
+                                <label class="form-check-label" for="montada_cabine">
+                                    Cabine montada
                                 </label>
                             </div>
                         </div>
                     </div>
-                    
-                    <div id="novoContratoSection" style="display: none;">
-                        <hr>
-                        <h6><i class="fas fa-file-contract"></i> Dados do Novo Contrato</h6>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-12">
-                                <label for="clienteNovoContrato" class="form-label">Cliente *</label>
-                                <select class="form-select" id="clienteNovoContrato">
-                                    <option value="">Selecione um cliente</option>
-                                </select>
+
+                    <!-- Seção: Coluna -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0"><i class="fas fa-arrows-alt-v"></i> Coluna</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="elevacao" class="form-label">Elevação (mm) *</label>
+                                    <input type="number" class="form-control" id="elevacao" name="elevacao" required min="1">
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check mt-4">
+                                        <input class="form-check-input" type="checkbox" id="montada_coluna" name="montada_coluna">
+                                        <label class="form-check-label" for="montada_coluna">
+                                            Coluna montada
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="dataVendaNovo" class="form-label">Data da Venda</label>
-                                <input type="date" class="form-control" id="dataVendaNovo">
+                    </div>
+
+                    <!-- Seção: Adicionais -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0"><i class="fas fa-plus-circle"></i> Adicionais</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label for="cancela" class="form-label">Cancela</label>
+                                    <input type="number" class="form-control" id="cancela" name="cancela" min="0" value="0">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="porta" class="form-label">Porta</label>
+                                    <input type="number" class="form-control" id="porta" name="porta" min="0" value="0">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="portao" class="form-label">Portão</label>
+                                    <input type="number" class="form-control" id="portao" name="portao" min="0" value="0">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="barreira_eletronica" class="form-label">Barreira Eletrônica</label>
+                                    <input type="number" class="form-control" id="barreira_eletronica" name="barreira_eletronica" min="0" value="0">
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label for="dataEntregaNovo" class="form-label">Data de Entrega</label>
-                                <input type="date" class="form-control" id="dataEntregaNovo">
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label for="lados_enclausuramento" class="form-label">Lados Enclausuramento</label>
+                                    <input type="number" class="form-control" id="lados_enclausuramento" name="lados_enclausuramento" min="0" value="0">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="sensor_esmagamento" class="form-label">Sensor Esmagamento</label>
+                                    <input type="number" class="form-control" id="sensor_esmagamento" name="sensor_esmagamento" min="0" value="0">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="rampa_acesso" class="form-label">Rampa Acesso</label>
+                                    <input type="number" class="form-control" id="rampa_acesso" name="rampa_acesso" min="0" value="0">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="nobreak" class="form-label">Nobreak</label>
+                                    <input type="number" class="form-control" id="nobreak" name="nobreak" min="0" value="0">
+                                </div>
+                            </div>
+                            
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="galvanizada" name="galvanizada">
+                                <label class="form-check-label" for="galvanizada">
+                                    Galvanizada
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -137,6 +282,124 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Novo Contrato -->
+<div class="modal fade" id="novoContratoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-file-contract"></i> Novo Contrato
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="novoContratoForm">
+                    <div class="mb-3">
+                        <label for="clienteContrato" class="form-label">Cliente *</label>
+                        <div class="input-group">
+                            <select class="form-select" id="clienteContrato" required>
+                                <option value="">Selecione um cliente...</option>
+                            </select>
+                            <button type="button" class="btn btn-outline-success" onclick="abrirModalNovoClienteElevador()" title="Criar novo cliente">
+                                <i class="fas fa-user-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="dataVendaContrato" class="form-label">Data da Venda</label>
+                        <input type="date" class="form-control" id="dataVendaContrato">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="dataEntregaContrato" class="form-label">Data de Entrega</label>
+                        <div class="input-group">
+                            <input type="date" class="form-control" id="dataEntregaContrato">
+                            <button type="button" class="btn btn-outline-primary" onclick="calcularDataEntregaContrato()" title="Calcular 30 dias úteis">
+                                <i class="fas fa-calendar-plus"></i> + 30 dias úteis
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-warning" onclick="salvarNovoContrato()">
+                    <i class="fas fa-save"></i> Criar Contrato
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Novo Cliente -->
+<div class="modal fade" id="novoClienteElevadorModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-user-plus"></i> Novo Cliente
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="novoClienteElevadorForm">
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label for="nomeClienteElevador" class="form-label">Nome *</label>
+                            <input type="text" class="form-control" id="nomeClienteElevador" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="cpfClienteElevador" class="form-label">CPF</label>
+                            <input type="text" class="form-control" id="cpfClienteElevador" placeholder="000.000.000-00">
+                        </div>
+                    </div>
+                    
+                    <h6><i class="fas fa-map-marker-alt"></i> Endereço (Opcional)</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label for="ruaClienteElevador" class="form-label">Rua</label>
+                            <input type="text" class="form-control" id="ruaClienteElevador">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="numeroClienteElevador" class="form-label">Número</label>
+                            <input type="text" class="form-control" id="numeroClienteElevador">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="cidadeClienteElevador" class="form-label">Cidade</label>
+                            <input type="text" class="form-control" id="cidadeClienteElevador">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="estadoClienteElevador" class="form-label">Estado</label>
+                            <select class="form-select" id="estadoClienteElevador">
+                                <option value="">Selecione...</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="cepClienteElevador" class="form-label">CEP</label>
+                            <input type="text" class="form-control" id="cepClienteElevador" placeholder="00000-000">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="complementoClienteElevador" class="form-label">Complemento</label>
+                        <input type="text" class="form-control" id="complementoClienteElevador">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" onclick="salvarNovoClienteElevador()">
+                    <i class="fas fa-save"></i> Criar Cliente
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
@@ -144,56 +407,34 @@
 // Função para alterar seleção de cor
 function alterarSelecaoCor() {
     const select = document.getElementById('corSelect');
-    const input = document.getElementById('cor');
-    const preview = document.getElementById('colorPreview');
+    const input = document.getElementById('corCustom');
     
     if (select.value === 'custom') {
         input.style.display = 'block';
         input.focus();
-        preview.style.backgroundColor = '#f8f9fa';
-    } else if (select.value === '') {
+        input.required = true;
+    } else {
         input.style.display = 'none';
+        input.required = false;
         input.value = '';
-        preview.style.backgroundColor = '#f8f9fa';
+    }
+}
+
+// Função para alterar seleção de status
+function alterarSelecaoStatus() {
+    const select = document.getElementById('statusSelect');
+    const input = document.getElementById('statusCustom');
+    
+    if (select.value === 'custom') {
+        input.style.display = 'block';
+        input.focus();
+        input.required = true;
     } else {
         input.style.display = 'none';
-        input.value = select.value;
-        updateColorPreview(select.value);
+        input.required = false;
+        input.value = '';
     }
 }
-
-// Função para atualizar preview da cor
-function updateColorPreview(cor) {
-    const preview = document.getElementById('colorPreview');
-    const colorMap = {
-        'Branco': '#FFFFFF',
-        'Cinza': '#808080',
-        'Preto': '#000000',
-        'Azul': '#0066CC',
-        'Verde': '#28A745',
-        'Vermelho': '#DC3545'
-    };
-    
-    const colorCode = colorMap[cor] || '#f8f9fa';
-    preview.style.backgroundColor = colorCode;
-    
-    // Adicionar borda mais escura para cores claras
-    if (cor === 'Branco') {
-        preview.style.border = '2px solid #ddd';
-    } else {
-        preview.style.border = '1px solid #ccc';
-    }
-}
-
-// Adicionar listener para input personalizado
-document.addEventListener('DOMContentLoaded', function() {
-    const customInput = document.getElementById('cor');
-    customInput.addEventListener('input', function() {
-        if (document.getElementById('corSelect').value === 'custom') {
-            document.getElementById('colorPreview').style.backgroundColor = '#f8f9fa';
-        }
-    });
-});
 </script>
 <script src="{{ url_for('static', filename='js/elevadores.js') }}"></script>
 {% endblock %}

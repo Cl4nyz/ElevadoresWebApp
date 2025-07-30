@@ -354,3 +354,156 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Sistema de ordenação e pesquisa para tabelas
+class TabelaOrdenavel {
+    constructor(tabelaId, dados, renderCallback) {
+        this.tabelaId = tabelaId;
+        this.dados = dados;
+        this.dadosOriginais = [...dados];
+        this.renderCallback = renderCallback;
+        this.ordemAtual = { coluna: null, crescente: true };
+        this.termoPesquisa = '';
+        
+        this.inicializar();
+    }
+    
+    inicializar() {
+        this.adicionarEventosOrdenacao();
+        this.adicionarCaixaPesquisa();
+    }
+    
+    adicionarEventosOrdenacao() {
+        const tabela = document.getElementById(this.tabelaId);
+        if (!tabela) return;
+        
+        const headers = tabela.querySelectorAll('thead th[data-sort]');
+        headers.forEach(header => {
+            header.style.cursor = 'pointer';
+            header.style.userSelect = 'none';
+            header.addEventListener('click', () => {
+                const coluna = header.getAttribute('data-sort');
+                this.ordenar(coluna);
+            });
+            
+            // Adicionar ícone de ordenação
+            if (!header.querySelector('.sort-icon')) {
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-sort ms-1 sort-icon';
+                header.appendChild(icon);
+            }
+        });
+    }
+    
+    adicionarCaixaPesquisa() {
+        const tabela = document.getElementById(this.tabelaId);
+        if (!tabela) return;
+        
+        const container = tabela.parentElement;
+        const existePesquisa = container.querySelector('.search-container');
+        
+        if (!existePesquisa) {
+            const searchContainer = document.createElement('div');
+            searchContainer.className = 'search-container mb-3';
+            searchContainer.innerHTML = `
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text" class="form-control" placeholder="Pesquisar..." id="search-${this.tabelaId}">
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.insertBefore(searchContainer, tabela);
+            
+            // Adicionar evento de pesquisa
+            const searchInput = document.getElementById(`search-${this.tabelaId}`);
+            searchInput.addEventListener('input', (e) => {
+                this.termoPesquisa = e.target.value.toLowerCase();
+                this.filtrarEAtualizar();
+            });
+        }
+    }
+    
+    ordenar(coluna) {
+        if (this.ordemAtual.coluna === coluna) {
+            this.ordemAtual.crescente = !this.ordemAtual.crescente;
+        } else {
+            this.ordemAtual.coluna = coluna;
+            this.ordemAtual.crescente = true;
+        }
+        
+        this.dados.sort((a, b) => {
+            let valorA = this.obterValorColuna(a, coluna);
+            let valorB = this.obterValorColuna(b, coluna);
+            
+            // Converter para string para comparação se não for número
+            if (typeof valorA !== 'number') valorA = String(valorA).toLowerCase();
+            if (typeof valorB !== 'number') valorB = String(valorB).toLowerCase();
+            
+            if (valorA < valorB) return this.ordemAtual.crescente ? -1 : 1;
+            if (valorA > valorB) return this.ordemAtual.crescente ? 1 : -1;
+            return 0;
+        });
+        
+        this.atualizarIconesOrdenacao();
+        this.renderCallback(this.dados);
+    }
+    
+    obterValorColuna(item, coluna) {
+        // Suporte para propriedades aninhadas (ex: 'cliente.nome')
+        return coluna.split('.').reduce((obj, prop) => obj && obj[prop], item) || '';
+    }
+    
+    atualizarIconesOrdenacao() {
+        const tabela = document.getElementById(this.tabelaId);
+        if (!tabela) return;
+        
+        // Resetar todos os ícones
+        const icons = tabela.querySelectorAll('.sort-icon');
+        icons.forEach(icon => {
+            icon.className = 'fas fa-sort ms-1 sort-icon';
+        });
+        
+        // Atualizar ícone da coluna ativa
+        const activeHeader = tabela.querySelector(`th[data-sort="${this.ordemAtual.coluna}"] .sort-icon`);
+        if (activeHeader) {
+            activeHeader.className = `fas fa-sort-${this.ordemAtual.crescente ? 'up' : 'down'} ms-1 sort-icon`;
+        }
+    }
+    
+    filtrarEAtualizar() {
+        if (!this.termoPesquisa) {
+            this.dados = [...this.dadosOriginais];
+        } else {
+            this.dados = this.dadosOriginais.filter(item => {
+                return Object.values(item).some(valor => 
+                    String(valor).toLowerCase().includes(this.termoPesquisa)
+                );
+            });
+        }
+        
+        // Reaplicar ordenação se existir
+        if (this.ordemAtual.coluna) {
+            this.ordenar(this.ordemAtual.coluna);
+        } else {
+            this.renderCallback(this.dados);
+        }
+    }
+    
+    // Método público para filtrar (usado pelos event listeners)
+    filtrar(termo) {
+        this.termoPesquisa = termo.toLowerCase();
+        this.filtrarEAtualizar();
+    }
+    
+    atualizarDados(novosDados) {
+        this.dados = [...novosDados];
+        this.dadosOriginais = [...novosDados];
+        this.filtrarEAtualizar();
+    }
+}

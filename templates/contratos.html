@@ -16,10 +16,10 @@
             <table class="table table-striped" id="contratosTable">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Cliente</th>
-                        <th>Data da Venda</th>
-                        <th>Data Entrega</th>
+                        <th data-sort="id">ID</th>
+                        <th data-sort="cliente_nome">Cliente</th>
+                        <th data-sort="data_venda">Data da Venda</th>
+                        <th data-sort="data_entrega">Data Entrega</th>
                         <th>Status</th>
                         <th>Ações</th>
                     </tr>
@@ -48,9 +48,14 @@
                     
                     <div class="mb-3">
                         <label for="cliente" class="form-label">Cliente *</label>
-                        <select class="form-select" id="cliente" required>
-                            <option value="">Selecione um cliente</option>
-                        </select>
+                        <div class="input-group">
+                            <select class="form-select" id="cliente" required>
+                                <option value="">Selecione um cliente</option>
+                            </select>
+                            <button type="button" class="btn btn-outline-success" onclick="abrirModalNovoClienteContrato()" title="Criar novo cliente">
+                                <i class="fas fa-user-plus"></i>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="mb-3">
@@ -110,6 +115,116 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="adicionarDiasUteis()">
                     <i class="fas fa-plus"></i> Adicionar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Novo Cliente (dentro de Contratos) -->
+<div class="modal fade" id="novoClienteContratoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-user-plus"></i> Novo Cliente
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="novoClienteContratoForm">
+                    <div class="mb-3">
+                        <label for="nomeClienteContrato" class="form-label">Nome *</label>
+                        <input type="text" class="form-control" id="nomeClienteContrato" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="cpfClienteContrato" class="form-label">CPF</label>
+                        <input type="text" class="form-control" id="cpfClienteContrato" maxlength="11" placeholder="Apenas números">
+                    </div>
+                    
+                    <hr>
+                    <h6><i class="fas fa-map-marker-alt"></i> Endereço (Opcional)</h6>
+                    
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="mb-3">
+                                <label for="ruaClienteContrato" class="form-label">Rua</label>
+                                <input type="text" class="form-control" id="ruaClienteContrato">
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="mb-3">
+                                <label for="numeroClienteContrato" class="form-label">Número</label>
+                                <input type="text" class="form-control" id="numeroClienteContrato">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="cidadeClienteContrato" class="form-label">Cidade</label>
+                                <input type="text" class="form-control" id="cidadeClienteContrato">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="estadoClienteContrato" class="form-label">Estado</label>
+                                <select class="form-select" id="estadoClienteContrato">
+                                    <option value="">Selecionar</option>
+                                    <option value="AC">Acre</option>
+                                    <option value="AL">Alagoas</option>
+                                    <option value="AP">Amapá</option>
+                                    <option value="AM">Amazonas</option>
+                                    <option value="BA">Bahia</option>
+                                    <option value="CE">Ceará</option>
+                                    <option value="DF">Distrito Federal</option>
+                                    <option value="ES">Espírito Santo</option>
+                                    <option value="GO">Goiás</option>
+                                    <option value="MA">Maranhão</option>
+                                    <option value="MT">Mato Grosso</option>
+                                    <option value="MS">Mato Grosso do Sul</option>
+                                    <option value="MG">Minas Gerais</option>
+                                    <option value="PA">Pará</option>
+                                    <option value="PB">Paraíba</option>
+                                    <option value="PR">Paraná</option>
+                                    <option value="PE">Pernambuco</option>
+                                    <option value="PI">Piauí</option>
+                                    <option value="RJ">Rio de Janeiro</option>
+                                    <option value="RN">Rio Grande do Norte</option>
+                                    <option value="RS">Rio Grande do Sul</option>
+                                    <option value="RO">Rondônia</option>
+                                    <option value="RR">Roraima</option>
+                                    <option value="SC">Santa Catarina</option>
+                                    <option value="SP">São Paulo</option>
+                                    <option value="SE">Sergipe</option>
+                                    <option value="TO">Tocantins</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="cepClienteContrato" class="form-label">CEP</label>
+                                <input type="text" class="form-control" id="cepClienteContrato">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="complementoClienteContrato" class="form-label">Complemento</label>
+                                <input type="text" class="form-control" id="complementoClienteContrato">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" onclick="salvarNovoClienteContrato()">
+                    <i class="fas fa-save"></i> Criar Cliente
                 </button>
             </div>
         </div>

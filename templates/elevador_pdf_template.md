@@ -1,19 +1,9 @@
-<div class="company-info">
-<h3>ORDEM DE SERVIÇO</h3>
-</div>
-
----
-
-# ORDEM DE SERVIÇO
-
 <div style="display: flex; align-items: flex-start;">
-	<div style="flex: 1;">
-		<img src="home-escrito.png" alt="Logo" style="max-width: 10%; height: auto;">
-	</div>
-	<div style="flex: 1; padding-left: 24px;">
-		# Titulo
-		Tchau
-	</div>
+
+  <div style="flex: 1; padding-right: 10px;">
+    <img src="home-escrito.png" alt="Imagem" style="width: 1%; height: 1%;">
+  </div>
+
 </div>
 
 ---

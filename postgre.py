@@ -37,28 +37,30 @@ def create_database():
         cursor.close()
         conn.close()
 
-def create_pg_connection():
-	"""Cria uma conexão com o banco de dados PostgreSQL."""
-	try:
-		conn = psycopg2.connect(
-			dbname=NAME,
-			user=USER,
-			password=PASSWORD,
-			host=HOST,
-			port=PORT
-		)
-		print(f'Nome: {NAME}')
-		return conn
-	except Exception as e:
-		print(f"Erro ao conectar ao banco de dados: {e}")
-		return None
+def create_pg_connection(verbose=False):
+    """Cria uma conexão com o banco de dados PostgreSQL."""
+    try:
+        conn = psycopg2.connect(
+            dbname=NAME,
+            user=USER,
+            password=PASSWORD,
+            host=HOST,
+            port=PORT
+        )
+        if verbose:
+            print(f'Nome: {NAME}')
+        return conn
+    except Exception as e:
+        print(f"Erro ao conectar ao banco de dados: {e}")
+        return None
 
-def end_pg_connection(conn):
-	"""Faz commit e encerra a conexão com o banco de dados."""
-	if conn:
-		conn.commit()
-		conn.close()
-		print("Conexão encerrada.")
+def end_pg_connection(conn, verbose=False):
+    """Faz commit e encerra a conexão com o banco de dados."""
+    if conn:
+        conn.commit()
+        conn.close()
+        if verbose:
+            print("Conexão encerrada.")
             
 def drop_all_tables(conn):
     cursor = conn.cursor()
@@ -90,7 +92,7 @@ def create_tables(conn):
         cursor.close()
 
 def insert_initial_data(conn):
-    """Insere dados iniciais obrigatórios (estados e cabines)"""
+    """Insere dados iniciais obrigatórios (estados)"""
     cursor = conn.cursor()
     try:
         # Inserir todos os estados brasileiros
@@ -126,13 +128,6 @@ def insert_initial_data(conn):
             ON CONFLICT (sigla) DO NOTHING;
         """)
         
-        # Inserir cabines fixas
-        cursor.execute("""
-            INSERT INTO cabine (altura, descricao) VALUES
-            (110, 'Cabine Pequena - 110cm'),
-            (210, 'Cabine Grande - 210cm');
-        """)
-        
         conn.commit()
         print("Dados iniciais inseridos com sucesso.")
     except Exception as e:
@@ -141,7 +136,7 @@ def insert_initial_data(conn):
         cursor.close()
 		
 if __name__ == '__main__':
-    conn = create_pg_connection()
+    conn = create_pg_connection(True)
     conn.commit()
     cursor = conn.cursor()
     pop = False
@@ -178,12 +173,36 @@ if __name__ == '__main__':
                 ('2024-03-10', '2025-01-10', 3);
             """)
 
-            # Inserir elevadores (usando IDs das cabines fixas)
+            # Inserir elevadores com nova estrutura
             cursor.execute("""
-                INSERT INTO elevador (id_contrato, id_cabine, elevacao, cor) VALUES
-                (1, 1, 3000, 'Azul'),
-                (2, 2, 3500, 'Vermelho'),
-                (3, 1, 4000, 'Verde');
+                INSERT INTO elevador (id_contrato, comando, observacao, porta_inferior, porta_superior, cor, status) VALUES
+                (1, 'Manual', 'Elevador residencial', 'Simples', 'Simples', 'Azul', 'Em produção'),
+                (2, 'Automatico', 'Elevador comercial', 'Dupla', 'Dupla', 'Vermelho', 'Pronto'),
+                (3, 'Manual', 'Elevador de carga', 'Portao', 'Portao', 'Verde', 'Não iniciado');
+            """)
+
+            # Inserir dados das cabines
+            cursor.execute("""
+                INSERT INTO cabine (id_elevador, altura, largura, profundidade, piso, montada, lado_entrada, lado_saida) VALUES
+                (1, 2200, 1000, 1200, 'Ceramico', true, 'Frente', 'Frente'),
+                (2, 2400, 1200, 1400, 'Granito', true, 'Frente', 'Tras'),
+                (3, 2800, 1500, 2000, 'Chapa', false, 'Lateral', 'Lateral');
+            """)
+
+            # Inserir dados das colunas
+            cursor.execute("""
+                INSERT INTO coluna (id_elevador, elevacao, montada) VALUES
+                (1, 3000, true),
+                (2, 3500, true),
+                (3, 4000, false);
+            """)
+
+            # Inserir dados dos adicionais
+            cursor.execute("""
+                INSERT INTO adicionais (id_elevador, cancela, porta, portao, barreira_eletronica, lados_enclausuramento, sensor_esmagamento, rampa_acesso, nobreak, galvanizada) VALUES
+                (1, 1, 0, 0, 1, 2, 1, 0, 0, false),
+                (2, 2, 1, 0, 2, 4, 2, 1, 1, true),
+                (3, 0, 0, 2, 0, 0, 0, 1, 0, true);
             """)
 
             print("Tabelas populadas com dados de exemplo.")
@@ -191,5 +210,5 @@ if __name__ == '__main__':
             print(f"Erro ao popular tabelas: {e}")
         print('Setup concluído com sucesso!')
     
-    end_pg_connection(conn)
+    end_pg_connection(conn, True)
 	

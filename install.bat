@@ -47,6 +47,10 @@ echo.
 echo Setup concluido! Para executar o sistema:
 echo   python app.py
 echo.
+echo GERACAO DE PDF:
+echo - Usa LaTeX (se disponivel) para melhor qualidade
+echo - Fallback automatico para WeasyPrint (sem instalacoes extras)
+echo.
 echo Ou execute este arquivo novamente para usar o menu interativo.
 echo.
 pause

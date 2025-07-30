@@ -1,0 +1,122 @@
+\documentclass[a4paper,11pt]{article}
+
+% Pacotes necessários
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese]{babel}
+\usepackage[top=1cm,bottom=1cm,left=2cm,right=2cm]{geometry}
+\usepackage{array}
+\usepackage{graphicx}
+
+% Configuração de tabelas
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\begin{document}
+
+% Cabeçalho principal
+\begin{center}
+  {\Huge\textbf{ORDEM DE SERVIÇO}}
+  
+  \vspace{0.5cm}
+  
+  Sistema de Gerenciamento de Elevadores
+\end{center}
+
+\vspace{1cm}
+\noindent\rule{\textwidth}{1pt}
+\vspace{0.5cm}
+
+% Seção: Dados do Elevador
+\section*{DADOS DO ELEVADOR}
+
+\begin{tabular}{|L{4cm}|L{8cm}|}
+  \hline
+  \textbf{Campo} & \textbf{Valor} \\
+  \hline
+  \textbf{OS} & {{elevador_id}} \\
+  \hline
+  \textbf{DATA PEDIDO} & {{data_venda}} \\
+  \hline
+  \textbf{DATA ENTREGA} & {{data_entrega}} \\
+  \hline
+  \textbf{CLIENTE} & {{cliente_nome}} \\
+  \hline
+  \textbf{CIDADE} & {{cidade}} \\
+  \hline
+  \textbf{Elevação} & {{elevacao}} mm \\
+  \hline
+  \textbf{Cor} & {{cor}} \\
+  \hline
+  \textbf{Cabine} & {{cabine_altura}} cm - {{cabine_descricao}} \\
+  \hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+% Seção: Informações do Cliente
+\section*{INFORMAÇÕES DO CLIENTE}
+
+\begin{tabular}{|L{4cm}|L{8cm}|}
+  \hline
+  \textbf{Campo} & \textbf{Valor} \\
+  \hline
+  \textbf{CPF} & {{cliente_cpf}} \\
+  \hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+% Seção: Endereço de Instalação
+\section*{ENDEREÇO DE INSTALAÇÃO}
+
+\begin{tabular}{|L{4cm}|L{8cm}|}
+  \hline
+  \textbf{Campo} & \textbf{Valor} \\
+  \hline
+  \textbf{Endereço Completo} & {{endereco_completo}} \\
+  \hline
+  \textbf{Cidade} & {{cidade}} \\
+  \hline
+  \textbf{Estado} & {{estado_nome}} ({{estado_sigla}}) \\
+  \hline
+  \textbf{CEP} & {{cep}} \\
+  \hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+% Seção: Dados do Contrato
+\section*{DADOS DO CONTRATO}
+
+\begin{tabular}{|L{4cm}|L{8cm}|}
+  \hline
+  \textbf{Campo} & \textbf{Valor} \\
+  \hline
+  \textbf{ID do Contrato} & {{contrato_id}} \\
+  \hline
+  \textbf{Data da Venda} & {{data_venda}} \\
+  \hline
+  \textbf{Data de Entrega} & {{data_entrega}} \\
+  \hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+% Observações Técnicas
+\section*{OBSERVAÇÕES TÉCNICAS}
+
+\begin{itemize}
+  \item \textbf{Status}: Elevador registrado no sistema
+  \item \textbf{Tipo de Relatório}: Relatório técnico completo
+  \item \textbf{Versão do Sistema}: 1.0
+\end{itemize}
+
+\vspace{1cm}
+
+\begin{center}
+  \small
+  \textit{Relatório gerado automaticamente em: {{data_geracao}}}
+  
+  \textbf{Sistema de Gerenciamento de Elevadores} | Relatório de Elevador ID: {{elevador_id}}
+\end{center}
+
+\end{document}

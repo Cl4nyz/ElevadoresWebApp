@@ -1,12 +1,20 @@
 /* Estilos para geração de PDF de elevadores */
 
+/* Configuração da página para reduzir margens */
+@page {
+    margin-top: 0.5in;
+    margin-bottom: 0.5in;
+    margin-left: 0.75in;
+    margin-right: 0.75in;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     color: #2c3e50;
     max-width: 800px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 10px;
     background-color: #ffffff;
 }
 
@@ -14,8 +22,9 @@ h1 {
     color: #2c3e50;
     text-align: center;
     border-bottom: 3px solid #3498db;
-    padding-bottom: 15px;
-    margin-bottom: 30px;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    margin-top: 10px;
     font-size: 24px;
     font-weight: bold;
     text-transform: uppercase;
@@ -25,9 +34,9 @@ h1 {
 h2 {
     color: #34495e;
     border-bottom: 2px solid #bdc3c7;
-    padding-bottom: 8px;
-    margin-top: 35px;
-    margin-bottom: 20px;
+    padding-bottom: 6px;
+    margin-top: 25px;
+    margin-bottom: 15px;
     font-size: 18px;
     font-weight: 600;
 }
@@ -35,7 +44,7 @@ h2 {
 table {
     width: 100%;
     border-collapse: collapse;
-    margin: 20px 0;
+    margin: 15px 0;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     border-radius: 8px;
     overflow: hidden;
@@ -131,8 +140,8 @@ em {
 
 /* Rodapé */
 .footer {
-    margin-top: 50px;
-    padding-top: 20px;
+    margin-top: 30px;
+    padding-top: 15px;
     border-top: 2px solid #bdc3c7;
     text-align: center;
     color: #7f8c8d;
@@ -148,9 +157,9 @@ em {
 .company-info {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 20px;
+    padding: 15px;
     border-radius: 8px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     text-align: center;
 }
 

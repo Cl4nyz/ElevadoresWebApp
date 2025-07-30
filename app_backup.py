@@ -561,86 +561,44 @@ def get_elevadores():
         if contrato_id:
             # Buscar elevadores de um contrato específico
             cursor.execute("""
-                SELECT e.id, e.id_contrato, e.comando, e.observacao, 
-                       e.porta_inferior, e.porta_superior, e.cor, e.status
+                SELECT e.id, e.id_contrato, e.id_cabine, e.elevacao, e.cor,
+                       c.data_venda, c.data_entrega, c.id_cliente,
+                       cl.nome, cab.altura, cab.descricao
                 FROM elevador e
+                LEFT JOIN contrato c ON e.id_contrato = c.id
+                LEFT JOIN cliente cl ON c.id_cliente = cl.id
+                LEFT JOIN cabine cab ON e.id_cabine = cab.id
                 WHERE e.id_contrato = %s
                 ORDER BY e.id
             """, (contrato_id,))
         else:
             # Buscar todos os elevadores
             cursor.execute("""
-                SELECT e.id, e.id_contrato, e.comando, e.observacao, 
-                       e.porta_inferior, e.porta_superior, e.cor, e.status
+                SELECT e.id, e.id_contrato, e.id_cabine, e.elevacao, e.cor,
+                       c.data_venda, c.data_entrega, c.id_cliente,
+                       cl.nome, cab.altura, cab.descricao
                 FROM elevador e
+                LEFT JOIN contrato c ON e.id_contrato = c.id
+                LEFT JOIN cliente cl ON c.id_cliente = cl.id
+                LEFT JOIN cabine cab ON e.id_cabine = cab.id
                 ORDER BY e.id
             """)
         
         elevadores = []
         for row in cursor.fetchall():
-            elevador_id = row[0]
-            
-            # Buscar dados da cabine
-            cursor.execute("""
-                SELECT altura, largura, profundidade, piso, montada, 
-                       lado_entrada, lado_saida
-                FROM cabine WHERE id_elevador = %s
-            """, (elevador_id,))
-            cabine_data = cursor.fetchone()
-            
-            # Buscar dados da coluna
-            cursor.execute("""
-                SELECT elevacao, montada
-                FROM coluna WHERE id_elevador = %s
-            """, (elevador_id,))
-            coluna_data = cursor.fetchone()
-            
-            # Buscar adicionais
-            cursor.execute("""
-                SELECT cancela, porta, portao, barreira_eletronica,
-                       lados_enclausuramento, sensor_esmagamento,
-                       rampa_acesso, nobreak, galvanizada
-                FROM adicionais WHERE id_elevador = %s
-            """, (elevador_id,))
-            adicionais_data = cursor.fetchone()
-            
-            elevador = {
+            elevadores.append({
                 'id': row[0],
                 'id_contrato': row[1],
-                'comando': row[2],
-                'observacao': row[3],
-                'porta_inferior': row[4],
-                'porta_superior': row[5],
-                'cor': row[6],
-                'status': row[7],
-                'cabine': {
-                    'altura': cabine_data[0] if cabine_data else None,
-                    'largura': cabine_data[1] if cabine_data else None,
-                    'profundidade': cabine_data[2] if cabine_data else None,
-                    'piso': cabine_data[3] if cabine_data else None,
-                    'montada': cabine_data[4] if cabine_data else False,
-                    'lado_entrada': cabine_data[5] if cabine_data else None,
-                    'lado_saida': cabine_data[6] if cabine_data else None
-                } if cabine_data else None,
-                'coluna': {
-                    'elevacao': coluna_data[0] if coluna_data else None,
-                    'montada': coluna_data[1] if coluna_data else False
-                } if coluna_data else None,
-                'adicionais': {
-                    'cancela': adicionais_data[0] if adicionais_data else 0,
-                    'porta': adicionais_data[1] if adicionais_data else 0,
-                    'portao': adicionais_data[2] if adicionais_data else 0,
-                    'barreira_eletronica': adicionais_data[3] if adicionais_data else 0,
-                    'lados_enclausuramento': adicionais_data[4] if adicionais_data else 0,
-                    'sensor_esmagamento': adicionais_data[5] if adicionais_data else 0,
-                    'rampa_acesso': adicionais_data[6] if adicionais_data else 0,
-                    'nobreak': adicionais_data[7] if adicionais_data else 0,
-                    'galvanizada': adicionais_data[8] if adicionais_data else False
-                } if adicionais_data else None
-            }
-            
-            elevadores.append(elevador)
-        
+                'id_cabine': row[2],
+                'elevacao': row[3],
+                'cor': row[4],
+                'data_venda': row[5].isoformat() if row[5] else None,
+                'data_entrega': row[6].isoformat() if row[6] else None,
+                'id_cliente': row[7],
+                'cliente_nome': row[8],
+                'altura_cabine': row[9],
+                'cabine_descricao': row[10]
+            })
         return jsonify(elevadores)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -658,82 +616,33 @@ def add_elevador():
     cursor = conn.cursor()
     try:
         # Validar dados obrigatórios
-        if not data.get('id_contrato'):
-            return jsonify({'error': 'Contrato é obrigatório'}), 400
-        if not data.get('comando'):
-            return jsonify({'error': 'Comando é obrigatório'}), 400
-        if not data.get('cabine') or not data['cabine'].get('altura') or not data['cabine'].get('largura') or not data['cabine'].get('profundidade'):
-            return jsonify({'error': 'Dados da cabine (altura, largura, profundidade) são obrigatórios'}), 400
-        if not data.get('coluna') or not data['coluna'].get('elevacao'):
-            return jsonify({'error': 'Elevação da coluna é obrigatória'}), 400
+        if not data.get('id_cabine'):
+            return jsonify({'error': 'Cabine é obrigatória'}), 400
+        if not data.get('elevacao') or not isinstance(data.get('elevacao'), (int, float)):
+            return jsonify({'error': 'Elevação é obrigatória e deve ser um número'}), 400
         
-        # Validar se contrato existe
-        cursor.execute("SELECT id FROM contrato WHERE id = %s", (data['id_contrato'],))
+        elevacao = int(data['elevacao'])
+        if elevacao <= 0:
+            return jsonify({'error': 'Elevação deve ser maior que zero'}), 400
+        
+        # Validar se cabine existe
+        cursor.execute("SELECT id FROM cabine WHERE id = %s", (data['id_cabine'],))
         if not cursor.fetchone():
-            return jsonify({'error': 'Contrato não encontrado'}), 400
+            return jsonify({'error': 'Cabine não encontrada'}), 400
         
-        # Inserir elevador principal
+        # Validar contrato se fornecido
+        id_contrato = data.get('id_contrato')
+        if id_contrato:
+            cursor.execute("SELECT id FROM contrato WHERE id = %s", (id_contrato,))
+            if not cursor.fetchone():
+                return jsonify({'error': 'Contrato não encontrado'}), 400
+        
         cursor.execute("""
-            INSERT INTO elevador (id_contrato, comando, observacao, porta_inferior, porta_superior, cor, status) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id
-        """, (
-            data['id_contrato'],
-            data['comando'],
-            data.get('observacao'),
-            data.get('porta_inferior'),
-            data.get('porta_superior'),
-            data.get('cor'),
-            data.get('status', 'Não iniciado')  # Valor padrão
-        ))
+            INSERT INTO elevador (id_contrato, id_cabine, elevacao, cor) 
+            VALUES (%s, %s, %s, %s) RETURNING id
+        """, (id_contrato, data['id_cabine'], elevacao, data.get('cor')))
         
         elevador_id = cursor.fetchone()[0]
-        
-        # Inserir dados da cabine
-        cabine = data['cabine']
-        cursor.execute("""
-            INSERT INTO cabine (id_elevador, altura, largura, profundidade, piso, montada, lado_entrada, lado_saida)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-        """, (
-            elevador_id,
-            cabine['altura'],
-            cabine['largura'],
-            cabine['profundidade'],
-            cabine.get('piso'),
-            cabine.get('montada', False),
-            cabine.get('lado_entrada'),
-            cabine.get('lado_saida')
-        ))
-        
-        # Inserir dados da coluna
-        coluna = data['coluna']
-        cursor.execute("""
-            INSERT INTO coluna (id_elevador, elevacao, montada)
-            VALUES (%s, %s, %s)
-        """, (
-            elevador_id,
-            coluna['elevacao'],
-            coluna.get('montada', False)
-        ))
-        
-        # Inserir adicionais
-        adicionais = data.get('adicionais', {})
-        cursor.execute("""
-            INSERT INTO adicionais (id_elevador, cancela, porta, portao, barreira_eletronica,
-                                  lados_enclausuramento, sensor_esmagamento, rampa_acesso, nobreak, galvanizada)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (
-            elevador_id,
-            adicionais.get('cancela', 0),
-            adicionais.get('porta', 0),
-            adicionais.get('portao', 0),
-            adicionais.get('barreira_eletronica', 0),
-            adicionais.get('lados_enclausuramento', 0),
-            adicionais.get('sensor_esmagamento', 0),
-            adicionais.get('rampa_acesso', 0),
-            adicionais.get('nobreak', 0),
-            adicionais.get('galvanizada', False)
-        ))
-        
         conn.commit()
         return jsonify({'id': elevador_id, 'message': 'Elevador criado com sucesso'})
     except Exception as e:
@@ -752,76 +661,10 @@ def update_elevador(elevador_id):
     
     cursor = conn.cursor()
     try:
-        # Atualizar dados principais do elevador
         cursor.execute("""
-            UPDATE elevador 
-            SET id_contrato = %s, comando = %s, observacao = %s, 
-                porta_inferior = %s, porta_superior = %s, cor = %s, status = %s 
+            UPDATE elevador SET id_contrato = %s, id_cabine = %s, elevacao = %s, cor = %s 
             WHERE id = %s
-        """, (
-            data.get('id_contrato'),
-            data.get('comando'),
-            data.get('observacao'),
-            data.get('porta_inferior'),
-            data.get('porta_superior'),
-            data.get('cor'),
-            data.get('status'),
-            elevador_id
-        ))
-        
-        # Atualizar dados da cabine
-        if data.get('cabine'):
-            cabine = data['cabine']
-            cursor.execute("""
-                UPDATE cabine 
-                SET altura = %s, largura = %s, profundidade = %s, piso = %s, 
-                    montada = %s, lado_entrada = %s, lado_saida = %s
-                WHERE id_elevador = %s
-            """, (
-                cabine.get('altura'),
-                cabine.get('largura'),
-                cabine.get('profundidade'),
-                cabine.get('piso'),
-                cabine.get('montada', False),
-                cabine.get('lado_entrada'),
-                cabine.get('lado_saida'),
-                elevador_id
-            ))
-        
-        # Atualizar dados da coluna
-        if data.get('coluna'):
-            coluna = data['coluna']
-            cursor.execute("""
-                UPDATE coluna 
-                SET elevacao = %s, montada = %s
-                WHERE id_elevador = %s
-            """, (
-                coluna.get('elevacao'),
-                coluna.get('montada', False),
-                elevador_id
-            ))
-        
-        # Atualizar adicionais
-        if data.get('adicionais'):
-            adicionais = data['adicionais']
-            cursor.execute("""
-                UPDATE adicionais 
-                SET cancela = %s, porta = %s, portao = %s, barreira_eletronica = %s,
-                    lados_enclausuramento = %s, sensor_esmagamento = %s, 
-                    rampa_acesso = %s, nobreak = %s, galvanizada = %s
-                WHERE id_elevador = %s
-            """, (
-                adicionais.get('cancela', 0),
-                adicionais.get('porta', 0),
-                adicionais.get('portao', 0),
-                adicionais.get('barreira_eletronica', 0),
-                adicionais.get('lados_enclausuramento', 0),
-                adicionais.get('sensor_esmagamento', 0),
-                adicionais.get('rampa_acesso', 0),
-                adicionais.get('nobreak', 0),
-                adicionais.get('galvanizada', False),
-                elevador_id
-            ))
+        """, (data.get('id_contrato'), data['id_cabine'], data['elevacao'], data.get('cor'), elevador_id))
         
         conn.commit()
         return jsonify({'message': 'Elevador atualizado com sucesso'})
@@ -850,167 +693,6 @@ def delete_elevador(elevador_id):
         cursor.close()
         end_pg_connection(conn)
 
-def _gerar_pdf_weasyprint_from_latex(dados, elevador_id):
-    """Função de fallback para gerar PDF usando WeasyPrint quando LaTeX não está disponível"""
-    try:
-        from weasyprint import HTML, CSS
-        from io import StringIO
-        
-        # Converter dados LaTeX para HTML equivalente
-        html_content = f"""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <title>Ordem de Serviço - Elevador {dados['elevador_id']}</title>
-            <style>
-                @page {{
-                    margin: 1cm 2cm;
-                    size: A4;
-                }}
-                body {{
-                    font-family: 'Segoe UI', Arial, sans-serif;
-                    line-height: 1.4;
-                    color: #333;
-                }}
-                .header {{
-                    text-align: center;
-                    border-bottom: 2px solid #333;
-                    padding-bottom: 10px;
-                    margin-bottom: 20px;
-                }}
-                .header h1 {{
-                    font-size: 28px;
-                    margin: 0;
-                    font-weight: bold;
-                }}
-                .header p {{
-                    margin: 5px 0 0 0;
-                    font-size: 14px;
-                }}
-                .section {{
-                    margin: 20px 0;
-                }}
-                .section h2 {{
-                    font-size: 18px;
-                    font-weight: bold;
-                    margin-bottom: 10px;
-                    border-bottom: 1px solid #ccc;
-                    padding-bottom: 5px;
-                }}
-                table {{
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin: 10px 0;
-                }}
-                th, td {{
-                    border: 1px solid #333;
-                    padding: 8px;
-                    text-align: left;
-                }}
-                th {{
-                    background-color: #f5f5f5;
-                    font-weight: bold;
-                }}
-                .footer {{
-                    margin-top: 30px;
-                    text-align: center;
-                    font-size: 12px;
-                    color: #666;
-                    border-top: 1px solid #ccc;
-                    padding-top: 10px;
-                }}
-                ul {{
-                    margin: 10px 0;
-                    padding-left: 20px;
-                }}
-                li {{
-                    margin: 5px 0;
-                }}
-            </style>
-        </head>
-        <body>
-            <div class="header">
-                <h1>ORDEM DE SERVIÇO</h1>
-                <p>Sistema de Gerenciamento de Elevadores</p>
-            </div>
-            
-            <div class="section">
-                <h2>DADOS DO ELEVADOR</h2>
-                <table>
-                    <tr><th>Campo</th><th>Valor</th></tr>
-                    <tr><td><strong>OS</strong></td><td>{dados['elevador_id']}</td></tr>
-                    <tr><td><strong>DATA PEDIDO</strong></td><td>{dados['data_venda']}</td></tr>
-                    <tr><td><strong>DATA ENTREGA</strong></td><td>{dados['data_entrega']}</td></tr>
-                    <tr><td><strong>CLIENTE</strong></td><td>{dados['cliente_nome']}</td></tr>
-                    <tr><td><strong>CIDADE</strong></td><td>{dados['cidade']}</td></tr>
-                    <tr><td><strong>Elevação</strong></td><td>{dados['elevacao']} mm</td></tr>
-                    <tr><td><strong>Cor</strong></td><td>{dados['cor']}</td></tr>
-                    <tr><td><strong>Cabine</strong></td><td>{dados['cabine_altura']} cm - {dados['cabine_descricao']}</td></tr>
-                </table>
-            </div>
-            
-            <div class="section">
-                <h2>INFORMAÇÕES DO CLIENTE</h2>
-                <table>
-                    <tr><th>Campo</th><th>Valor</th></tr>
-                    <tr><td><strong>CPF</strong></td><td>{dados['cliente_cpf']}</td></tr>
-                </table>
-            </div>
-            
-            <div class="section">
-                <h2>ENDEREÇO DE INSTALAÇÃO</h2>
-                <table>
-                    <tr><th>Campo</th><th>Valor</th></tr>
-                    <tr><td><strong>Endereço Completo</strong></td><td>{dados['endereco_completo']}</td></tr>
-                    <tr><td><strong>Cidade</strong></td><td>{dados['cidade']}</td></tr>
-                    <tr><td><strong>Estado</strong></td><td>{dados['estado_nome']} ({dados['estado_sigla']})</td></tr>
-                    <tr><td><strong>CEP</strong></td><td>{dados['cep']}</td></tr>
-                </table>
-            </div>
-            
-            <div class="section">
-                <h2>DADOS DO CONTRATO</h2>
-                <table>
-                    <tr><th>Campo</th><th>Valor</th></tr>
-                    <tr><td><strong>ID do Contrato</strong></td><td>{dados['contrato_id']}</td></tr>
-                    <tr><td><strong>Data da Venda</strong></td><td>{dados['data_venda']}</td></tr>
-                    <tr><td><strong>Data de Entrega</strong></td><td>{dados['data_entrega']}</td></tr>
-                </table>
-            </div>
-            
-            <div class="section">
-                <h2>OBSERVAÇÕES TÉCNICAS</h2>
-                <ul>
-                    <li><strong>Status</strong>: Elevador registrado no sistema</li>
-                    <li><strong>Tipo de Relatório</strong>: Relatório técnico completo</li>
-                    <li><strong>Versão do Sistema</strong>: 1.0</li>
-                </ul>
-            </div>
-            
-            <div class="footer">
-                <em>Relatório gerado automaticamente em: {dados['data_geracao']}</em><br>
-                <strong>Sistema de Gerenciamento de Elevadores</strong> | Relatório de Elevador ID: {dados['elevador_id']}
-            </div>
-        </body>
-        </html>
-        """
-        
-        # Gerar PDF usando WeasyPrint
-        pdf_bytes = HTML(string=html_content).write_pdf()
-        
-        from flask import Response
-        return Response(
-            pdf_bytes,
-            mimetype='application/pdf',
-            headers={
-                'Content-Disposition': f'inline; filename="elevador_{elevador_id}.pdf"'
-            }
-        )
-        
-    except Exception as e:
-        return jsonify({'error': f'Erro ao gerar PDF com WeasyPrint: {str(e)}'}), 500
-
 @app.route('/api/elevadores/<int:elevador_id>/pdf')
 def gerar_pdf_elevador(elevador_id):
     conn = get_db_connection()
@@ -1022,24 +704,16 @@ def gerar_pdf_elevador(elevador_id):
         # Buscar dados completos do elevador
         query = """
             SELECT 
-                e.id, e.comando, e.observacao, e.porta_inferior, e.porta_superior, e.cor,
+                e.id, e.elevacao, e.cor,
                 c.id as contrato_id, c.data_venda, c.data_entrega,
                 cl.nome as cliente_nome, cl.cpf,
-                cab.altura as cabine_altura, cab.largura as cabine_largura, 
-                cab.profundidade as cabine_profundidade, cab.piso as cabine_piso,
-                cab.montada as cabine_montada, cab.lado_entrada, cab.lado_saida,
-                col.elevacao, col.montada as coluna_montada,
-                ad.cancela, ad.porta, ad.portao, ad.barreira_eletronica,
-                ad.lados_enclausuramento, ad.sensor_esmagamento, ad.rampa_acesso,
-                ad.nobreak, ad.galvanizada,
+                cb.altura as cabine_altura, cb.descricao as cabine_descricao,
                 en.rua, en.numero, en.complemento, en.cidade, en.estado, en.cep,
                 est.nome as estado_nome
             FROM elevador e
             LEFT JOIN contrato c ON e.id_contrato = c.id
             LEFT JOIN cliente cl ON c.id_cliente = cl.id
-            LEFT JOIN cabine cab ON e.id = cab.id_elevador
-            LEFT JOIN coluna col ON e.id = col.id_elevador
-            LEFT JOIN adicionais ad ON e.id = ad.id_elevador
+            LEFT JOIN cabine cb ON e.id_cabine = cb.id
             LEFT JOIN endereco en ON cl.id = en.id_cliente
             LEFT JOIN estado est ON en.estado = est.sigla
             WHERE e.id = %s
@@ -1050,130 +724,6 @@ def gerar_pdf_elevador(elevador_id):
         
         if not result:
             return jsonify({'error': 'Elevador não encontrado'}), 404
-        
-        # Imports necessários
-        import os
-        import subprocess
-        import tempfile
-        from datetime import datetime
-        
-        # Preparar dados para o template LaTeX
-        endereco_completo = 'Não informado'
-        if result[29]:  # rua
-            endereco_completo = f"{result[29]}, {result[30]}"
-            if result[31]:  # complemento
-                endereco_completo += f", {result[31]}"
-            endereco_completo += f" - {result[32]}/{result[33]} - CEP: {result[34]}"
-        
-        # Dicionário com os dados
-        dados = {
-            'elevador_id': str(result[0]),
-            'comando': result[1] or 'Não informado',
-            'observacao': result[2] or 'Sem observações',
-            'porta_inferior': result[3] or 'Não especificada',
-            'porta_superior': result[4] or 'Não especificada',
-            'cor': result[5] or 'Não especificada',
-            'elevacao': str(result[18]) if result[18] else 'Não informada',
-            'cabine_altura': str(result[11]) if result[11] else 'N/A',
-            'cabine_largura': str(result[12]) if result[12] else 'N/A',
-            'cabine_profundidade': str(result[13]) if result[13] else 'N/A',
-            'cabine_piso': result[14] or 'N/A',
-            'cabine_montada': 'Sim' if result[15] else 'Não',
-            'lado_entrada': result[16] or 'Não especificado',
-            'lado_saida': result[17] or 'Não especificado',
-            'coluna_montada': 'Sim' if result[19] else 'Não',
-            'cancela': str(result[20]) if result[20] else '0',
-            'porta': str(result[21]) if result[21] else '0',
-            'portao': str(result[22]) if result[22] else '0',
-            'barreira_eletronica': str(result[23]) if result[23] else '0',
-            'lados_enclausuramento': str(result[24]) if result[24] else '0',
-            'sensor_esmagamento': str(result[25]) if result[25] else '0',
-            'rampa_acesso': str(result[26]) if result[26] else '0',
-            'nobreak': str(result[27]) if result[27] else '0',
-            'galvanizada': 'Sim' if result[28] else 'Não',
-            'cliente_nome': result[9] or 'Não informado',
-            'cliente_cpf': result[10] or 'Não informado',
-            'endereco_completo': endereco_completo,
-            'cidade': result[32] or 'Não informada',
-            'estado_nome': result[35] or 'Não informado',
-            'estado_sigla': result[33] or 'N/A',
-            'cep': result[34] or 'Não informado',
-            'contrato_id': str(result[6]) if result[6] else 'Não informado',
-            'data_venda': result[7].strftime('%d/%m/%Y') if result[7] else 'Não informada',
-            'data_entrega': result[8].strftime('%d/%m/%Y') if result[8] else 'Não informada',
-            'data_geracao': datetime.now().strftime('%d/%m/%Y às %H:%M')
-        }
-        
-        # Ler template LaTeX
-        template_path = os.path.join(app.template_folder, 'elevador_pdf_template.tex')
-        
-        if not os.path.exists(template_path):
-            return jsonify({'error': 'Template LaTeX não encontrado'}), 500
-        
-        with open(template_path, 'r', encoding='utf-8') as f:
-            template_content = f.read()
-        
-        # Substituir placeholders no template
-        latex_content = template_content
-        for key, value in dados.items():
-            # Escapar caracteres especiais do LaTeX
-            escaped_value = str(value).replace('&', '\\&').replace('%', '\\%').replace('$', '\\$').replace('#', '\\#').replace('_', '\\_').replace('{', '\\{').replace('}', '\\}')
-            latex_content = latex_content.replace(f'{{{{{key}}}}}', escaped_value)
-        
-        # Criar diretório temporário
-        with tempfile.TemporaryDirectory() as temp_dir:
-            # Salvar arquivo .tex temporário
-            tex_file = os.path.join(temp_dir, f'elevador_{elevador_id}.tex')
-            pdf_file = os.path.join(temp_dir, f'elevador_{elevador_id}.pdf')
-            
-            with open(tex_file, 'w', encoding='utf-8') as f:
-                f.write(latex_content)
-            
-        # Tentar métodos alternativos se pdflatex não estiver disponível
-        try:
-            # Método 1: Verificar se pdflatex está disponível
-            result_version = subprocess.run(['pdflatex', '--version'], 
-                         capture_output=True, check=True, cwd=temp_dir)
-            use_pdflatex = True
-        except (subprocess.CalledProcessError, FileNotFoundError):
-            use_pdflatex = False
-        
-        if use_pdflatex:
-            # Usar pdflatex local
-            try:
-                # Primeira compilação
-                result1 = subprocess.run(['pdflatex', '-interaction=nonstopmode', tex_file], 
-                             cwd=temp_dir, capture_output=True, check=True)
-                
-                # Segunda compilação (para resolver referências)
-                result2 = subprocess.run(['pdflatex', '-interaction=nonstopmode', tex_file], 
-                             cwd=temp_dir, capture_output=True, check=True)
-                
-            except subprocess.CalledProcessError as e:
-                # Se houver erro na compilação, usar fallback
-                use_pdflatex = False
-        
-        if not use_pdflatex:
-            # Fallback: Converter LaTeX para HTML e depois para PDF com WeasyPrint
-            return _gerar_pdf_weasyprint_from_latex(dados, elevador_id)
-        
-        # Verificar se o PDF foi gerado com pdflatex
-        if not os.path.exists(pdf_file):
-            return jsonify({'error': 'PDF não foi gerado corretamente'}), 500
-        
-        # Ler o PDF gerado
-        with open(pdf_file, 'rb') as f:
-            pdf_content = f.read()
-        
-        # Retornar o PDF
-        from flask import Response
-        return Response(
-            pdf_content,
-            mimetype='application/pdf',
-            headers={
-                'Content-Disposition': f'inline; filename="elevador_{elevador_id}.pdf"'
-            }
-        )
         
         # Imports necessários
         from reportlab.lib.pagesizes import A4
@@ -1949,8 +1499,7 @@ def get_calendario_data():
     cursor = conn.cursor()
     try:
         cursor.execute("""
-            SELECT e.id, e.cor, e.status,
-                   col.elevacao,
+            SELECT e.id, e.cor, e.elevacao,
                    c.data_entrega, c.data_venda,
                    cl.nome as cliente_nome,
                    cab.altura,
@@ -1958,65 +1507,36 @@ def get_calendario_data():
             FROM elevador e
             JOIN contrato c ON e.id_contrato = c.id
             JOIN cliente cl ON c.id_cliente = cl.id
-            LEFT JOIN cabine cab ON e.id = cab.id_elevador
-            LEFT JOIN coluna col ON e.id = col.id_elevador
+            JOIN cabine cab ON e.id_cabine = cab.id
             LEFT JOIN endereco en ON cl.id = en.id_cliente
             WHERE c.data_entrega IS NOT NULL
             ORDER BY c.data_entrega
         """)
         eventos = []
         for row in cursor.fetchall():
-            # Formatação do título com quebras de linha: #ID, Nome cliente, Cidade, Estado
-            elevador_id = f'#{row[0]}'
-            cliente_nome = row[6] if row[6] else ''
-            cidade = row[8] if row[8] else ''
-            estado = row[9] if row[9] else ''
+            # Formatação do título: ID - Nome, Cidade, Estado
+            cidade = row[7] if row[7] else ''
+            estado = row[8] if row[8] else ''
             
-            # Criar título com quebras de linha
-            linha1 = elevador_id
-            linha2 = cliente_nome
             if cidade and estado:
-                linha3 = f'{cidade}, {estado}'
+                titulo = f'{row[0]} - {row[5]}, {cidade}'
             elif cidade:
-                linha3 = cidade
-            elif estado:
-                linha3 = estado
+                titulo = f'{row[0]} - {row[5]}, {cidade}'
             else:
-                linha3 = ''
-            
-            # Usando \n para quebras de linha (será tratado no frontend)
-            titulo = f'{linha1}\n{linha2}'
-            if linha3:
-                titulo += f'\n{linha3}'
-            
-            # Determinar cor baseada no status
-            cor_evento = row[1] or '#007bff'  # Usar cor do elevador como padrão
-            status = row[2] or 'Não iniciado'
-            
-            # Se quiser usar cor baseada no status em vez da cor do elevador:
-            # if status == 'Não iniciado':
-            #     cor_evento = '#6c757d'  # Cinza
-            # elif status == 'Em produção':
-            #     cor_evento = '#ffc107'  # Amarelo
-            # elif status == 'Pronto':
-            #     cor_evento = '#28a745'  # Verde
-            # elif status == 'Entregue':
-            #     cor_evento = '#007bff'  # Azul
+                titulo = f'{row[0]} - {row[5]}'  # ID - Nome do cliente
             
             eventos.append({
                 'id': row[0],
                 'title': titulo,
-                'start': row[4].isoformat(),
-                'allDay': True,  # Eventos de dia inteiro
-                'color': cor_evento,
+                'start': row[3].isoformat(),
+                'color': row[1] or '#007bff',
                 'extendedProps': {
                     'elevador_id': row[0],
                     'cor': row[1],
-                    'status': status,
-                    'elevacao': row[3],
-                    'data_venda': row[5].isoformat() if row[5] else None,
-                    'cliente_nome': row[6],
-                    'altura_cabine': row[7],
+                    'elevacao': row[2],
+                    'data_venda': row[4].isoformat() if row[4] else None,
+                    'cliente_nome': row[5],
+                    'altura_cabine': row[6],
                     'cidade': cidade,
                     'estado': estado
                 }

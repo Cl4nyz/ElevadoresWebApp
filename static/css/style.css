@@ -108,7 +108,131 @@ body {
     padding: 0.4em 0.8em;
 }
 
-/* Calendário customizado */
+/* Calendário específico */
+.fc-button-active {
+    background-color: #0d6efd !important;
+    border-color: #0d6efd !important;
+    color: white !important;
+    font-weight: bold !important;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25) !important;
+}
+
+/* Botões de visualização personalizados */
+.btn-group .btn.active {
+    background-color: #0d6efd !important;
+    border-color: #0d6efd !important;
+    color: white !important;
+    font-weight: bold !important;
+    box-shadow: 0 0 0 0.125rem rgba(13, 110, 253, 0.25) !important;
+}
+
+.btn-group .btn:not(.active) {
+    background-color: transparent !important;
+    border-color: #0d6efd !important;
+    color: #0d6efd !important;
+}
+
+.btn-group .btn:not(.active):hover {
+    background-color: #0d6efd !important;
+    border-color: #0d6efd !important;
+    color: white !important;
+}
+
+/* Remover exibição de horários na visualização de lista */
+.fc-list-event-time {
+    display: none !important;
+}
+
+/* Remover horários na visualização de semana */
+.fc-daygrid-event-time {
+    display: none !important;
+}
+
+/* Remover horários em todas as visualizações de eventos */
+.fc-event-time {
+    display: none !important;
+}
+
+/* Remover horários específicos da visualização dayGridWeek */
+.fc-daygrid-week .fc-event-time,
+.fc-daygrid-week .fc-daygrid-event-time {
+    display: none !important;
+}
+
+/* Remover qualquer elemento de tempo nos eventos */
+.fc-event .fc-event-time,
+.fc-event-main .fc-event-time {
+    display: none !important;
+}
+
+/* Forçar remoção de horários com seletores mais específicos */
+.fc-daygrid .fc-event-time,
+.fc-timegrid .fc-event-time,
+.fc-list .fc-event-time,
+.fc-event-main-frame .fc-event-time,
+.fc-event-title-container .fc-event-time {
+    display: none !important;
+}
+
+/* Ocultar qualquer texto que pareça horário (formato HH:MM) */
+.fc-event-main::before,
+.fc-event-title::before {
+    content: none !important;
+}
+
+/* Melhorar aparência dos eventos na visualização de semana */
+.fc-timegrid-event {
+    border-radius: 4px;
+    padding: 2px 4px;
+}
+
+/* Centralizar texto em todas as visualizações de eventos */
+.fc-event {
+    text-align: center !important;
+}
+
+.fc-event-main {
+    text-align: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100% !important;
+}
+
+/* Centralizar especificamente na visualização de lista */
+.fc-list-event-title {
+    text-align: center !important;
+}
+
+/* Forçar quebra de linha nos títulos dos eventos */
+.fc-event-title {
+    white-space: pre-line !important;
+    line-height: 1.2 !important;
+    font-size: 1.2em !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    text-align: center !important;
+}
+
+/* Ajustar altura dos eventos para acomodar 3 linhas */
+.fc-daygrid-event {
+    min-height: 45px !important;
+    padding: 2px 4px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.fc-daygrid-event .fc-event-main {
+    padding: 2px !important;
+    text-align: center !important;
+    width: 100% !important;
+}
+
+/* Destacar dias com eventos */
+.fc-day-today {
+    background-color: rgba(13, 110, 253, 0.1) !important;
+}
 .fc-toolbar {
     margin-bottom: 1rem;
 }
@@ -255,6 +379,26 @@ body.fullscreen-mode main.container {
     display: none !important;
 }
 
+/* Garantir que modais apareçam na frente da tela cheia */
+.modal {
+    z-index: 9999 !important;
+}
+
+.modal-backdrop {
+    z-index: 9998 !important;
+}
+
+/* Z-index específico para modais de endereços */
+#enderecosModal,
+#novoEnderecoModal {
+    z-index: 10000 !important;
+}
+
+#enderecosModal .modal-backdrop,
+#novoEnderecoModal .modal-backdrop {
+    z-index: 9999 !important;
+}
+
 /* Estilo para o botão de tela cheia */
 #btnTelaCheia {
     transition: all 0.3s ease;
@@ -279,4 +423,28 @@ body.fullscreen-mode main.container {
     transform: scale(1.05);
     background-color: #28a745 !important;
     color: white !important;
+}
+/* Estilos para tabela de relatórios */
+.table thead th {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease;
+}
+
+.table thead th:hover {
+    background-color: #495057 !important;
+    color: white !important;
+}
+
+.table thead th i {
+    transition: transform 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa !important;
+}
+
+.badge.fs-6 {
+    font-size: 0.875rem !important;
+    padding: 0.5rem 0.75rem;
 }

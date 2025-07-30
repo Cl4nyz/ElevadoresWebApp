@@ -3,6 +3,7 @@ let contratos = [];
 let clientes = [];
 let contratoAtual = null;
 let dataCalculada = null;
+let tabelaContratos = null;
 
 // Carregar dados ao inicializar a página
 document.addEventListener('DOMContentLoaded', function() {
@@ -31,7 +32,15 @@ function configurarEventos() {
 async function carregarContratos() {
     try {
         contratos = await apiRequest('/api/contratos');
-        renderizarTabelaContratos();
+        
+        // Inicializar tabela ordenável se ainda não foi inicializada
+        if (!tabelaContratos) {
+            tabelaContratos = new TabelaOrdenavel('contratosTable', contratos, renderizarTabelaContratos);
+        } else {
+            tabelaContratos.atualizarDados(contratos);
+        }
+        
+        renderizarTabelaContratos(contratos);
     } catch (error) {
         console.error('Erro ao carregar contratos:', error);
         showToast('Erro ao carregar contratos: ' + error.message, 'error');
@@ -454,3 +463,80 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 100);
 });
+
+// Função para abrir modal de novo cliente a partir de contratos
+function abrirModalNovoClienteContrato() {
+    // Limpar formulário
+    document.getElementById('novoClienteContratoForm').reset();
+    
+    // Abrir modal
+    const modal = new bootstrap.Modal(document.getElementById('novoClienteContratoModal'));
+    modal.show();
+}
+
+// Função para salvar novo cliente a partir de contratos
+async function salvarNovoClienteContrato() {
+    const nome = document.getElementById('nomeClienteContrato').value.trim();
+    const cpf = document.getElementById('cpfClienteContrato').value.trim();
+    
+    if (!nome) {
+        showToast('Nome é obrigatório', 'error');
+        return;
+    }
+    
+    // Validar CPF se preenchido
+    if (cpf && !validarCPF(cpf)) {
+        showToast('CPF inválido. Digite apenas números (11 dígitos)', 'error');
+        return;
+    }
+    
+    const formData = {
+        nome: nome,
+        cpf: cpf || null
+    };
+    
+    // Adicionar endereço se preenchido
+    const cidade = document.getElementById('cidadeClienteContrato').value.trim();
+    const estado = document.getElementById('estadoClienteContrato').value;
+    
+    if (cidade && estado) {
+        formData.endereco = {
+            rua: document.getElementById('ruaClienteContrato').value.trim() || null,
+            numero: document.getElementById('numeroClienteContrato').value.trim() || null,
+            cidade: cidade,
+            estado: estado,
+            cep: document.getElementById('cepClienteContrato').value.trim() || null,
+            complemento: document.getElementById('complementoClienteContrato').value.trim() || null
+        };
+    }
+    
+    // Desabilitar botão enquanto salva
+    const saveButton = document.querySelector('#novoClienteContratoModal .btn-success');
+    const originalText = saveButton.innerHTML;
+    saveButton.disabled = true;
+    saveButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Criando...';
+    
+    try {
+        const result = await apiRequest('/api/clientes', {
+            method: 'POST',
+            body: JSON.stringify(formData)
+        });
+        
+        showToast(`Cliente criado com sucesso (ID: ${result.id})`, 'success');
+        
+        // Fechar modal
+        bootstrap.Modal.getInstance(document.getElementById('novoClienteContratoModal')).hide();
+        
+        // Recarregar clientes e selecionar o novo
+        await carregarClientes();
+        document.getElementById('cliente').value = result.id;
+        
+    } catch (error) {
+        console.error('Erro ao criar cliente:', error);
+        showToast('Erro ao criar cliente: ' + error.message, 'error');
+    } finally {
+        // Reabilitar botão
+        saveButton.disabled = false;
+        saveButton.innerHTML = originalText;
+    }
+}

@@ -1,6 +1,7 @@
 // Gerenciamento de Clientes
 let clientes = [];
 let clienteAtual = null;
+let tabelaClientes = null;
 
 // Carregar clientes ao inicializar a página
 document.addEventListener('DOMContentLoaded', function() {
@@ -11,7 +12,15 @@ document.addEventListener('DOMContentLoaded', function() {
 async function carregarClientes() {
     try {
         clientes = await apiRequest('/api/clientes');
-        renderizarTabelaClientes();
+        
+        // Inicializar tabela ordenável se ainda não foi inicializada
+        if (!tabelaClientes) {
+            tabelaClientes = new TabelaOrdenavel('clientesTable', clientes, renderizarTabelaClientes);
+        } else {
+            tabelaClientes.atualizarDados(clientes);
+        }
+        
+        renderizarTabelaClientes(clientes);
     } catch (error) {
         console.error('Erro ao carregar clientes:', error);
         showToast('Erro ao carregar clientes: ' + error.message, 'error');
@@ -19,11 +28,11 @@ async function carregarClientes() {
 }
 
 // Função para renderizar tabela de clientes
-function renderizarTabelaClientes() {
+function renderizarTabelaClientes(dadosParaRenderizar = clientes) {
     const tbody = document.querySelector('#clientesTable tbody');
     tbody.innerHTML = '';
     
-    clientes.forEach(cliente => {
+    dadosParaRenderizar.forEach(cliente => {
         const row = document.createElement('tr');
         
         // Formatar endereços para exibição
@@ -121,8 +130,13 @@ async function salvarCliente() {
     
     // Validar CPF se preenchido
     if (cpf && !validarCPF(cpf)) {
-        showToast('CPF inválido', 'error');
+        showToast('CPF inválido. Digite apenas números (11 dígitos)', 'error');
         return;
+    }
+    
+    // Remover caracteres não numéricos do CPF
+    if (cpf) {
+        formData.cpf = cpf.replace(/\D/g, '');
     }
     
     // Adicionar endereço se preenchido
@@ -242,8 +256,16 @@ function renderizarEnderecos(enderecos) {
 
 // Função para novo endereço
 function novoEndereco() {
+    // Garantir que o clienteId seja copiado do modal principal
+    const clienteId = document.getElementById('enderecoClienteId').value;
+    console.log('Cliente ID para novo endereço:', clienteId); // Debug
+    
     document.getElementById('enderecoId').value = '';
     limparFormulario('enderecoForm');
+    
+    // Restaurar o clienteId após limpar o formulário
+    document.getElementById('enderecoClienteId').value = clienteId;
+    
     const modal = new bootstrap.Modal(document.getElementById('novoEnderecoModal'));
     modal.show();
 }
@@ -270,8 +292,32 @@ function editarEndereco(enderecoId) {
 
 // Função para salvar endereço
 async function salvarEndereco() {
-    if (!validarFormulario('enderecoForm')) {
-        showToast('Por favor, preencha todos os campos obrigatórios', 'warning');
+    console.log('Iniciando salvar endereço...'); // Debug
+    
+    // Verificar se os campos existem
+    const ruaElement = document.getElementById('enderecoRua');
+    const cidadeElement = document.getElementById('enderecoCidade');
+    const estadoElement = document.getElementById('enderecoEstado');
+    
+    console.log('Elementos encontrados:', {
+        rua: !!ruaElement,
+        cidade: !!cidadeElement,
+        estado: !!estadoElement
+    }); // Debug
+    
+    if (!ruaElement || !cidadeElement || !estadoElement) {
+        showToast('Erro: Campos do formulário não encontrados', 'error');
+        return;
+    }
+    
+    const rua = ruaElement.value.trim();
+    const cidade = cidadeElement.value.trim();
+    const estado = estadoElement.value;
+    
+    console.log('Valores dos campos:', { rua, cidade, estado }); // Debug
+    
+    if (!rua || !cidade || !estado) {
+        showToast('Por favor, preencha todos os campos obrigatórios (Rua, Cidade e Estado)', 'warning');
         return;
     }
     
@@ -280,10 +326,10 @@ async function salvarEndereco() {
     
     const formData = {
         id_cliente: clienteId,
-        rua: document.getElementById('enderecoRua').value,
+        rua: rua,
         numero: document.getElementById('enderecoNumero').value || null,
-        cidade: document.getElementById('enderecoCidade').value,
-        estado: document.getElementById('enderecoEstado').value,
+        cidade: cidade,
+        estado: estado,
         cep: document.getElementById('enderecoCep').value,
         complemento: document.getElementById('enderecoComplemento').value
     };

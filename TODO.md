@@ -12,13 +12,14 @@
 - Incluir numero do elevador na visualização por calendario
 - Ao abrir cada evento elevador na aba calendário, faça com que seja possível clicar no cliente para acessa-lo na aba clientes e clicar no contrato para acessar sua entrada na aba contratos
 
-- Ser possível add cliente a partir da tela de contratos
-- Listar por nome cliente, data entrega, data venda em todas as telas que os usam
-- Na inserção de data entrega no contrato, botão 'n dias uteis a partir da venda', em que data entrega é setado automaticamente somando o valor n, que pode ser inserido pelo usuario, à data de venda
+- ✅ Ser possível add cliente a partir da tela de contratos
+- ✅ Listar por nome cliente, data entrega, data venda em todas as telas que os usam
+- ✅ Na inserção de data entrega no contrato, botão 'n dias uteis a partir da venda', em que data entrega é setado automaticamente somando o valor n, que pode ser inserido pelo usuario, à data de venda
 
 - ✅ Fazer enum com cores comuns, com opção de digitar outras - IMPLEMENTADO
 - ✅ Adicionar botão para gerar PDF de cada elevador - IMPLEMENTADO
-- Caixa de pesquisa em todos os bancos
+- ✅ Caixa de pesquisa em todos os bancos - IMPLEMENTADO
+- Selecionar vendedor
 
 - Gerar ordem de serviço
 	- Tudo menos orelha (deixar espaço em branco)

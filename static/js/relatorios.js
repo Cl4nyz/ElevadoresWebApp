@@ -42,6 +42,12 @@ async function carregarRelatorios() {
         criarResumoGeral();
         criarGraficoVendas();
         
+        // Verificar tipo de visualização atual
+        const tipoVisualizacao = document.getElementById('tipoVisualizacao')?.value;
+        if (tipoVisualizacao === 'tabela') {
+            criarTabelaEstados();
+        }
+        
         showLoading(false);
     } catch (error) {
         console.error('Erro ao carregar relatórios:', error);
@@ -823,9 +829,11 @@ function alterarVisualizacao() {
     // Ocultar todas as seções
     const secaoEstatisticas = document.getElementById('secaoEstatisticas');
     const secaoListagem = document.getElementById('secaoListagem');
+    const secaoTabela = document.getElementById('secaoTabela');
     
     if (secaoEstatisticas) secaoEstatisticas.style.display = 'none';
     if (secaoListagem) secaoListagem.style.display = 'none';
+    if (secaoTabela) secaoTabela.style.display = 'none';
     
     // Mostrar seção selecionada
     switch(tipo) {
@@ -839,8 +847,22 @@ function alterarVisualizacao() {
             }
             break;
         case 'tabela':
-            if (secaoListagem) secaoListagem.style.display = 'block';
-            criarTabelaElevadores();
+            if (secaoTabela) {
+                secaoTabela.style.display = 'block';
+                criarTabelaEstados();
+            }
+            break;
+        case 'elevadores-mes':
+            if (secaoListagem) {
+                secaoListagem.style.display = 'block';
+                listarElevadoresPorMes();
+            }
+            break;
+        case 'elevadores-estado':
+            if (secaoListagem) {
+                secaoListagem.style.display = 'block';
+                listarElevadoresPorEstado();
+            }
             break;
         case 'mapa':
             if (typeof showToast === 'function') {
@@ -854,6 +876,135 @@ function alterarVisualizacao() {
             }
             break;
     }
+}
+
+// Variáveis para controle de ordenação da tabela
+let ordemAtual = {
+    coluna: null,
+    crescente: true
+};
+
+// Função para criar tabela de estados
+function criarTabelaEstados() {
+    const tbody = document.getElementById('tabelaEstados');
+    const semDados = document.getElementById('semDadosTabela');
+    
+    if (!tbody || !dadosVendas || dadosVendas.length === 0) {
+        if (tbody) tbody.innerHTML = '';
+        if (semDados) semDados.style.display = 'block';
+        return;
+    }
+    
+    // Ocultar mensagem de "sem dados"
+    if (semDados) semDados.style.display = 'none';
+    
+    // Gerar linhas da tabela
+    let html = '';
+    dadosVendas.forEach(estado => {
+        const elevacaoMedia = estado.elevacao_media ? `${estado.elevacao_media}mm` : 'N/A';
+        
+        html += `
+            <tr>
+                <td>
+                    <strong>${estado.estado_nome || estado.estado}</strong>
+                    <small class="text-muted d-block">${estado.estado}</small>
+                </td>
+                <td>
+                    <span class="badge bg-success fs-6">${estado.total_clientes}</span>
+                </td>
+                <td>
+                    <span class="badge bg-primary fs-6">${estado.total_elevadores}</span>
+                </td>
+                <td>
+                    <span class="text-muted">${elevacaoMedia}</span>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-outline-info" onclick="mostrarDetalhesEstado('${estado.estado}')">
+                        <i class="fas fa-eye"></i> Ver Detalhes
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+    
+    tbody.innerHTML = html;
+    
+    // Resetar ícones de ordenação
+    resetarIconesOrdenacao();
+}
+
+// Função para ordenar tabela
+function ordenarTabela(coluna) {
+    if (!dadosVendas || dadosVendas.length === 0) return;
+    
+    // Se for a mesma coluna, inverte a ordem
+    if (ordemAtual.coluna === coluna) {
+        ordemAtual.crescente = !ordemAtual.crescente;
+    } else {
+        ordemAtual.coluna = coluna;
+        ordemAtual.crescente = true;
+    }
+    
+    // Ordenar dados
+    dadosVendas.sort((a, b) => {
+        let valorA, valorB;
+        
+        switch(coluna) {
+            case 'estado':
+                valorA = (a.estado_nome || a.estado).toLowerCase();
+                valorB = (b.estado_nome || b.estado).toLowerCase();
+                break;
+            case 'clientes':
+                valorA = a.total_clientes;
+                valorB = b.total_clientes;
+                break;
+            case 'elevadores':
+                valorA = a.total_elevadores;
+                valorB = b.total_elevadores;
+                break;
+            default:
+                return 0;
+        }
+        
+        if (valorA < valorB) return ordemAtual.crescente ? -1 : 1;
+        if (valorA > valorB) return ordemAtual.crescente ? 1 : -1;
+        return 0;
+    });
+    
+    // Atualizar tabela
+    criarTabelaEstados();
+    
+    // Atualizar ícones de ordenação
+    atualizarIconesOrdenacao(coluna);
+}
+
+// Função para resetar ícones de ordenação
+function resetarIconesOrdenacao() {
+    ['estado', 'clientes', 'elevadores'].forEach(coluna => {
+        const icone = document.getElementById(`sort-${coluna}`);
+        if (icone) {
+            icone.className = 'fas fa-sort ms-1';
+        }
+    });
+}
+
+// Função para atualizar ícones de ordenação
+function atualizarIconesOrdenacao(colunaAtiva) {
+    resetarIconesOrdenacao();
+    
+    const icone = document.getElementById(`sort-${colunaAtiva}`);
+    if (icone) {
+        if (ordemAtual.crescente) {
+            icone.className = 'fas fa-sort-up ms-1';
+        } else {
+            icone.className = 'fas fa-sort-down ms-1';
+        }
+    }
+}
+
+// Função para atualizar tipo de visualização
+function atualizarTipoVisualizacao() {
+    alterarVisualizacao();
 }
 
 // Função para criar tabela de elevadores
