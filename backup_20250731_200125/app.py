@@ -1111,7 +1111,7 @@ def gerar_pdf_elevador(elevador_id):
         ]
 
         # Montar logo + pedido_data lado a lado
-        logo_path = os.path.join(app.static_folder, 'images', 'home-escrito.png')
+        logo_path = os.path.join(app.static_folder, 'images', 'home.png')
         logo_img = None
         if os.path.exists(logo_path):
             logo_img = Image(logo_path, width=LOGO_LARGURA, height=LOGO_ALTURA)

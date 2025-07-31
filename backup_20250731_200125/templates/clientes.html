@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+
+{% block title %}Clientes - Sistema de Gerenciamento de Elevadores{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-users"></i> Gerenciamento de Clientes</h2>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#clienteModal">
+        <i class="fas fa-plus"></i> Novo Cliente
+    </button>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped" id="clientesTable">
+                <thead>
+                    <tr>
+                        <th data-sort="id">ID</th>
+                        <th data-sort="nome">Nome</th>
+                        <th data-sort="documento">CPF/CNPJ</th>
+                        <th data-sort="email">Email</th>
+                        <th>Endereços</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dados carregados via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cliente -->
+<div class="modal fade" id="clienteModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-user"></i> <span id="modalTitle">Novo Cliente</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="clienteForm">
+                    <input type="hidden" id="clienteId">
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="nome" class="form-label">Nome *</label>
+                            <input type="text" class="form-control" id="nome" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="comercial" class="form-label">Tipo de Cliente</label>
+                            <select class="form-select" id="comercial" onchange="alterarTipoCliente()">
+                                <option value="false">Pessoa Física</option>
+                                <option value="true">Pessoa Jurídica</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="documento" class="form-label" id="labelDocumento">CPF</label>
+                            <input type="text" class="form-control" id="documento" maxlength="18" placeholder="000.000.000-00" oninput="aplicarMascaraDocumento(this)">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" placeholder="exemplo@email.com">
+                        </div>
+                    </div>
+
+                    <hr>
+                    <h6><i class="fas fa-map-marker-alt"></i> Endereço Principal</h6>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label for="rua" class="form-label">Rua</label>
+                            <input type="text" class="form-control" id="rua">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="numero" class="form-label">Número</label>
+                            <input type="number" class="form-control" id="numero">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="cidade" class="form-label">Cidade</label>
+                            <input type="text" class="form-control" id="cidade">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="estado" class="form-label">Estado</label>
+                            <select class="form-control" id="estado">
+                                <option value="">Selecione...</option>
+                                <option value="AC">AC - Acre</option>
+                                <option value="AL">AL - Alagoas</option>
+                                <option value="AP">AP - Amapá</option>
+                                <option value="AM">AM - Amazonas</option>
+                                <option value="BA">BA - Bahia</option>
+                                <option value="CE">CE - Ceará</option>
+                                <option value="DF">DF - Distrito Federal</option>
+                                <option value="ES">ES - Espírito Santo</option>
+                                <option value="GO">GO - Goiás</option>
+                                <option value="MA">MA - Maranhão</option>
+                                <option value="MT">MT - Mato Grosso</option>
+                                <option value="MS">MS - Mato Grosso do Sul</option>
+                                <option value="MG">MG - Minas Gerais</option>
+                                <option value="PA">PA - Pará</option>
+                                <option value="PB">PB - Paraíba</option>
+                                <option value="PR">PR - Paraná</option>
+                                <option value="PE">PE - Pernambuco</option>
+                                <option value="PI">PI - Piauí</option>
+                                <option value="RJ">RJ - Rio de Janeiro</option>
+                                <option value="RN">RN - Rio Grande do Norte</option>
+                                <option value="RS">RS - Rio Grande do Sul</option>
+                                <option value="RO">RO - Rondônia</option>
+                                <option value="RR">RR - Roraima</option>
+                                <option value="SC">SC - Santa Catarina</option>
+                                <option value="SP">SP - São Paulo</option>
+                                <option value="SE">SE - Sergipe</option>
+                                <option value="TO">TO - Tocantins</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="cep" class="form-label">CEP</label>
+                            <input type="text" class="form-control" id="cep" maxlength="8">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="complemento" class="form-label">Complemento</label>
+                        <input type="text" class="form-control" id="complemento">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="salvarCliente()">
+                    <i class="fas fa-save"></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Endereços -->
+<div class="modal fade" id="enderecosModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-map-marker-alt"></i> Endereços do Cliente
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span id="clienteNomeEnderecos"></span>
+                    <button class="btn btn-sm btn-success" onclick="novoEndereco()">
+                        <i class="fas fa-plus"></i> Novo Endereço
+                    </button>
+                </div>
+                <div id="enderecosContainer">
+                    <!-- Endereços carregados via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Novo Endereço -->
+<div class="modal fade" id="novoEnderecoModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-plus"></i> Novo Endereço
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="enderecoForm">
+                    <input type="hidden" id="enderecoClienteId">
+                    <input type="hidden" id="enderecoId">
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label for="enderecoRua" class="form-label">Rua *</label>
+                            <input type="text" class="form-control" id="enderecoRua" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="enderecoNumero" class="form-label">Número</label>
+                            <input type="number" class="form-control" id="enderecoNumero">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="enderecoCidade" class="form-label">Cidade *</label>
+                            <input type="text" class="form-control" id="enderecoCidade" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="enderecoEstado" class="form-label">Estado *</label>
+                            <select class="form-select" id="enderecoEstado" required>
+                                <option value="">Selecione...</option>
+                                <option value="AC">AC - Acre</option>
+                                <option value="AL">AL - Alagoas</option>
+                                <option value="AP">AP - Amapá</option>
+                                <option value="AM">AM - Amazonas</option>
+                                <option value="BA">BA - Bahia</option>
+                                <option value="CE">CE - Ceará</option>
+                                <option value="DF">DF - Distrito Federal</option>
+                                <option value="ES">ES - Espírito Santo</option>
+                                <option value="GO">GO - Goiás</option>
+                                <option value="MA">MA - Maranhão</option>
+                                <option value="MT">MT - Mato Grosso</option>
+                                <option value="MS">MS - Mato Grosso do Sul</option>
+                                <option value="MG">MG - Minas Gerais</option>
+                                <option value="PA">PA - Pará</option>
+                                <option value="PB">PB - Paraíba</option>
+                                <option value="PR">PR - Paraná</option>
+                                <option value="PE">PE - Pernambuco</option>
+                                <option value="PI">PI - Piauí</option>
+                                <option value="RJ">RJ - Rio de Janeiro</option>
+                                <option value="RN">RN - Rio Grande do Norte</option>
+                                <option value="RS">RS - Rio Grande do Sul</option>
+                                <option value="RO">RO - Rondônia</option>
+                                <option value="RR">RR - Roraima</option>
+                                <option value="SC">SC - Santa Catarina</option>
+                                <option value="SP">SP - São Paulo</option>
+                                <option value="SE">SE - Sergipe</option>
+                                <option value="TO">TO - Tocantins</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="enderecoCep" class="form-label">CEP</label>
+                            <input type="text" class="form-control" id="enderecoCep" maxlength="8">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="enderecoComplemento" class="form-label">Complemento</label>
+                        <input type="text" class="form-control" id="enderecoComplemento">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="salvarEndereco()">
+                    <i class="fas fa-save"></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Visualização Cliente -->
+<div class="modal fade" id="visualizarClienteModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-eye"></i> Visualizar Cliente
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Nome:</label>
+                        <p class="form-control-plaintext" id="viewClienteNome">-</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Tipo:</label>
+                        <p class="form-control-plaintext" id="viewClienteTipo">-</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold" id="viewLabelDocumento">CPF/CNPJ:</label>
+                        <p class="form-control-plaintext" id="viewClienteDocumento">-</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">Email:</label>
+                        <p class="form-control-plaintext" id="viewClienteEmail">-</p>
+                    </div>
+                </div>
+                
+                <hr>
+                <h6><i class="fas fa-map-marker-alt"></i> Endereços</h6>
+                <div id="viewEnderecos">
+                    <p class="text-muted">Nenhum endereço cadastrado</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" onclick="editarClienteFromView()">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/clientes.js') }}"></script>
+{% endblock %}

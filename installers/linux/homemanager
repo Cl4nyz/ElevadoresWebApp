@@ -1,0 +1,100 @@
+#!/bin/bash
+
+# HomeManager - Executável
+# Este script inicia o servidor e abre o navegador
+
+# Cores para output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+print_color() {
+    printf "${1}${2}${NC}\n"
+}
+
+# Obter diretório do projeto
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"
+
+cd "$PROJECT_DIR"
+
+# Verificar se ambiente virtual existe
+if [ ! -d ".venv" ]; then
+    print_color $RED "❌ Ambiente virtual não encontrado!"
+    print_color $YELLOW "Execute o instalador primeiro: ./installers/linux/install_homemanager.sh"
+    exit 1
+fi
+
+# Função para cleanup
+cleanup() {
+    print_color $YELLOW "\n🛑 Encerrando HomeManager..."
+    if [ ! -z "$SERVER_PID" ]; then
+        kill $SERVER_PID 2>/dev/null
+        wait $SERVER_PID 2>/dev/null
+    fi
+    print_color $GREEN "✅ HomeManager encerrado com sucesso"
+    exit 0
+}
+
+# Capturar sinais de interrupção
+trap cleanup SIGINT SIGTERM
+
+# Ativar ambiente virtual
+source .venv/bin/activate
+
+# Verificar se PostgreSQL está acessível
+print_color $BLUE "🔍 Verificando conexão com PostgreSQL..."
+if ! python3 -c "import psycopg2; from postgre import create_pg_connection; create_pg_connection()" 2>/dev/null; then
+    print_color $RED "❌ Erro na conexão com PostgreSQL!"
+    print_color $YELLOW "Verifique se:"
+    print_color $YELLOW "  - PostgreSQL está instalado e rodando"
+    print_color $YELLOW "  - Credenciais no arquivo .env estão corretas"
+    print_color $YELLOW "  - Banco de dados 'db_elevadores' existe"
+    exit 1
+fi
+
+print_color $GREEN "✅ Conexão com PostgreSQL estabelecida"
+
+# Cabeçalho
+echo
+echo "===================================================="
+print_color $BLUE "🏢 HomeManager - Sistema de Elevadores"
+print_color $CYAN "🚀 Iniciando aplicação..."
+echo "===================================================="
+
+# Iniciar servidor em background
+python3 app.py &
+SERVER_PID=$!
+
+# Aguardar servidor inicializar
+sleep 3
+
+# Verificar se servidor está rodando
+if ! kill -0 $SERVER_PID 2>/dev/null; then
+    print_color $RED "❌ Falha ao iniciar o servidor!"
+    exit 1
+fi
+
+# Abrir navegador
+print_color $GREEN "🌐 Abrindo HomeManager no navegador..."
+if command -v xdg-open >/dev/null 2>&1; then
+    xdg-open "http://localhost:5000" >/dev/null 2>&1
+elif command -v gnome-open >/dev/null 2>&1; then
+    gnome-open "http://localhost:5000" >/dev/null 2>&1
+elif command -v firefox >/dev/null 2>&1; then
+    firefox "http://localhost:5000" >/dev/null 2>&1 &
+elif command -v google-chrome >/dev/null 2>&1; then
+    google-chrome "http://localhost:5000" >/dev/null 2>&1 &
+else
+    print_color $YELLOW "⚠️  Não foi possível abrir o navegador automaticamente"
+    print_color $CYAN "Abra manualmente: http://localhost:5000"
+fi
+
+print_color $GREEN "✅ HomeManager iniciado com sucesso!"
+print_color $CYAN "💡 Feche esta janela ou pressione Ctrl+C para encerrar"
+
+# Aguardar sinal de encerramento
+wait $SERVER_PID

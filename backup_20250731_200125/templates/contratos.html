@@ -1,0 +1,312 @@
+{% extends "base.html" %}
+
+{% block title %}Contratos - Sistema de Gerenciamento de Elevadores{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-file-contract"></i> Gerenciamento de Contratos</h2>
+    <button class="btn btn-warning" onclick="adicionarContrato()">
+        <i class="fas fa-plus"></i> Novo Contrato
+    </button>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped" id="contratosTable">
+                <thead>
+                    <tr>
+                        <th data-sort="id">ID</th>
+                        <th data-sort="cliente_nome">Cliente</th>
+                        <th data-sort="data_venda">Data da Venda</th>
+                        <th data-sort="data_entrega">Data Entrega</th>
+                        <th data-sort="vendedor">Vendedor</th>
+                        <th data-sort="status">Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dados carregados via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Contrato -->
+<div class="modal fade" id="contratoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-file-contract"></i> <span id="modalTitle">Novo Contrato</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="contratoForm">
+                    <input type="hidden" id="contratoId">
+                    
+                    <div class="mb-3">
+                        <label for="cliente" class="form-label">Cliente *</label>
+                        <div class="input-group">
+                            <select class="form-select" id="cliente" required>
+                                <option value="">Selecione um cliente</option>
+                            </select>
+                            <button type="button" class="btn btn-outline-success" onclick="abrirModalNovoClienteContrato()" title="Criar novo cliente">
+                                <i class="fas fa-user-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="dataVenda" class="form-label">Data da Venda</label>
+                        <input type="date" class="form-control" id="dataVenda">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="dataEntrega" class="form-label">Data de Entrega</label>
+                        <div class="input-group">
+                            <input type="date" class="form-control" id="dataEntrega">
+                            <button type="button" class="btn btn-outline-primary" onclick="mostrarDialogoDiasUteis()" title="Adicionar dias úteis">
+                                <i class="fas fa-calendar-plus"></i> + Dias Úteis
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="vendedor" class="form-label">Vendedor</label>
+                        <div class="input-group">
+                            <select class="form-select" id="vendedor">
+                                <option value="">Selecione um vendedor</option>
+                                <option value="Deuclides">Deuclides</option>
+                                <option value="Leandro">Leandro</option>
+                                <option value="Jean">Jean</option>
+                            </select>
+                            <input type="text" class="form-control" id="vendedorCustom" placeholder="Outro vendedor" style="display: none;">
+                            <button type="button" class="btn btn-outline-secondary" onclick="toggleVendedorCustom()" title="Outro vendedor">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                        <div class="form-text">Selecione um vendedor predefinido ou digite um novo nome</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-warning" onclick="salvarContrato()">
+                    <i class="fas fa-save"></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Dias Úteis -->
+<div class="modal fade" id="diasUteisModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-calendar-plus"></i> Adicionar Dias Úteis
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="quantidadeDias" class="form-label">Quantidade de dias úteis:</label>
+                    <input type="number" class="form-control" id="quantidadeDias" value="20" min="1" max="365">
+                    <div class="form-text">Serão adicionados apenas dias úteis (segunda a sexta-feira)</div>
+                </div>
+                <div class="mb-3">
+                    <label for="dataBase" class="form-label">Data base:</label>
+                    <select class="form-select" id="dataBase">
+                        <option value="hoje">Hoje</option>
+                        <option value="venda">Data da Venda</option>
+                    </select>
+                </div>
+                <div class="alert alert-info" id="previewData" style="display: none;">
+                    <i class="fas fa-info-circle"></i> <strong>Data prevista:</strong> <span id="dataPreview"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="adicionarDiasUteis()">
+                    <i class="fas fa-plus"></i> Adicionar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Novo Cliente (dentro de Contratos) -->
+<div class="modal fade" id="novoClienteContratoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-user-plus"></i> Novo Cliente
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="novoClienteContratoForm">
+                    <div class="mb-3">
+                        <label for="nomeClienteContrato" class="form-label">Nome *</label>
+                        <input type="text" class="form-control" id="nomeClienteContrato" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="cpfClienteContrato" class="form-label">CPF</label>
+                        <input type="text" class="form-control" id="cpfClienteContrato" maxlength="14" placeholder="000.000.000-00" oninput="aplicarMascaraCPF(this)">
+                    </div>
+                    
+                    <hr>
+                    <h6><i class="fas fa-map-marker-alt"></i> Endereço (Opcional)</h6>
+                    
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="mb-3">
+                                <label for="ruaClienteContrato" class="form-label">Rua</label>
+                                <input type="text" class="form-control" id="ruaClienteContrato">
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="mb-3">
+                                <label for="numeroClienteContrato" class="form-label">Número</label>
+                                <input type="text" class="form-control" id="numeroClienteContrato">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="cidadeClienteContrato" class="form-label">Cidade</label>
+                                <input type="text" class="form-control" id="cidadeClienteContrato">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="estadoClienteContrato" class="form-label">Estado</label>
+                                <select class="form-select" id="estadoClienteContrato">
+                                    <option value="">Selecionar</option>
+                                    <option value="AC">Acre</option>
+                                    <option value="AL">Alagoas</option>
+                                    <option value="AP">Amapá</option>
+                                    <option value="AM">Amazonas</option>
+                                    <option value="BA">Bahia</option>
+                                    <option value="CE">Ceará</option>
+                                    <option value="DF">Distrito Federal</option>
+                                    <option value="ES">Espírito Santo</option>
+                                    <option value="GO">Goiás</option>
+                                    <option value="MA">Maranhão</option>
+                                    <option value="MT">Mato Grosso</option>
+                                    <option value="MS">Mato Grosso do Sul</option>
+                                    <option value="MG">Minas Gerais</option>
+                                    <option value="PA">Pará</option>
+                                    <option value="PB">Paraíba</option>
+                                    <option value="PR">Paraná</option>
+                                    <option value="PE">Pernambuco</option>
+                                    <option value="PI">Piauí</option>
+                                    <option value="RJ">Rio de Janeiro</option>
+                                    <option value="RN">Rio Grande do Norte</option>
+                                    <option value="RS">Rio Grande do Sul</option>
+                                    <option value="RO">Rondônia</option>
+                                    <option value="RR">Roraima</option>
+                                    <option value="SC">Santa Catarina</option>
+                                    <option value="SP">São Paulo</option>
+                                    <option value="SE">Sergipe</option>
+                                    <option value="TO">Tocantins</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="cepClienteContrato" class="form-label">CEP</label>
+                                <input type="text" class="form-control" id="cepClienteContrato">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="complementoClienteContrato" class="form-label">Complemento</label>
+                                <input type="text" class="form-control" id="complementoClienteContrato">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" onclick="salvarNovoClienteContrato()">
+                    <i class="fas fa-save"></i> Criar Cliente
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Visualização Contrato -->
+<div class="modal fade" id="visualizarContratoModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-eye"></i> Visualizar Contrato
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">ID do Contrato:</label>
+                        <p class="form-control-plaintext" id="viewContratoId">-</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Status:</label>
+                        <p class="form-control-plaintext" id="viewContratoStatus">-</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">Cliente:</label>
+                        <p class="form-control-plaintext" id="viewContratoCliente">-</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Data da Venda:</label>
+                        <p class="form-control-plaintext" id="viewContratoDataVenda">-</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Data de Entrega:</label>
+                        <p class="form-control-plaintext" id="viewContratoDataEntrega">-</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Vendedor:</label>
+                        <p class="form-control-plaintext" id="viewContratoVendedor">-</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" onclick="editarContratoFromView()">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/contratos.js') }}?v=20250730121500"></script>
+{% endblock %}
