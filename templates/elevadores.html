@@ -5,13 +5,23 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2><i class="fas fa-elevator"></i> Gerenciamento de Elevadores</h2>
-    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#elevadorModal">
+    <button class="btn btn-info" onclick="novoElevador()">
         <i class="fas fa-plus"></i> Novo Elevador
     </button>
 </div>
 
 <div class="card">
     <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" class="form-control" placeholder="Buscar por cliente, contrato, cabine, cor ou status..." id="search-elevadoresTable">
+                </div>
+            </div>
+        </div>
         <div class="table-responsive">
             <table class="table table-striped" id="elevadoresTable">
                 <thead>
@@ -59,9 +69,12 @@
                                 <div class="col-md-6">
                                     <label for="id_contrato" class="form-label">Contrato *</label>
                                     <div class="input-group">
-                                        <select class="form-select" id="id_contrato" name="id_contrato" required title="Selecione um contrato existente">
+                                        <select class="form-select campo-vazio" id="id_contrato" name="id_contrato" required title="Selecione um contrato existente" onchange="alterarCorCampo(this)">
                                             <option value="">Selecione um contrato...</option>
                                         </select>
+                                        <button type="button" class="btn btn-outline-info" onclick="abrirModalSelecionarContrato()" title="Ver todos os contratos">
+                                            <i class="fas fa-list"></i>
+                                        </button>
                                         <button type="button" class="btn btn-outline-warning" onclick="abrirModalNovoContrato()" title="Criar novo contrato">
                                             <i class="fas fa-file-contract"></i>
                                         </button>
@@ -70,7 +83,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <label for="comando" class="form-label">Comando *</label>
-                                    <select class="form-select" id="comando" name="comando" required>
+                                    <select class="form-select campo-vazio" id="comando" name="comando" required onchange="alterarCorCampo(this)">
                                         <option value="">Selecione...</option>
                                         <option value="Pressão constante">Pressão constante</option>
                                         <option value="Automático">Automático</option>
@@ -79,15 +92,16 @@
                                 <div class="col-md-3">
                                     <label for="status" class="form-label">Status *</label>
                                     <div class="input-group">
-                                        <select class="form-select" id="statusSelect" name="statusSelect" onchange="alterarSelecaoStatus()" required>
-                                            <option value="">Selecione...</option>
-                                            <option value="Não iniciado">Não iniciado</option>
-                                            <option value="Em produção">Em produção</option>
-                                            <option value="Pronto">Pronto</option>
-                                            <option value="Entregue">Entregue</option>
-                                            <option value="custom">Outro status...</option>
+                                        <select class="form-select campo-vazio" id="statusSelect" name="statusSelect" onchange="alterarSelecaoStatus()" required>
+                                            <option value="Não iniciado" data-color="bg-secondary">Não iniciado</option>
+                                            <option value="Em produção" data-color="bg-warning">Em produção</option>
+                                            <option value="Pronto" data-color="bg-success">Pronto</option>
+                                            <option value="Entregue" data-color="bg-primary">Entregue</option>
                                         </select>
-                                        <input type="text" class="form-control" id="statusCustom" name="statusCustom" placeholder="Digite o status" style="display: none;">
+                                        <input type="text" class="form-control campo-vazio" id="statusCustom" name="statusCustom" placeholder="Digite o status" style="display: none;" oninput="alterarCorCampo(this)">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="toggleStatusCustom()" title="Status customizado">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -95,7 +109,7 @@
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <label for="porta_inferior" class="form-label">Porta Inferior</label>
-                                    <select class="form-select" id="porta_inferior" name="porta_inferior">
+                                    <select class="form-select campo-vazio" id="porta_inferior" name="porta_inferior" onchange="alterarCorCampo(this)">
                                         <option value="">Selecione...</option>
                                         <option value="Direita">Direita</option>
                                         <option value="Esquerda">Esquerda</option>
@@ -103,7 +117,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="porta_superior" class="form-label">Porta Superior</label>
-                                    <select class="form-select" id="porta_superior" name="porta_superior">
+                                    <select class="form-select campo-vazio" id="porta_superior" name="porta_superior" onchange="alterarCorCampo(this)">
                                         <option value="">Selecione...</option>
                                         <option value="Direita">Direita</option>
                                         <option value="Esquerda">Esquerda</option>
@@ -112,25 +126,23 @@
                                 <div class="col-md-4">
                                     <label for="cor" class="form-label">Cor</label>
                                     <div class="input-group">
-                                        <select class="form-select" id="corSelect" name="corSelect" onchange="alterarSelecaoCor()">
+                                        <select class="form-select campo-vazio" id="corSelect" name="corSelect" onchange="alterarSelecaoCor()">
                                             <option value="">Selecione uma cor...</option>
                                             <option value="Branco">Branco</option>
-                                            <option value="Preto">Preto</option>
-                                            <option value="Azul">Azul</option>
-                                            <option value="Verde">Verde</option>
-                                            <option value="Vermelho">Vermelho</option>
-                                            <option value="Amarelo">Amarelo</option>
                                             <option value="Cinza">Cinza</option>
-                                            <option value="custom">Outra cor...</option>
+                                            <option value="Preto">Preto</option>
                                         </select>
-                                        <input type="text" class="form-control" id="corCustom" name="corCustom" placeholder="Digite a cor" style="display: none;">
+                                        <input type="text" class="form-control campo-vazio" id="corCustom" name="corCustom" placeholder="Digite a cor" style="display: none;" oninput="alterarCorCampo(this)">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="toggleCorCustom()" title="Cor customizada">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="mb-3">
                                 <label for="observacao" class="form-label">Observações</label>
-                                <textarea class="form-control" id="observacao" name="observacao" rows="3"></textarea>
+                                <textarea class="form-control campo-vazio" id="observacao" name="observacao" rows="3" oninput="alterarCorCampo(this)"></textarea>
                             </div>
                         </div>
                     </div>
@@ -144,22 +156,32 @@
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <label for="altura" class="form-label">Altura (mm) *</label>
-                                    <input type="number" class="form-control" id="altura" name="altura" required min="1">
+                                    <div class="input-group">
+                                        <select class="form-select campo-vazio" id="alturaSelect" name="alturaSelect" onchange="alterarSelecaoAltura()" required>
+                                            <option value="">Selecione...</option>
+                                            <option value="1100">1100mm (Semicabinada)</option>
+                                            <option value="2100">2100mm (Cabinada)</option>
+                                        </select>
+                                        <input type="number" class="form-control campo-vazio" id="altura" name="altura" style="display: none;" min="1">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="toggleAlturaCustom()" title="Altura customizada">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="largura" class="form-label">Largura (mm) *</label>
-                                    <input type="number" class="form-control" id="largura" name="largura" required min="1">
+                                    <input type="number" class="form-control" id="largura" name="largura" required min="1" value="1400" oninput="alterarCorCampo(this)">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="profundidade" class="form-label">Profundidade (mm) *</label>
-                                    <input type="number" class="form-control" id="profundidade" name="profundidade" required min="1">
+                                    <input type="number" class="form-control" id="profundidade" name="profundidade" required min="1" value="1400" oninput="alterarCorCampo(this)">
                                 </div>
                             </div>
                             
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <label for="piso" class="form-label">Piso</label>
-                                    <select class="form-select" id="piso" name="piso">
+                                    <select class="form-select campo-vazio" id="piso" name="piso" onchange="alterarCorCampo(this)">
                                         <option value="">Selecione...</option>
                                         <option value="Alumínio">Alumínio</option>
                                         <option value="Borracha">Borracha</option>
@@ -167,7 +189,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="lado_entrada" class="form-label">Lado Entrada</label>
-                                    <select class="form-select" id="lado_entrada" name="lado_entrada">
+                                    <select class="form-select campo-vazio" id="lado_entrada" name="lado_entrada" onchange="alterarCorCampo(this); atualizarVisualizacaoCabine()">
                                         <option value="">Selecione...</option>
                                         <option value="Esquerdo">Esquerdo</option>
                                         <option value="Direito">Direito</option>
@@ -177,7 +199,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="lado_saida" class="form-label">Lado Saída</label>
-                                    <select class="form-select" id="lado_saida" name="lado_saida">
+                                    <select class="form-select campo-vazio" id="lado_saida" name="lado_saida" onchange="alterarCorCampo(this); atualizarVisualizacaoCabine()">
                                         <option value="">Selecione...</option>
                                         <option value="Esquerdo">Esquerdo</option>
                                         <option value="Direito">Direito</option>
@@ -187,8 +209,50 @@
                                 </div>
                             </div>
                             
+                            <!-- Visualização da Cabine -->
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">Visualização da Cabine</label>
+                                    <div class="d-flex justify-content-center">
+                                        <div id="cabineVisualization" class="cabine-container">
+                                            <!-- Coluna (retângulo menor no topo) -->
+                                            <div class="coluna"></div>
+                                            
+                                            <!-- Cabine (retângulo maior) -->
+                                            <div class="cabine">
+                                                <!-- Setas de entrada (azul) -->
+                                                <div class="seta-entrada seta-esquerda" id="entradaEsquerda">
+                                                    <i class="fas fa-arrow-right"></i>
+                                                </div>
+                                                <div class="seta-entrada seta-direita" id="entradaDireita">
+                                                    <i class="fas fa-arrow-left"></i>
+                                                </div>
+                                                <div class="seta-entrada seta-oposta" id="entradaOposta">
+                                                    <i class="fas fa-arrow-up"></i>
+                                                </div>
+                                                
+                                                <!-- Setas de saída (vermelha) -->
+                                                <div class="seta-saida seta-esquerda" id="saidaEsquerda">
+                                                    <i class="fas fa-arrow-left"></i>
+                                                </div>
+                                                <div class="seta-saida seta-direita" id="saidaDireita">
+                                                    <i class="fas fa-arrow-right"></i>
+                                                </div>
+                                                <div class="seta-saida seta-oposta" id="saidaOposta">
+                                                    <i class="fas fa-arrow-down"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-muted text-center d-block mt-2">
+                                        <span class="text-primary">Azul = Entrada</span> | 
+                                        <span class="text-danger">Vermelho = Saída</span>
+                                    </small>
+                                </div>
+                            </div>
+                            
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="montada_cabine" name="montada_cabine">
+                                <input class="form-check-input" type="checkbox" id="montada_cabine" name="montada_cabine" onchange="alterarCorCheckbox(this)">
                                 <label class="form-check-label" for="montada_cabine">
                                     Cabine montada
                                 </label>
@@ -205,11 +269,11 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="elevacao" class="form-label">Elevação (mm) *</label>
-                                    <input type="number" class="form-control" id="elevacao" name="elevacao" required min="1">
+                                    <input type="number" class="form-control campo-vazio" id="elevacao" name="elevacao" required min="1" oninput="alterarCorCampo(this)">
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-check mt-4">
-                                        <input class="form-check-input" type="checkbox" id="montada_coluna" name="montada_coluna">
+                                        <input class="form-check-input" type="checkbox" id="montada_coluna" name="montada_coluna" onchange="alterarCorCheckbox(this)">
                                         <label class="form-check-label" for="montada_coluna">
                                             Coluna montada
                                         </label>
@@ -228,43 +292,43 @@
                             <div class="row mb-3">
                                 <div class="col-md-3">
                                     <label for="cancela" class="form-label">Cancela</label>
-                                    <input type="number" class="form-control" id="cancela" name="cancela" min="0" value="0">
+                                    <input type="number" class="form-control campo-adicional" id="cancela" name="cancela" min="0" value="0" oninput="alterarCorAdicional(this)">
                                 </div>
                                 <div class="col-md-3">
                                     <label for="porta" class="form-label">Porta</label>
-                                    <input type="number" class="form-control" id="porta" name="porta" min="0" value="0">
+                                    <input type="number" class="form-control campo-adicional" id="porta" name="porta" min="0" value="0" oninput="alterarCorAdicional(this)">
                                 </div>
                                 <div class="col-md-3">
                                     <label for="portao" class="form-label">Portão</label>
-                                    <input type="number" class="form-control" id="portao" name="portao" min="0" value="0">
+                                    <input type="number" class="form-control campo-adicional" id="portao" name="portao" min="0" value="0" oninput="alterarCorAdicional(this)">
                                 </div>
                                 <div class="col-md-3">
                                     <label for="barreira_eletronica" class="form-label">Barreira Eletrônica</label>
-                                    <input type="number" class="form-control" id="barreira_eletronica" name="barreira_eletronica" min="0" value="0">
+                                    <input type="number" class="form-control campo-adicional" id="barreira_eletronica" name="barreira_eletronica" min="0" value="0" oninput="alterarCorAdicional(this)">
                                 </div>
                             </div>
                             
                             <div class="row mb-3">
                                 <div class="col-md-3">
                                     <label for="lados_enclausuramento" class="form-label">Lados Enclausuramento</label>
-                                    <input type="number" class="form-control" id="lados_enclausuramento" name="lados_enclausuramento" min="0" value="0">
+                                    <input type="number" class="form-control campo-adicional" id="lados_enclausuramento" name="lados_enclausuramento" min="0" value="0" oninput="alterarCorAdicional(this)">
                                 </div>
                                 <div class="col-md-3">
                                     <label for="sensor_esmagamento" class="form-label">Sensor Esmagamento</label>
-                                    <input type="number" class="form-control" id="sensor_esmagamento" name="sensor_esmagamento" min="0" value="0">
+                                    <input type="number" class="form-control campo-adicional" id="sensor_esmagamento" name="sensor_esmagamento" min="0" value="0" oninput="alterarCorAdicional(this)">
                                 </div>
                                 <div class="col-md-3">
                                     <label for="rampa_acesso" class="form-label">Rampa Acesso</label>
-                                    <input type="number" class="form-control" id="rampa_acesso" name="rampa_acesso" min="0" value="0">
+                                    <input type="number" class="form-control campo-adicional" id="rampa_acesso" name="rampa_acesso" min="0" value="0" oninput="alterarCorAdicional(this)">
                                 </div>
                                 <div class="col-md-3">
                                     <label for="nobreak" class="form-label">Nobreak</label>
-                                    <input type="number" class="form-control" id="nobreak" name="nobreak" min="0" value="0">
+                                    <input type="number" class="form-control campo-adicional" id="nobreak" name="nobreak" min="0" value="0" oninput="alterarCorAdicional(this)">
                                 </div>
                             </div>
                             
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="galvanizada" name="galvanizada">
+                                <input class="form-check-input" type="checkbox" id="galvanizada" name="galvanizada" onchange="alterarCorCheckboxAdicional(this)">
                                 <label class="form-check-label" for="galvanizada">
                                     Galvanizada
                                 </label>
@@ -316,10 +380,27 @@
                         <label for="dataEntregaContrato" class="form-label">Data de Entrega</label>
                         <div class="input-group">
                             <input type="date" class="form-control" id="dataEntregaContrato">
-                            <button type="button" class="btn btn-outline-primary" onclick="calcularDataEntregaContrato()" title="Calcular 30 dias úteis">
-                                <i class="fas fa-calendar-plus"></i> + 30 dias úteis
+                            <button type="button" class="btn btn-outline-primary" onclick="mostrarDialogoDiasUteisElevador()" title="Adicionar dias úteis">
+                                <i class="fas fa-calendar-plus"></i> + Dias Úteis
                             </button>
                         </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="vendedorContrato" class="form-label">Vendedor</label>
+                        <div class="input-group">
+                            <select class="form-select" id="vendedorContrato">
+                                <option value="">Selecione um vendedor</option>
+                                <option value="Deuclides">Deuclides</option>
+                                <option value="Leandro">Leandro</option>
+                                <option value="Jean">Jean</option>
+                            </select>
+                            <input type="text" class="form-control" id="vendedorContratoCustom" placeholder="Outro vendedor" style="display: none;">
+                            <button type="button" class="btn btn-outline-secondary" onclick="toggleVendedorContratoCustom()" title="Outro vendedor">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                        <div class="form-text">Selecione um vendedor predefinido ou digite um novo nome</div>
                     </div>
                 </form>
             </div>
@@ -327,6 +408,43 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-warning" onclick="salvarNovoContrato()">
                     <i class="fas fa-save"></i> Criar Contrato
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Dias Úteis -->
+<div class="modal fade" id="diasUteisElevadorModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-calendar-plus"></i> Adicionar Dias Úteis
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="quantidadeDiasElevador" class="form-label">Quantidade de dias úteis:</label>
+                    <input type="number" class="form-control" id="quantidadeDiasElevador" value="20" min="1" max="365">
+                    <div class="form-text">Serão adicionados apenas dias úteis (segunda a sexta-feira)</div>
+                </div>
+                <div class="mb-3">
+                    <label for="dataBaseElevador" class="form-label">Data base:</label>
+                    <select class="form-select" id="dataBaseElevador">
+                        <option value="hoje">Hoje</option>
+                        <option value="venda">Data da Venda</option>
+                    </select>
+                </div>
+                <div class="alert alert-info" id="previewDataElevador" style="display: none;">
+                    <i class="fas fa-info-circle"></i> <strong>Data prevista:</strong> <span id="dataPreviewElevador"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="adicionarDiasUteisElevador()">
+                    <i class="fas fa-plus"></i> Adicionar
                 </button>
             </div>
         </div>
@@ -346,13 +464,20 @@
             <div class="modal-body">
                 <form id="novoClienteElevadorForm">
                     <div class="row mb-3">
-                        <div class="col-md-8">
+                        <div class="col-md-6">
                             <label for="nomeClienteElevador" class="form-label">Nome *</label>
                             <input type="text" class="form-control" id="nomeClienteElevador" required>
                         </div>
-                        <div class="col-md-4">
-                            <label for="cpfClienteElevador" class="form-label">CPF</label>
-                            <input type="text" class="form-control" id="cpfClienteElevador" placeholder="000.000.000-00">
+                        <div class="col-md-3">
+                            <label for="comercialClienteElevador" class="form-label">Tipo de Cliente</label>
+                            <select class="form-select" id="comercialClienteElevador" onchange="alterarTipoClienteElevador()">
+                                <option value="false">Pessoa Física</option>
+                                <option value="true">Pessoa Jurídica</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="documentoClienteElevador" class="form-label" id="labelDocumentoClienteElevador">CPF</label>
+                            <input type="text" class="form-control" id="documentoClienteElevador" maxlength="18" placeholder="000.000.000-00" oninput="aplicarMascaraDocumento(this)">
                         </div>
                     </div>
                     
@@ -377,6 +502,33 @@
                             <label for="estadoClienteElevador" class="form-label">Estado</label>
                             <select class="form-select" id="estadoClienteElevador">
                                 <option value="">Selecione...</option>
+                                <option value="AC">AC - Acre</option>
+                                <option value="AL">AL - Alagoas</option>
+                                <option value="AP">AP - Amapá</option>
+                                <option value="AM">AM - Amazonas</option>
+                                <option value="BA">BA - Bahia</option>
+                                <option value="CE">CE - Ceará</option>
+                                <option value="DF">DF - Distrito Federal</option>
+                                <option value="ES">ES - Espírito Santo</option>
+                                <option value="GO">GO - Goiás</option>
+                                <option value="MA">MA - Maranhão</option>
+                                <option value="MT">MT - Mato Grosso</option>
+                                <option value="MS">MS - Mato Grosso do Sul</option>
+                                <option value="MG">MG - Minas Gerais</option>
+                                <option value="PA">PA - Pará</option>
+                                <option value="PB">PB - Paraíba</option>
+                                <option value="PR">PR - Paraná</option>
+                                <option value="PE">PE - Pernambuco</option>
+                                <option value="PI">PI - Piauí</option>
+                                <option value="RJ">RJ - Rio de Janeiro</option>
+                                <option value="RN">RN - Rio Grande do Norte</option>
+                                <option value="RS">RS - Rio Grande do Sul</option>
+                                <option value="RO">RO - Rondônia</option>
+                                <option value="RR">RR - Roraima</option>
+                                <option value="SC">SC - Santa Catarina</option>
+                                <option value="SP">SP - São Paulo</option>
+                                <option value="SE">SE - Sergipe</option>
+                                <option value="TO">TO - Tocantins</option>
                             </select>
                         </div>
                         <div class="col-md-3">
@@ -400,41 +552,816 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Seleção de Contratos -->
+<div class="modal fade" id="selecionarContratoModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-list"></i> Selecionar Contrato
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="buscarContrato" placeholder="Buscar por cliente, ID ou data..." onkeyup="filtrarContratos()">
+                </div>
+                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Data Venda</th>
+                                <th>Data Entrega</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listaContratos">
+                            <!-- Preenchido via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-warning" onclick="abrirModalNovoContrato(); bootstrap.Modal.getInstance(document.getElementById('selecionarContratoModal')).hide();">
+                    <i class="fas fa-plus"></i> Criar Novo Contrato
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
+<style>
+/* Estilos para opções de status no select */
+.status-option {
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.25rem;
+    margin: 2px 0;
+}
+
+.status-bg-secondary {
+    background-color: #6c757d !important;
+    color: white !important;
+}
+
+.status-bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+.status-bg-success {
+    background-color: #198754 !important;
+    color: white !important;
+}
+
+.status-bg-primary {
+    background-color: #0d6efd !important;
+    color: white !important;
+}
+
+/* Estilos para visualização da cabine */
+.cabine-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 20px 50px 20px; /* Ajustei o padding inferior proporcionalmente */
+}
+
+.coluna {
+    width: 60px;
+    height: 20px;
+    background-color: #6c757d;
+    border: 2px solid #495057;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.cabine {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    background-color: #f8f9fa;
+    border: 3px solid #495057;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cabine::before {
+    content: 'CABINE';
+    font-size: 10px;
+    font-weight: bold;
+    color: #6c757d;
+    text-align: center;
+}
+
+/* Estilos das setas */
+.seta-entrada, .seta-saida {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 18px;
+    font-weight: bold;
+    animation: fadeIn 0.3s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.seta-entrada {
+    background-color: #0d6efd;
+    color: white;
+    border: 2px solid #0b5ed7;
+}
+
+.seta-saida {
+    background-color: #dc3545;
+    color: white;
+    border: 2px solid #bb2d3b;
+}
+
+/* Posicionamento das setas - centralização perfeita */
+.seta-esquerda {
+    left: -45px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.seta-direita {
+    right: -45px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.seta-oposta {
+    bottom: -45px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Ajustes quando ambas as setas estão no mesmo lado */
+/* Lado esquerdo - entrada fica mais acima, saída mais abaixo */
+.seta-esquerda.seta-entrada.com-saida {
+    top: 30%;
+    transform: translateY(-50%);
+}
+
+.seta-esquerda.seta-saida.com-entrada {
+    top: 70%;
+    transform: translateY(-50%);
+}
+
+/* Lado direito - entrada fica mais acima, saída mais abaixo */
+.seta-direita.seta-entrada.com-saida {
+    top: 30%;
+    transform: translateY(-50%);
+}
+
+.seta-direita.seta-saida.com-entrada {
+    top: 70%;
+    transform: translateY(-50%);
+}
+
+/* Lado oposto - entrada fica mais à esquerda, saída mais à direita */
+.seta-oposta.seta-entrada.com-saida {
+    left: 30%;
+    transform: translateX(-50%);
+}
+
+.seta-oposta.seta-saida.com-entrada {
+    left: 70%;
+    transform: translateX(-50%);
+}
+
+/* Setas ativas */
+.seta-entrada.ativa, .seta-saida.ativa {
+    display: flex;
+}
+
+/* Animação */
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: scale(0.8); 
+    }
+    to { 
+        opacity: 1; 
+        transform: scale(1); 
+    }
+}
+
+/* Transições suaves para mudanças de posição */
+.seta-entrada, .seta-saida {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Ajuste para setas opostas - posicionamento uniformizado */
+.seta-oposta.seta-entrada {
+    transform: translateX(-50%) translateY(0);
+    bottom: -45px;
+}
+
+.seta-oposta.seta-saida {
+    transform: translateX(-50%) translateY(0);
+    bottom: -45px;
+}
+
+/* Ajuste adicional quando há sobreposição no lado oposto */
+.seta-oposta.seta-entrada.com-saida {
+    bottom: -45px;
+}
+
+.seta-oposta.seta-saida.com-entrada {
+    bottom: -45px;
+}
+</style>
+
 <script>
-// Função para alterar seleção de cor
-function alterarSelecaoCor() {
-    const select = document.getElementById('corSelect');
-    const input = document.getElementById('corCustom');
+// Função para alterar cor dos campos baseado no preenchimento
+function alterarCorCampo(elemento) {
+    // Remover classe de erro ao interagir com o campo
+    elemento.classList.remove('campo-obrigatorio-erro', 'campo-shake');
     
-    if (select.value === 'custom') {
+    if (elemento.value && elemento.value.trim() !== '') {
+        elemento.classList.remove('campo-vazio');
+        elemento.classList.add('campo-preenchido');
+    } else {
+        elemento.classList.remove('campo-preenchido');
+        elemento.classList.add('campo-vazio');
+    }
+}
+
+// Função para alterar cor dos campos adicionais
+function alterarCorAdicional(elemento) {
+    // Remover classe de erro ao interagir com o campo
+    elemento.classList.remove('campo-obrigatorio-erro', 'campo-shake');
+    
+    const valor = parseInt(elemento.value) || 0;
+    if (valor > 0) {
+        elemento.classList.add('campo-adicional-ativo');
+    } else {
+        elemento.classList.remove('campo-adicional-ativo');
+    }
+}
+
+// Função para alterar cor dos checkboxes normais
+function alterarCorCheckbox(elemento) {
+    // Remover classe de erro ao interagir com o campo
+    elemento.classList.remove('campo-obrigatorio-erro', 'campo-shake');
+    
+    if (elemento.checked) {
+        elemento.classList.remove('campo-vazio');
+        elemento.classList.add('campo-preenchido');
+    } else {
+        elemento.classList.remove('campo-preenchido');
+        elemento.classList.add('campo-vazio');
+    }
+}
+
+// Função para alterar cor dos checkboxes adicionais
+function alterarCorCheckboxAdicional(elemento) {
+    // Remover classe de erro ao interagir com o campo
+    elemento.classList.remove('campo-obrigatorio-erro', 'campo-shake');
+    
+    if (elemento.checked) {
+        elemento.classList.add('checkbox-adicional-ativo');
+    } else {
+        elemento.classList.remove('checkbox-adicional-ativo');
+    }
+}
+
+// Função para alternar altura customizada
+function toggleAlturaCustom() {
+    const select = document.getElementById('alturaSelect');
+    const input = document.getElementById('altura');
+    
+    if (input.style.display === 'none' || input.style.display === '') {
+        // Mostrar input customizado
+        select.style.display = 'none';
         input.style.display = 'block';
         input.focus();
         input.required = true;
+        select.required = false;
+        // Limpar valor do select
+        select.value = '';
+        alterarCorCampo(select);
     } else {
+        // Mostrar select padrão
         input.style.display = 'none';
+        select.style.display = 'block';
+        select.required = true;
         input.required = false;
         input.value = '';
+        alterarCorCampo(input);
+    }
+}
+
+// Função para alterar seleção de altura
+function alterarSelecaoAltura() {
+    const select = document.getElementById('alturaSelect');
+    const input = document.getElementById('altura');
+    
+    if (select.value) {
+        input.value = select.value;
+        alterarCorCampo(select);
+    } else {
+        alterarCorCampo(select);
+    }
+}
+
+// Função para alternar cor customizada
+function toggleCorCustom() {
+    const select = document.getElementById('corSelect');
+    const input = document.getElementById('corCustom');
+    
+    if (input.style.display === 'none' || input.style.display === '') {
+        // Mostrar input customizado
+        select.style.display = 'none';
+        input.style.display = 'block';
+        input.focus();
+        input.required = true;
+        select.required = false;
+        // Limpar valor do select
+        select.value = '';
+        alterarCorCampo(select);
+    } else {
+        // Mostrar select padrão
+        input.style.display = 'none';
+        select.style.display = 'block';
+        select.required = false;
+        input.required = false;
+        input.value = '';
+        alterarCorCampo(input);
+    }
+}
+
+// Função para alterar seleção de cor
+function alterarSelecaoCor() {
+    const select = document.getElementById('corSelect');
+    alterarCorCampo(select);
+}
+
+// Função para alternar status customizado
+function toggleStatusCustom() {
+    const select = document.getElementById('statusSelect');
+    const input = document.getElementById('statusCustom');
+    
+    if (input.style.display === 'none' || input.style.display === '') {
+        // Mostrar input customizado
+        select.style.display = 'none';
+        input.style.display = 'block';
+        input.focus();
+        input.required = true;
+        select.required = false;
+        // Limpar valor do select
+        select.value = '';
+        alterarCorCampo(select);
+    } else {
+        // Mostrar select padrão
+        input.style.display = 'none';
+        select.style.display = 'block';
+        select.required = true;
+        input.required = false;
+        input.value = '';
+        alterarCorCampo(input);
     }
 }
 
 // Função para alterar seleção de status
 function alterarSelecaoStatus() {
     const select = document.getElementById('statusSelect');
-    const input = document.getElementById('statusCustom');
+    alterarCorCampo(select);
+}
+
+// Função para alternar vendedor customizado
+function toggleVendedorContratoCustom() {
+    const select = document.getElementById('vendedorContrato');
+    const input = document.getElementById('vendedorContratoCustom');
     
-    if (select.value === 'custom') {
+    if (input.style.display === 'none' || input.style.display === '') {
+        // Mostrar input customizado
+        select.style.display = 'none';
         input.style.display = 'block';
         input.focus();
         input.required = true;
+        select.required = false;
     } else {
+        // Mostrar select padrão
         input.style.display = 'none';
+        select.style.display = 'block';
+        select.required = true;
         input.required = false;
         input.value = '';
     }
 }
+
+// Função para mostrar modal de dias úteis
+function mostrarDialogoDiasUteisElevador() {
+    // Atualizar preview quando modal abrir
+    document.getElementById('quantidadeDiasElevador').addEventListener('input', atualizarPreviewElevador);
+    document.getElementById('dataBaseElevador').addEventListener('change', atualizarPreviewElevador);
+    
+    // Mostrar modal
+    const modal = new bootstrap.Modal(document.getElementById('diasUteisElevadorModal'));
+    modal.show();
+    
+    // Atualizar preview inicial
+    atualizarPreviewElevador();
+}
+
+// Função para atualizar preview da data
+function atualizarPreviewElevador() {
+    const quantidadeDias = parseInt(document.getElementById('quantidadeDiasElevador').value) || 0;
+    const dataBase = document.getElementById('dataBaseElevador').value;
+    const previewDiv = document.getElementById('previewDataElevador');
+    const previewSpan = document.getElementById('dataPreviewElevador');
+    
+    if (quantidadeDias === 0) {
+        previewDiv.style.display = 'none';
+        return;
+    }
+    
+    let dataInicial;
+    if (dataBase === 'venda') {
+        const dataVenda = document.getElementById('dataVendaContrato').value;
+        if (!dataVenda) {
+            previewDiv.style.display = 'none';
+            return;
+        }
+        dataInicial = new Date(dataVenda + 'T00:00:00');
+    } else {
+        dataInicial = new Date();
+    }
+    
+    // Calcular dias úteis
+    let dataAtual = new Date(dataInicial);
+    let diasAdicionados = 0;
+    
+    while (diasAdicionados < quantidadeDias) {
+        dataAtual.setDate(dataAtual.getDate() + 1);
+        
+        // Verificar se é dia útil (segunda a sexta)
+        const diaSemana = dataAtual.getDay();
+        if (diaSemana !== 0 && diaSemana !== 6) {
+            diasAdicionados++;
+        }
+    }
+    
+    previewSpan.textContent = dataAtual.toLocaleDateString('pt-BR');
+    previewDiv.style.display = 'block';
+}
+
+// Função para adicionar dias úteis
+function adicionarDiasUteisElevador() {
+    const quantidadeDias = parseInt(document.getElementById('quantidadeDiasElevador').value) || 0;
+    const dataBase = document.getElementById('dataBaseElevador').value;
+    
+    if (quantidadeDias === 0) {
+        showToast('Informe a quantidade de dias úteis', 'warning');
+        return;
+    }
+    
+    let dataInicial;
+    if (dataBase === 'venda') {
+        const dataVenda = document.getElementById('dataVendaContrato').value;
+        if (!dataVenda) {
+            showToast('Informe primeiro a data da venda', 'warning');
+            return;
+        }
+        dataInicial = new Date(dataVenda + 'T00:00:00');
+    } else {
+        dataInicial = new Date();
+    }
+    
+    // Calcular dias úteis
+    let dataAtual = new Date(dataInicial);
+    let diasAdicionados = 0;
+    
+    while (diasAdicionados < quantidadeDias) {
+        dataAtual.setDate(dataAtual.getDate() + 1);
+        
+        // Verificar se é dia útil (segunda a sexta)
+        const diaSemana = dataAtual.getDay();
+        if (diaSemana !== 0 && diaSemana !== 6) {
+            diasAdicionados++;
+        }
+    }
+    
+    // Definir a data calculada
+    const dataFormatada = dataAtual.toISOString().split('T')[0];
+    document.getElementById('dataEntregaContrato').value = dataFormatada;
+    
+    // Fechar modal
+    bootstrap.Modal.getInstance(document.getElementById('diasUteisElevadorModal')).hide();
+    
+    // Mostrar confirmação
+    showToast(`Data de entrega definida: ${dataAtual.toLocaleDateString('pt-BR')} (${quantidadeDias} dias úteis)`, 'success');
+}
+
+// Inicialização quando o DOM estiver carregado
+document.addEventListener('DOMContentLoaded', function() {
+    // Aplicar estilos iniciais para todos os campos vazios
+    document.querySelectorAll('.campo-vazio').forEach(campo => {
+        alterarCorCampo(campo);
+    });
+    
+    // Aplicar estilos iniciais para campos adicionais
+    document.querySelectorAll('.campo-adicional').forEach(campo => {
+        alterarCorAdicional(campo);
+    });
+    
+    // Inicializar visualização da cabine
+    atualizarVisualizacaoCabine();
+});
+
+// Função para atualizar a visualização da cabine
+function atualizarVisualizacaoCabine() {
+    const ladoEntrada = document.getElementById('lado_entrada').value;
+    const ladoSaida = document.getElementById('lado_saida').value;
+    
+    // Ocultar todas as setas e remover classes de sobreposição
+    document.querySelectorAll('.seta-entrada, .seta-saida').forEach(seta => {
+        seta.classList.remove('ativa', 'com-saida', 'com-entrada');
+    });
+    
+    let setaEntrada = null;
+    let setSaida = null;
+    
+    // Mostrar seta de entrada baseada na seleção
+    if (ladoEntrada) {
+        switch(ladoEntrada.toLowerCase()) {
+            case 'esquerdo':
+                setaEntrada = document.getElementById('entradaEsquerda');
+                break;
+            case 'direito':
+                setaEntrada = document.getElementById('entradaDireita');
+                break;
+            case 'oposto':
+                setaEntrada = document.getElementById('entradaOposta');
+                break;
+        }
+        if (setaEntrada) {
+            setaEntrada.classList.add('ativa');
+        }
+    }
+    
+    // Mostrar seta de saída baseada na seleção
+    if (ladoSaida) {
+        switch(ladoSaida.toLowerCase()) {
+            case 'esquerdo':
+                setSaida = document.getElementById('saidaEsquerda');
+                break;
+            case 'direito':
+                setSaida = document.getElementById('saidaDireita');
+                break;
+            case 'oposto':
+                setSaida = document.getElementById('saidaOposta');
+                break;
+        }
+        if (setSaida) {
+            setSaida.classList.add('ativa');
+        }
+    }
+    
+    // Verificar se ambas as setas estão no mesmo lado e ajustar posicionamento
+    if (setaEntrada && setSaida && ladoEntrada && ladoSaida) {
+        if (ladoEntrada.toLowerCase() === ladoSaida.toLowerCase()) {
+            // Ambas estão no mesmo lado, adicionar classes para evitar sobreposição
+            setaEntrada.classList.add('com-saida');
+            setSaida.classList.add('com-entrada');
+        }
+    }
+}
 </script>
-<script src="{{ url_for('static', filename='js/elevadores.js') }}"></script>
+<script src="{{ url_for('static', filename='js/elevadores.js') }}?v=10"></script>
+
+<!-- Modal Visualização Elevador -->
+<div class="modal fade" id="visualizarElevadorModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-eye"></i> Visualizar Elevador
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Informações Básicas -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="fas fa-info-circle"></i> Informações Básicas</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Contrato:</label>
+                                <p class="form-control-plaintext" id="viewElevadorContrato">-</p>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Comando:</label>
+                                <p class="form-control-plaintext" id="viewElevadorComando">-</p>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Status:</label>
+                                <p class="form-control-plaintext" id="viewElevadorStatus">-</p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Porta Inferior:</label>
+                                <p class="form-control-plaintext" id="viewElevadorPortaInferior">-</p>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Porta Superior:</label>
+                                <p class="form-control-plaintext" id="viewElevadorPortaSuperior">-</p>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Cor:</label>
+                                <p class="form-control-plaintext" id="viewElevadorCor">-</p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold">Observações:</label>
+                                <p class="form-control-plaintext" id="viewElevadorObservacao">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cabine -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="fas fa-cube"></i> Cabine</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Altura:</label>
+                                <p class="form-control-plaintext" id="viewElevadorAltura">-</p>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Largura:</label>
+                                <p class="form-control-plaintext" id="viewElevadorLargura">-</p>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Profundidade:</label>
+                                <p class="form-control-plaintext" id="viewElevadorProfundidade">-</p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Piso:</label>
+                                <p class="form-control-plaintext" id="viewElevadorPiso">-</p>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Lado Entrada:</label>
+                                <p class="form-control-plaintext" id="viewElevadorLadoEntrada">-</p>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Lado Saída:</label>
+                                <p class="form-control-plaintext" id="viewElevadorLadoSaida">-</p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold">Cabine Montada:</label>
+                                <p class="form-control-plaintext" id="viewElevadorCabineMontada">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desenho da Cabine -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="fas fa-draw-polygon"></i> Desenho da Cabine</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center">
+                            <div id="viewCabineVisualization" class="cabine-container">
+                                <!-- Coluna (retângulo menor no topo) -->
+                                <div class="coluna"></div>
+                                
+                                <!-- Cabine (retângulo maior) -->
+                                <div class="cabine">
+                                    <!-- Setas de entrada (azul) -->
+                                    <div class="seta-entrada seta-esquerda" id="viewEntradaEsquerda">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </div>
+                                    <div class="seta-entrada seta-direita" id="viewEntradaDireita">
+                                        <i class="fas fa-arrow-left"></i>
+                                    </div>
+                                    <div class="seta-entrada seta-oposta" id="viewEntradaOposta">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </div>
+                                    
+                                    <!-- Setas de saída (vermelha) -->
+                                    <div class="seta-saida seta-esquerda" id="viewSaidaEsquerda">
+                                        <i class="fas fa-arrow-left"></i>
+                                    </div>
+                                    <div class="seta-saida seta-direita" id="viewSaidaDireita">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </div>
+                                    <div class="seta-saida seta-oposta" id="viewSaidaOposta">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted text-center d-block mt-2">
+                            <span class="text-primary">Azul = Entrada</span> | 
+                            <span class="text-danger">Vermelho = Saída</span>
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Coluna -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="fas fa-arrows-alt-v"></i> Coluna</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Elevação:</label>
+                                <p class="form-control-plaintext" id="viewElevadorElevacao">-</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Coluna Montada:</label>
+                                <p class="form-control-plaintext" id="viewElevadorColunaMontada">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adicionais -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="fas fa-plus-circle"></i> Adicionais</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Cancela:</label>
+                                <p class="form-control-plaintext" id="viewElevadorCancela">-</p>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Porta:</label>
+                                <p class="form-control-plaintext" id="viewElevadorPorta">-</p>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Portão:</label>
+                                <p class="form-control-plaintext" id="viewElevadorPortao">-</p>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Barreira Eletrônica:</label>
+                                <p class="form-control-plaintext" id="viewElevadorBarreiraEletronica">-</p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Lados Enclausuramento:</label>
+                                <p class="form-control-plaintext" id="viewElevadorLadosEnclausuramento">-</p>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Sensor Esmagamento:</label>
+                                <p class="form-control-plaintext" id="viewElevadorSensorEsmagamento">-</p>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Rampa Acesso:</label>
+                                <p class="form-control-plaintext" id="viewElevadorRampaAcesso">-</p>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Nobreak:</label>
+                                <p class="form-control-plaintext" id="viewElevadorNobreak">-</p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold">Galvanizada:</label>
+                                <p class="form-control-plaintext" id="viewElevadorGalvanizada">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" onclick="editarElevadorFromView()">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -15,11 +15,25 @@
 - ✅ Ser possível add cliente a partir da tela de contratos
 - ✅ Listar por nome cliente, data entrega, data venda em todas as telas que os usam
 - ✅ Na inserção de data entrega no contrato, botão 'n dias uteis a partir da venda', em que data entrega é setado automaticamente somando o valor n, que pode ser inserido pelo usuario, à data de venda
+- ✅ Campo 'comercial' em cliente para distinguir CPF (pessoa física) de CNPJ (pessoa jurídica) - IMPLEMENTADO
 
 - ✅ Fazer enum com cores comuns, com opção de digitar outras - IMPLEMENTADO
 - ✅ Adicionar botão para gerar PDF de cada elevador - IMPLEMENTADO
 - ✅ Caixa de pesquisa em todos os bancos - IMPLEMENTADO
-- Selecionar vendedor
+- ✅ Selecionar vendedor
+- ✅ Incluir vendedor no contrato
+- ✅ Dimensões da cabine com valor padrão ao abrir
+- ✅ Toggle de seleção da altura da cabine (opÇões: 1100, 2100)
+- Cor no calendário deve refletir o status do elevador
+- Ao abrir o evento no calendario deve-se mostrar todos os dados do elevador
+- Deve ser possível gerar o pdf a partir do evento no calendário
+- Incluir no calendário botão de ocultar concluidos de acordo com o status
+- Ser possível ver os elevadores a partir de um contrato
+- Aba de visualização so esta funcionando para elevador
+- ✅ Itens adicionais numericos estão sendo listados como booleanos (sim e não)
+- Tornar executavel como aplicativo
+- Campo de assinatura dos responsáveis em cada setor
+
 
 - Gerar ordem de serviço
 	- Tudo menos orelha (deixar espaço em branco)

@@ -135,26 +135,34 @@ def add_cliente():
         if not data.get('nome') or not data.get('nome').strip():
             return jsonify({'error': 'Nome é obrigatório'}), 400
         
-        # Validar CPF se fornecido
-        cpf = data.get('cpf')
-        if cpf:
-            cpf = str(cpf).strip()
+        # Validar documento (CPF ou CNPJ)
+        documento = data.get('cpf') or data.get('cnpj') or data.get('documento', '')
+        comercial = 0
+        
+        if documento:
+            documento = str(documento).strip()
             # Remove caracteres não numéricos
             import re
-            cpf = re.sub(r'\D', '', cpf)
-            if len(cpf) != 11:
-                return jsonify({'error': 'CPF deve ter exatamente 11 dígitos numéricos'}), 400
-            # Verificar se não é uma sequência de números iguais
-            if cpf == cpf[0] * 11:
-                return jsonify({'error': 'CPF inválido'}), 400
-        else:
-            cpf = None
+            documento = re.sub(r'\D', '', documento)
+            
+            if len(documento) == 11:
+                # CPF
+                comercial = 0
+                if documento == documento[0] * 11:
+                    return jsonify({'error': 'CPF inválido'}), 400
+            elif len(documento) == 14:
+                # CNPJ
+                comercial = 1
+                if documento == documento[0] * 14:
+                    return jsonify({'error': 'CNPJ inválido'}), 400
+            elif documento:
+                return jsonify({'error': 'Documento deve ser CPF (11 dígitos) ou CNPJ (14 dígitos)'}), 400
         
         # Inserir cliente (sem especificar ID - será auto-incrementado)
         cursor.execute("""
-            INSERT INTO cliente (nome, cpf) 
-            VALUES (%s, %s) RETURNING id
-        """, (data['nome'].strip(), cpf))
+            INSERT INTO cliente (nome, comercial, documento, email) 
+            VALUES (%s, %s, %s, %s) RETURNING id
+        """, (data['nome'].strip(), comercial, documento, data.get('email', '')))
         
         cliente_id = cursor.fetchone()[0]
         
@@ -192,25 +200,33 @@ def update_cliente(cliente_id):
         if not data.get('nome') or not data.get('nome').strip():
             return jsonify({'error': 'Nome é obrigatório'}), 400
         
-        # Validar CPF se fornecido
-        cpf = data.get('cpf')
-        if cpf:
-            cpf = str(cpf).strip()
+        # Validar documento (CPF ou CNPJ)
+        documento = data.get('cpf') or data.get('cnpj') or data.get('documento', '')
+        comercial = 0
+        
+        if documento:
+            documento = str(documento).strip()
             # Remove caracteres não numéricos
             import re
-            cpf = re.sub(r'\D', '', cpf)
-            if len(cpf) != 11:
-                return jsonify({'error': 'CPF deve ter exatamente 11 dígitos numéricos'}), 400
-            # Verificar se não é uma sequência de números iguais
-            if cpf == cpf[0] * 11:
-                return jsonify({'error': 'CPF inválido'}), 400
-        else:
-            cpf = None
+            documento = re.sub(r'\D', '', documento)
+            
+            if len(documento) == 11:
+                # CPF
+                comercial = 0
+                if documento == documento[0] * 11:
+                    return jsonify({'error': 'CPF inválido'}), 400
+            elif len(documento) == 14:
+                # CNPJ
+                comercial = 1
+                if documento == documento[0] * 14:
+                    return jsonify({'error': 'CNPJ inválido'}), 400
+            elif documento:
+                return jsonify({'error': 'Documento deve ser CPF (11 dígitos) ou CNPJ (14 dígitos)'}), 400
             
         cursor.execute("""
-            UPDATE cliente SET nome = %s, cpf = %s 
+            UPDATE cliente SET nome = %s, comercial = %s, documento = %s, email = %s 
             WHERE id = %s
-        """, (data['nome'].strip(), cpf, cliente_id))
+        """, (data['nome'].strip(), comercial, documento, data.get('email', ''), cliente_id))
         
         conn.commit()
         return jsonify({'message': 'Cliente atualizado com sucesso'})

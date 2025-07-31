@@ -71,7 +71,7 @@ def get_clientes():
     cursor = conn.cursor()
     try:
         cursor.execute("""
-            SELECT c.id, c.nome, c.cpf, 
+            SELECT c.id, c.nome, c.cpf, c.comercial, c.documento,
                    e.rua, e.numero, e.cidade, e.estado, e.complemento, e.cep, e.id as endereco_id
             FROM cliente c
             LEFT JOIN endereco e ON c.id = e.id_cliente
@@ -85,33 +85,35 @@ def get_clientes():
             
             if cliente_existente:
                 # Adiciona o endereço ao cliente existente
-                if row[3]:  # Se há rua (endereco existe)
+                if row[5]:  # Se há rua (endereco existe)
                     cliente_existente['enderecos'].append({
-                        'id': row[9],
-                        'rua': row[3],
-                        'numero': row[4],
-                        'cidade': row[5],
-                        'estado': row[6],
-                        'complemento': row[7],
-                        'cep': row[8]
+                        'id': row[11],
+                        'rua': row[5],
+                        'numero': row[6],
+                        'cidade': row[7],
+                        'estado': row[8],
+                        'complemento': row[9],
+                        'cep': row[10]
                     })
             else:
                 # Cria novo cliente
                 cliente = {
                     'id': row[0],
                     'nome': row[1],
-                    'cpf': row[2],
+                    'cpf': row[2],  # Mantém cpf para compatibilidade
+                    'comercial': row[3] if row[3] is not None else False,
+                    'documento': row[4] if row[4] else row[2],  # documento ou cpf (para compatibilidade)
                     'enderecos': []
                 }
-                if row[3]:  # Se há rua (endereco existe)
+                if row[5]:  # Se há rua (endereco existe)
                     cliente['enderecos'].append({
-                        'id': row[9],
-                        'rua': row[3],
-                        'numero': row[4],
-                        'cidade': row[5],
-                        'estado': row[6],
-                        'complemento': row[7],
-                        'cep': row[8]
+                        'id': row[11],
+                        'rua': row[5],
+                        'numero': row[6],
+                        'cidade': row[7],
+                        'estado': row[8],
+                        'complemento': row[9],
+                        'cep': row[10]
                     })
                 clientes.append(cliente)
         
@@ -135,26 +137,39 @@ def add_cliente():
         if not data.get('nome') or not data.get('nome').strip():
             return jsonify({'error': 'Nome é obrigatório'}), 400
         
-        # Validar CPF se fornecido
-        cpf = data.get('cpf')
-        if cpf:
-            cpf = str(cpf).strip()
+        # Determinar se é comercial
+        comercial = data.get('comercial', False)
+        
+        # Validar documento se fornecido
+        documento = data.get('documento')
+        if documento:
+            documento = str(documento).strip()
             # Remove caracteres não numéricos
             import re
-            cpf = re.sub(r'\D', '', cpf)
-            if len(cpf) != 11:
-                return jsonify({'error': 'CPF deve ter exatamente 11 dígitos numéricos'}), 400
-            # Verificar se não é uma sequência de números iguais
-            if cpf == cpf[0] * 11:
-                return jsonify({'error': 'CPF inválido'}), 400
+            documento = re.sub(r'\D', '', documento)
+            
+            if comercial:
+                # Validação CNPJ
+                if len(documento) != 14:
+                    return jsonify({'error': 'CNPJ deve ter exatamente 14 dígitos numéricos'}), 400
+                # Verificar se não é uma sequência de números iguais
+                if documento == documento[0] * 14:
+                    return jsonify({'error': 'CNPJ inválido'}), 400
+            else:
+                # Validação CPF
+                if len(documento) != 11:
+                    return jsonify({'error': 'CPF deve ter exatamente 11 dígitos numéricos'}), 400
+                # Verificar se não é uma sequência de números iguais
+                if documento == documento[0] * 11:
+                    return jsonify({'error': 'CPF inválido'}), 400
         else:
-            cpf = None
+            documento = None
         
         # Inserir cliente (sem especificar ID - será auto-incrementado)
         cursor.execute("""
-            INSERT INTO cliente (nome, cpf) 
-            VALUES (%s, %s) RETURNING id
-        """, (data['nome'].strip(), cpf))
+            INSERT INTO cliente (nome, email, comercial, documento) 
+            VALUES (%s, %s, %s, %s) RETURNING id
+        """, (data['nome'].strip(), data.get('email', '').strip() or None, comercial, documento))
         
         cliente_id = cursor.fetchone()[0]
         
@@ -192,25 +207,38 @@ def update_cliente(cliente_id):
         if not data.get('nome') or not data.get('nome').strip():
             return jsonify({'error': 'Nome é obrigatório'}), 400
         
-        # Validar CPF se fornecido
-        cpf = data.get('cpf')
-        if cpf:
-            cpf = str(cpf).strip()
+        # Determinar se é comercial
+        comercial = data.get('comercial', False)
+        
+        # Validar documento se fornecido
+        documento = data.get('documento')
+        if documento:
+            documento = str(documento).strip()
             # Remove caracteres não numéricos
             import re
-            cpf = re.sub(r'\D', '', cpf)
-            if len(cpf) != 11:
-                return jsonify({'error': 'CPF deve ter exatamente 11 dígitos numéricos'}), 400
-            # Verificar se não é uma sequência de números iguais
-            if cpf == cpf[0] * 11:
-                return jsonify({'error': 'CPF inválido'}), 400
+            documento = re.sub(r'\D', '', documento)
+            
+            if comercial:
+                # Validação CNPJ
+                if len(documento) != 14:
+                    return jsonify({'error': 'CNPJ deve ter exatamente 14 dígitos numéricos'}), 400
+                # Verificar se não é uma sequência de números iguais
+                if documento == documento[0] * 14:
+                    return jsonify({'error': 'CNPJ inválido'}), 400
+            else:
+                # Validação CPF
+                if len(documento) != 11:
+                    return jsonify({'error': 'CPF deve ter exatamente 11 dígitos numéricos'}), 400
+                # Verificar se não é uma sequência de números iguais
+                if documento == documento[0] * 11:
+                    return jsonify({'error': 'CPF inválido'}), 400
         else:
-            cpf = None
+            documento = None
             
         cursor.execute("""
-            UPDATE cliente SET nome = %s, cpf = %s 
+            UPDATE cliente SET nome = %s, email = %s, comercial = %s, documento = %s 
             WHERE id = %s
-        """, (data['nome'].strip(), cpf, cliente_id))
+        """, (data['nome'].strip(), data.get('email', '').strip() or None, comercial, documento, cliente_id))
         
         conn.commit()
         return jsonify({'message': 'Cliente atualizado com sucesso'})
@@ -335,6 +363,13 @@ def get_estados():
         cursor.close()
         end_pg_connection(conn)
 
+# API para vendedores
+@app.route('/api/vendedores', methods=['GET'])
+def get_vendedores():
+    """Retorna lista de vendedores disponíveis"""
+    vendedores = ['Deuclides', 'Leandro', 'Jean']
+    return jsonify(vendedores)
+
 # Rotas para contratos
 @app.route('/contratos')
 def contratos():
@@ -367,7 +402,7 @@ def get_contratos():
     cursor = conn.cursor()
     try:
         cursor.execute("""
-            SELECT c.id, c.data_venda, c.data_entrega, c.id_cliente, cl.nome
+            SELECT c.id, c.data_venda, c.data_entrega, c.id_cliente, cl.nome, c.vendedor
             FROM contrato c
             LEFT JOIN cliente cl ON c.id_cliente = cl.id
             ORDER BY c.id
@@ -379,7 +414,8 @@ def get_contratos():
                 'data_venda': row[1].isoformat() if row[1] else None,
                 'data_entrega': row[2].isoformat() if row[2] else None,
                 'id_cliente': row[3],
-                'cliente_nome': row[4]
+                'cliente_nome': row[4],
+                'vendedor': row[5]
             })
         return jsonify(contratos)
     except Exception as e:
@@ -424,9 +460,9 @@ def add_contrato():
             return jsonify({'error': 'Data de entrega deve ser posterior à data da venda'}), 400
         
         cursor.execute("""
-            INSERT INTO contrato (data_venda, data_entrega, id_cliente) 
-            VALUES (%s, %s, %s) RETURNING id
-        """, (data_venda, data_entrega, data['id_cliente']))
+            INSERT INTO contrato (data_venda, data_entrega, id_cliente, vendedor) 
+            VALUES (%s, %s, %s, %s) RETURNING id
+        """, (data_venda, data_entrega, data['id_cliente'], data.get('vendedor')))
         
         contrato_id = cursor.fetchone()[0]
         conn.commit()
@@ -447,8 +483,8 @@ def get_contrato(contrato_id):
     cursor = conn.cursor()
     try:
         cursor.execute("""
-            SELECT c.id, c.data_venda, c.data_entrega, c.id_cliente,
-                   cl.nome as cliente_nome, cl.cpf as cliente_cpf,
+            SELECT c.id, c.data_venda, c.data_entrega, c.id_cliente, c.vendedor,
+                   cl.nome as cliente_nome, cl.cpf as cliente_cpf, cl.comercial, cl.documento,
                    e.rua, e.numero, e.cidade, e.estado, e.cep, e.complemento
             FROM contrato c
             JOIN cliente cl ON c.id_cliente = cl.id
@@ -465,16 +501,19 @@ def get_contrato(contrato_id):
             'data_venda': row[1].isoformat() if row[1] else None,
             'data_entrega': row[2].isoformat() if row[2] else None,
             'id_cliente': row[3],
-            'cliente_nome': row[4],
-            'cliente_cpf': row[5],
+            'vendedor': row[4],
+            'cliente_nome': row[5],
+            'cliente_cpf': row[6],  # Mantém para compatibilidade
+            'cliente_comercial': row[7] if row[7] is not None else False,
+            'cliente_documento': row[8] if row[8] else row[6],  # documento ou cpf
             'endereco': {
-                'rua': row[6],
-                'numero': row[7],
-                'cidade': row[8],
-                'estado': row[9],
-                'cep': row[10],
-                'complemento': row[11]
-            } if row[6] else None
+                'rua': row[9],
+                'numero': row[10],
+                'cidade': row[11],
+                'estado': row[12],
+                'cep': row[13],
+                'complemento': row[14]
+            } if row[9] else None
         }
         
         return jsonify(contrato)
@@ -511,9 +550,9 @@ def update_contrato(contrato_id):
             return jsonify({'error': 'Data de entrega deve ser posterior à data da venda'}), 400
         
         cursor.execute("""
-            UPDATE contrato SET data_venda = %s, data_entrega = %s, id_cliente = %s 
+            UPDATE contrato SET data_venda = %s, data_entrega = %s, id_cliente = %s, vendedor = %s 
             WHERE id = %s
-        """, (data_venda, data_entrega, data['id_cliente'], contrato_id))
+        """, (data_venda, data_entrega, data['id_cliente'], data.get('vendedor'), contrato_id))
         
         conn.commit()
         return jsonify({'message': 'Contrato atualizado com sucesso'})
@@ -604,6 +643,15 @@ def get_elevadores():
             """, (elevador_id,))
             adicionais_data = cursor.fetchone()
             
+            # Buscar dados do contrato para mostrar informações completas
+            cursor.execute("""
+                SELECT c.data_venda, c.data_entrega, cl.nome
+                FROM contrato c
+                LEFT JOIN cliente cl ON c.id_cliente = cl.id
+                WHERE c.id = %s
+            """, (row[1],))  # row[1] é id_contrato
+            contrato_data = cursor.fetchone()
+            
             elevador = {
                 'id': row[0],
                 'id_contrato': row[1],
@@ -620,7 +668,9 @@ def get_elevadores():
                     'piso': cabine_data[3] if cabine_data else None,
                     'montada': cabine_data[4] if cabine_data else False,
                     'lado_entrada': cabine_data[5] if cabine_data else None,
-                    'lado_saida': cabine_data[6] if cabine_data else None
+                    'lado_saida': cabine_data[6] if cabine_data else None,
+                    # Descrição calculada para compatibilidade
+                    'descricao': f"{cabine_data[0]}x{cabine_data[1]}x{cabine_data[2]}" if cabine_data and all([cabine_data[0], cabine_data[1], cabine_data[2]]) else "N/A"
                 } if cabine_data else None,
                 'coluna': {
                     'elevacao': coluna_data[0] if coluna_data else None,
@@ -636,7 +686,12 @@ def get_elevadores():
                     'rampa_acesso': adicionais_data[6] if adicionais_data else 0,
                     'nobreak': adicionais_data[7] if adicionais_data else 0,
                     'galvanizada': adicionais_data[8] if adicionais_data else False
-                } if adicionais_data else None
+                } if adicionais_data else None,
+                # Campos adicionais para compatibilidade com o frontend
+                'cliente_nome': contrato_data[2] if contrato_data else None,
+                'data_entrega': contrato_data[1].isoformat() if contrato_data and contrato_data[1] else None,
+                'cabine_descricao': f"{cabine_data[0]}x{cabine_data[1]}x{cabine_data[2]}" if cabine_data else "N/A",
+                'elevacao': coluna_data[0] if coluna_data else None
             }
             
             elevadores.append(elevador)

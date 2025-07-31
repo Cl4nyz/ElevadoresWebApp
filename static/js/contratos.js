@@ -5,8 +5,70 @@ let contratoAtual = null;
 let dataCalculada = null;
 let tabelaContratos = null;
 
+// Funções para gerenciamento do campo vendedor
+function toggleVendedorCustom() {
+    const select = document.getElementById('vendedor');
+    const input = document.getElementById('vendedorCustom');
+    
+    if (input.style.display === 'none') {
+        // Mostrar input customizado
+        select.style.display = 'none';
+        input.style.display = 'block';
+        input.focus();
+        input.value = '';
+    } else {
+        // Mostrar select
+        input.style.display = 'none';
+        select.style.display = 'block';
+        select.value = '';
+    }
+}
+
+function getVendedorValue() {
+    const select = document.getElementById('vendedor');
+    const input = document.getElementById('vendedorCustom');
+    
+    if (input.style.display !== 'none' && input.value.trim()) {
+        return input.value.trim();
+    }
+    return select.value || null;
+}
+
+function setVendedorValue(value) {
+    const select = document.getElementById('vendedor');
+    const input = document.getElementById('vendedorCustom');
+    
+    if (!value) {
+        select.value = '';
+        input.value = '';
+        input.style.display = 'none';
+        select.style.display = 'block';
+        return;
+    }
+    
+    // Verificar se é um dos valores predefinidos
+    const opcoes = Array.from(select.options).map(option => option.value);
+    if (opcoes.includes(value)) {
+        select.value = value;
+        input.value = '';
+        input.style.display = 'none';
+        select.style.display = 'block';
+    } else {
+        // Valor customizado
+        select.value = '';
+        input.value = value;
+        select.style.display = 'none';
+        input.style.display = 'block';
+    }
+}
+
 // Carregar dados ao inicializar a página
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM carregado - inicializando contratos');
+    
+    // Inicializar tabela com ordenação (sem dados iniciais)
+    tabelaContratos = new TabelaOrdenavel('contratosTable', [], renderizarTabelaContratos);
+    
     carregarContratos();
     carregarClientes();
     carregarEstados();
@@ -15,12 +77,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Configurar eventos de formatação
 function configurarEventos() {
-    // CPF formatting
-    const cpfInput = document.getElementById('cpfCliente');
-    if (cpfInput) {
-        cpfInput.addEventListener('input', formatarCPF);
-    }
-    
     // CEP formatting
     const cepInput = document.getElementById('cepCliente');
     if (cepInput) {
@@ -28,15 +84,38 @@ function configurarEventos() {
     }
 }
 
+// Função para calcular status do contrato
+function calcularStatusContrato(contrato) {
+    const hoje = new Date();
+    const dataEntrega = contrato.data_entrega ? criarDataSegura(contrato.data_entrega) : null;
+    
+    if (!dataEntrega) {
+        return 'Sem data de entrega';
+    } else if (dataEntrega < hoje) {
+        return 'Atrasado';
+    } else if (dataEntrega.toDateString() === hoje.toDateString()) {
+        return 'Entrega hoje';
+    } else {
+        return 'Em andamento';
+    }
+}
+
 // Função para carregar contratos
 async function carregarContratos() {
     try {
+        console.log('Carregando contratos...');
         contratos = await apiRequest('/api/contratos');
+        console.log('Contratos carregados:', contratos.length);
         
-        // Inicializar tabela ordenável se ainda não foi inicializada
-        if (!tabelaContratos) {
-            tabelaContratos = new TabelaOrdenavel('contratosTable', contratos, renderizarTabelaContratos);
-        } else {
+        // Adicionar campo status calculado a cada contrato
+        contratos = contratos.map(contrato => ({
+            ...contrato,
+            status: calcularStatusContrato(contrato)
+        }));
+        
+        // Atualizar dados da tabela se já foi inicializada
+        if (tabelaContratos) {
+            console.log('Atualizando dados da TabelaOrdenavel...');
             tabelaContratos.atualizarDados(contratos);
         }
         
@@ -88,32 +167,33 @@ function popularSelectClientes() {
 }
 
 // Função para renderizar tabela de contratos
-function renderizarTabelaContratos() {
+function renderizarTabelaContratos(dadosContratos = contratos) {
     const tbody = document.querySelector('#contratosTable tbody');
     tbody.innerHTML = '';
     
-    contratos.forEach(contrato => {
+    dadosContratos.forEach(contrato => {
         const row = document.createElement('tr');
         
-        // Determinar status do contrato
-        let status = '';
-        let statusClass = '';
-        const hoje = new Date();
-        // Usar a nova função para criar data segura
-        const dataEntrega = contrato.data_entrega ? criarDataSegura(contrato.data_entrega) : null;
+        // Usar status já calculado ou calcular se não existir
+        const status = contrato.status || calcularStatusContrato(contrato);
         
-        if (!dataEntrega) {
-            status = 'Sem data de entrega';
-            statusClass = 'bg-secondary';
-        } else if (dataEntrega < hoje) {
-            status = 'Atrasado';
-            statusClass = 'bg-danger';
-        } else if (dataEntrega.toDateString() === hoje.toDateString()) {
-            status = 'Entrega hoje';
-            statusClass = 'bg-warning';
-        } else {
-            status = 'Em andamento';
-            statusClass = 'bg-success';
+        // Determinar classe CSS baseada no status
+        let statusClass = '';
+        switch (status) {
+            case 'Sem data de entrega':
+                statusClass = 'bg-secondary';
+                break;
+            case 'Atrasado':
+                statusClass = 'bg-danger';
+                break;
+            case 'Entrega hoje':
+                statusClass = 'bg-warning';
+                break;
+            case 'Em andamento':
+                statusClass = 'bg-success';
+                break;
+            default:
+                statusClass = 'bg-info';
         }
         
         row.innerHTML = `
@@ -121,8 +201,12 @@ function renderizarTabelaContratos() {
             <td>${contrato.cliente_nome || 'Cliente não encontrado'}</td>
             <td>${formatarData(contrato.data_venda)}</td>
             <td>${formatarData(contrato.data_entrega)}</td>
+            <td>${contrato.vendedor || '-'}</td>
             <td><span class="badge ${statusClass}">${status}</span></td>
             <td>
+                <button class="btn btn-sm btn-outline-info me-2" onclick="visualizarContrato(${contrato.id})" title="Visualizar">
+                    <i class="fas fa-eye"></i>
+                </button>
                 <button class="btn btn-sm btn-outline-primary me-2" onclick="editarContrato(${contrato.id})" title="Editar">
                     <i class="fas fa-edit"></i>
                 </button>
@@ -133,6 +217,9 @@ function renderizarTabelaContratos() {
         `;
         tbody.appendChild(row);
     });
+    
+    // Não chamar atualizarBusca aqui para evitar loop infinito
+    // A busca já é atualizada automaticamente pela TabelaOrdenavel
 }
 
 // Função para adicionar dias úteis a uma data
@@ -171,12 +258,16 @@ function calcularDataEntrega() {
 
 // Função para salvar novo cliente
 async function salvarNovoCliente() {
-    const nome = document.getElementById('nomeCliente').value.trim();
-    
-    if (!nome) {
-        showToast('Nome do cliente é obrigatório', 'error');
+    // Usar a nova função de validação global
+    if (!validarCamposObrigatorios('novoClienteForm')) {
+        showToast('Por favor, preencha todos os campos obrigatórios', 'warning');
         return;
     }
+    
+    // Limpar erros se validação passou
+    limparErrosCampos('novoClienteForm');
+    
+    const nome = document.getElementById('nomeCliente').value.trim();
     
     const clienteData = {
         nome: nome,
@@ -229,8 +320,65 @@ function adicionarContrato() {
     const hoje = new Date().toISOString().split('T')[0];
     document.getElementById('dataVenda').value = hoje;
     
+    // Limpar campo vendedor
+    setVendedorValue(null);
+    
     const modal = new bootstrap.Modal(document.getElementById('contratoModal'));
     modal.show();
+}
+
+// Função para visualizar contrato
+function visualizarContrato(id) {
+    const contrato = contratos.find(c => c.id === id);
+    if (!contrato) return;
+    
+    // Buscar dados do cliente
+    const cliente = clientes.find(c => c.id === contrato.id_cliente);
+    
+    // Preencher dados básicos
+    document.getElementById('viewContratoId').textContent = contrato.id || 'N/A';
+    document.getElementById('viewContratoCliente').textContent = 
+        cliente ? `${cliente.nome} - ${formatarCPF(cliente.cpf)}` : 'Cliente não encontrado';
+    document.getElementById('viewContratoDataVenda').textContent = 
+        contrato.data_venda ? formatarData(contrato.data_venda) : 'N/A';
+    document.getElementById('viewContratoDataEntrega').textContent = 
+        contrato.data_entrega ? formatarData(contrato.data_entrega) : 'N/A';
+    document.getElementById('viewContratoVendedor').textContent = contrato.vendedor || 'N/A';
+    
+    // Status com badge
+    const status = contrato.status || 'pendente';
+    let statusClass = 'bg-secondary';
+    if (status === 'concluido') statusClass = 'bg-success';
+    else if (status === 'em_andamento') statusClass = 'bg-warning text-dark';
+    else if (status === 'cancelado') statusClass = 'bg-danger';
+    
+    document.getElementById('viewContratoStatus').innerHTML = 
+        `<span class="badge ${statusClass}">${status.charAt(0).toUpperCase() + status.slice(1).replace('_', ' ')}</span>`;
+    
+    // Observações
+    document.getElementById('viewContratoObservacoes').textContent = contrato.observacoes || 'Nenhuma observação';
+    
+    // Armazenar ID do contrato atual para o botão de editar
+    window.contratoVisualizacaoAtual = id;
+    
+    // Abrir modal
+    new bootstrap.Modal(document.getElementById('visualizarContratoModal')).show();
+}
+
+// Função para editar contrato a partir da visualização
+function editarContratoFromView() {
+    if (window.contratoVisualizacaoAtual) {
+        // Fechar modal de visualização
+        const modalVisualizacao = bootstrap.Modal.getInstance(document.getElementById('visualizarContratoModal'));
+        if (modalVisualizacao) {
+            modalVisualizacao.hide();
+        }
+        
+        // Abrir modal de edição
+        setTimeout(() => {
+            editarContrato(window.contratoVisualizacaoAtual);
+        }, 300); // Pequeno delay para permitir que o modal de visualização feche primeiro
+    }
 }
 
 // Função para editar contrato
@@ -246,6 +394,7 @@ function editarContrato(id) {
     document.getElementById('cliente').value = contratoAtual.id_cliente;
     document.getElementById('dataVenda').value = contratoAtual.data_venda || '';
     document.getElementById('dataEntrega').value = contratoAtual.data_entrega || '';
+    setVendedorValue(contratoAtual.vendedor);
     
     const modal = new bootstrap.Modal(document.getElementById('contratoModal'));
     modal.show();
@@ -253,15 +402,20 @@ function editarContrato(id) {
 
 // Função para salvar contrato
 async function salvarContrato() {
-    if (!validarFormulario('contratoForm')) {
+    // Usar a nova função de validação global
+    if (!validarCamposObrigatorios('contratoForm')) {
         showToast('Por favor, preencha todos os campos obrigatórios', 'warning');
         return;
     }
     
+    // Limpar erros se validação passou
+    limparErrosCampos('contratoForm');
+    
     const formData = {
         id_cliente: parseInt(document.getElementById('cliente').value),
         data_venda: document.getElementById('dataVenda').value || null,
-        data_entrega: document.getElementById('dataEntrega').value || null
+        data_entrega: document.getElementById('dataEntrega').value || null,
+        vendedor: getVendedorValue()
     };
     
     // Validar datas se ambas estiverem preenchidas
@@ -476,23 +630,27 @@ function abrirModalNovoClienteContrato() {
 
 // Função para salvar novo cliente a partir de contratos
 async function salvarNovoClienteContrato() {
-    const nome = document.getElementById('nomeClienteContrato').value.trim();
-    const cpf = document.getElementById('cpfClienteContrato').value.trim();
-    
-    if (!nome) {
-        showToast('Nome é obrigatório', 'error');
+    // Usar a nova função de validação global
+    if (!validarCamposObrigatorios('novoClienteContratoForm')) {
+        showToast('Por favor, preencha todos os campos obrigatórios', 'warning');
         return;
     }
     
+    // Limpar erros se validação passou
+    limparErrosCampos('novoClienteContratoForm');
+    
+    const nome = document.getElementById('nomeClienteContrato').value.trim();
+    const cpf = document.getElementById('cpfClienteContrato').value.trim();
+    
     // Validar CPF se preenchido
     if (cpf && !validarCPF(cpf)) {
-        showToast('CPF inválido. Digite apenas números (11 dígitos)', 'error');
+        showToast('CPF inválido. Verifique se todos os dígitos estão corretos', 'error');
         return;
     }
     
     const formData = {
         nome: nome,
-        cpf: cpf || null
+        cpf: cpf ? cpf.replace(/\D/g, '') : null
     };
     
     // Adicionar endereço se preenchido

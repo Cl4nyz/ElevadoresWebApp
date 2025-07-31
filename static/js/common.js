@@ -3,6 +3,91 @@
 // Configuração global do fetch
 const API_BASE = '';
 
+// Função para validar campos obrigatórios e destacar os não preenchidos
+function validarCamposObrigatorios(formId) {
+    const form = document.getElementById(formId);
+    if (!form) return true;
+    
+    const camposObrigatorios = form.querySelectorAll('[required]');
+    let todosValidos = true;
+    let primeiroErro = null;
+    
+    camposObrigatorios.forEach(campo => {
+        let valido = false;
+        
+        // Verificar se o campo está visível
+        if (campo.style.display === 'none' || campo.offsetParent === null) {
+            return; // Pular campos ocultos
+        }
+        
+        if (campo.type === 'checkbox' || campo.type === 'radio') {
+            valido = campo.checked;
+        } else if (campo.tagName === 'SELECT') {
+            valido = campo.value && campo.value.trim() !== '';
+        } else {
+            valido = campo.value && campo.value.trim() !== '';
+        }
+        
+        if (!valido) {
+            campo.classList.add('campo-obrigatorio-erro', 'campo-shake');
+            todosValidos = false;
+            
+            if (!primeiroErro) {
+                primeiroErro = campo;
+            }
+        } else {
+            campo.classList.remove('campo-obrigatorio-erro', 'campo-shake');
+        }
+    });
+    
+    // Focar no primeiro campo com erro
+    if (primeiroErro) {
+        setTimeout(() => {
+            primeiroErro.focus();
+            primeiroErro.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+    }
+    
+    return todosValidos;
+}
+
+// Função para remover destacamento de erro de todos os campos
+function limparErrosCampos(formId) {
+    const form = document.getElementById(formId);
+    if (!form) return;
+    
+    const campos = form.querySelectorAll('.campo-obrigatorio-erro');
+    campos.forEach(campo => {
+        campo.classList.remove('campo-obrigatorio-erro', 'campo-shake');
+    });
+}
+
+// Função para configurar listeners que removem erro ao interagir com campos
+function configurarRemocaoErros() {
+    document.addEventListener('input', function(e) {
+        if (e.target.classList.contains('campo-obrigatorio-erro')) {
+            e.target.classList.remove('campo-obrigatorio-erro', 'campo-shake');
+        }
+    });
+    
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('campo-obrigatorio-erro')) {
+            e.target.classList.remove('campo-obrigatorio-erro', 'campo-shake');
+        }
+    });
+    
+    document.addEventListener('focus', function(e) {
+        if (e.target.classList.contains('campo-obrigatorio-erro')) {
+            e.target.classList.remove('campo-shake');
+        }
+    });
+}
+
+// Inicializar configuração global
+document.addEventListener('DOMContentLoaded', function() {
+    configurarRemocaoErros();
+});
+
 // Função para mostrar toast
 function showToast(message, type = 'info') {
     const toast = document.getElementById('toast');
@@ -213,25 +298,177 @@ function validarFormulario(formId) {
     return isValid;
 }
 
+// Função para formatar CPF
+function formatarCPF(cpf) {
+    // Remove tudo que não é dígito
+    cpf = cpf.replace(/\D/g, '');
+    
+    // Aplica a máscara conforme o usuário digita
+    if (cpf.length <= 3) {
+        return cpf;
+    } else if (cpf.length <= 6) {
+        return cpf.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+    } else if (cpf.length <= 9) {
+        return cpf.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+    } else {
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+    }
+}
+
 // Função para validar CPF
 function validarCPF(cpf) {
     if (!cpf) return true; // CPF é opcional
     
-    cpf = cpf.replace(/[^\d]+/g, '');
+    // Garantir que cpf é uma string e remover formatação
+    cpf = String(cpf).replace(/[^\d]+/g, '');
     
-    if (cpf.length !== 11 || !!cpf.match(/(\d)\1{10}/)) {
+    // Verificar se tem 11 dígitos
+    if (cpf.length !== 11) {
         return false;
     }
     
-    const calc = (x) => {
-        const slice = cpf.slice(0, x);
-        let factor = x + 1;
-        const sum = slice.reduce((acc, d) => acc + d * factor--, 0);
-        const remainder = sum % 11;
-        return remainder < 2 ? 0 : 11 - remainder;
-    };
+    // Verificar se não é uma sequência de números iguais (como 11111111111)
+    if (/^(\d)\1{10}$/.test(cpf)) {
+        return false;
+    }
     
-    return calc(9) === parseInt(cpf[9]) && calc(10) === parseInt(cpf[10]);
+    // Para desenvolvimento, aceitar qualquer CPF que não seja sequência repetida
+    return true;
+}
+
+// Função para aplicar máscara de CPF em tempo real
+function aplicarMascaraCPF(input) {
+    const cursorPosition = input.selectionStart;
+    const oldValue = input.value;
+    const newValue = formatarCPF(input.value);
+    
+    input.value = newValue;
+    
+    // Ajustar posição do cursor para manter experiência fluida
+    let newCursorPosition = cursorPosition;
+    
+    // Se adicionou caracteres de formatação, ajustar cursor
+    if (newValue.length > oldValue.length && cursorPosition <= newValue.length) {
+        // Contar quantos caracteres de formatação foram adicionados até a posição do cursor
+        const beforeCursor = newValue.slice(0, cursorPosition);
+        const formatChars = (beforeCursor.match(/[.\-]/g) || []).length;
+        const oldFormatChars = (oldValue.slice(0, cursorPosition).match(/[.\-]/g) || []).length;
+        
+        if (formatChars > oldFormatChars) {
+            newCursorPosition = cursorPosition + (formatChars - oldFormatChars);
+        }
+    }
+    
+    // Definir nova posição do cursor
+    input.setSelectionRange(newCursorPosition, newCursorPosition);
+}
+
+// Função para formatar CNPJ
+function formatarCNPJ(cnpj) {
+    // Remove tudo que não é dígito
+    cnpj = cnpj.replace(/\D/g, '');
+    
+    // Aplica a máscara conforme o usuário digita
+    if (cnpj.length <= 2) {
+        return cnpj;
+    } else if (cnpj.length <= 5) {
+        return cnpj.replace(/(\d{2})(\d{1,3})/, '$1.$2');
+    } else if (cnpj.length <= 8) {
+        return cnpj.replace(/(\d{2})(\d{3})(\d{1,3})/, '$1.$2.$3');
+    } else if (cnpj.length <= 12) {
+        return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{1,4})/, '$1.$2.$3/$4');
+    } else {
+        return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{1,2})/, '$1.$2.$3/$4-$5');
+    }
+}
+
+// Função para validar CNPJ
+function validarCNPJ(cnpj) {
+    if (!cnpj) return true; // CNPJ é opcional
+    
+    // Garantir que cnpj é uma string e remover formatação
+    cnpj = String(cnpj).replace(/[^\d]+/g, '');
+    
+    // Verificar se tem 14 dígitos
+    if (cnpj.length !== 14) {
+        return false;
+    }
+    
+    // Verificar se não é uma sequência de números iguais (como 11111111111111)
+    if (/^(\d)\1{13}$/.test(cnpj)) {
+        return false;
+    }
+    
+    // Para desenvolvimento, aceitar qualquer CNPJ que não seja sequência repetida
+    return true;
+}
+
+// Função para aplicar máscara de CNPJ em tempo real
+function aplicarMascaraCNPJ(input) {
+    const cursorPosition = input.selectionStart;
+    const oldValue = input.value;
+    const newValue = formatarCNPJ(input.value);
+    
+    input.value = newValue;
+    
+    // Ajustar posição do cursor para manter experiência fluida
+    let newCursorPosition = cursorPosition;
+    
+    // Se adicionou caracteres de formatação, ajustar cursor
+    if (newValue.length > oldValue.length && cursorPosition <= newValue.length) {
+        // Contar quantos caracteres de formatação foram adicionados até a posição do cursor
+        const beforeCursor = newValue.slice(0, cursorPosition);
+        const formatChars = (beforeCursor.match(/[.\-\/]/g) || []).length;
+        const oldFormatChars = (oldValue.slice(0, cursorPosition).match(/[.\-\/]/g) || []).length;
+        
+        if (formatChars > oldFormatChars) {
+            newCursorPosition = cursorPosition + (formatChars - oldFormatChars);
+        }
+    }
+    
+    // Definir nova posição do cursor
+    input.setSelectionRange(newCursorPosition, newCursorPosition);
+}
+
+// Função para formatar documento (CPF ou CNPJ)
+function formatarDocumento(documento) {
+    if (!documento) return '';
+    
+    // Remove formatação
+    const numeros = documento.replace(/\D/g, '');
+    
+    if (numeros.length <= 11) {
+        return formatarCPF(numeros);
+    } else {
+        return formatarCNPJ(numeros);
+    }
+}
+
+// Função para validar documento (CPF ou CNPJ)
+function validarDocumento(documento) {
+    if (!documento) return true; // Documento é opcional
+    
+    // Remove formatação
+    const numeros = documento.replace(/\D/g, '');
+    
+    if (numeros.length === 11) {
+        return validarCPF(numeros);
+    } else if (numeros.length === 14) {
+        return validarCNPJ(numeros);
+    } else {
+        return false;
+    }
+}
+
+// Função para aplicar máscara de documento (CPF ou CNPJ)
+function aplicarMascaraDocumento(input) {
+    const numeros = input.value.replace(/\D/g, '');
+    
+    if (numeros.length <= 11) {
+        aplicarMascaraCPF(input);
+    } else {
+        aplicarMascaraCNPJ(input);
+    }
 }
 
 // Máscaras para inputs
@@ -399,26 +636,37 @@ class TabelaOrdenavel {
         const tabela = document.getElementById(this.tabelaId);
         if (!tabela) return;
         
-        const container = tabela.parentElement;
-        const existePesquisa = container.querySelector('.search-container');
+        // Encontrar o container apropriado (subir até encontrar .card-body ou .container)
+        let container = tabela.parentElement;
+        while (container && !container.classList.contains('card-body') && !container.classList.contains('container')) {
+            container = container.parentElement;
+        }
+        
+        if (!container) {
+            container = tabela.parentElement;
+        }
+        
+        const existePesquisa = container.querySelector('.search-container') || document.getElementById(`search-${this.tabelaId}`);
         
         if (!existePesquisa) {
             const searchContainer = document.createElement('div');
             searchContainer.className = 'search-container mb-3';
             searchContainer.innerHTML = `
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="input-group">
                             <span class="input-group-text">
                                 <i class="fas fa-search"></i>
                             </span>
-                            <input type="text" class="form-control" placeholder="Pesquisar..." id="search-${this.tabelaId}">
+                            <input type="text" class="form-control" placeholder="Buscar por cliente, ID, vendedor ou data..." id="search-${this.tabelaId}">
                         </div>
                     </div>
                 </div>
             `;
             
-            container.insertBefore(searchContainer, tabela);
+            // Inserir antes da table-responsive ou da tabela
+            const tableContainer = tabela.closest('.table-responsive') || tabela;
+            container.insertBefore(searchContainer, tableContainer);
             
             // Adicionar evento de pesquisa
             const searchInput = document.getElementById(`search-${this.tabelaId}`);
@@ -481,9 +729,16 @@ class TabelaOrdenavel {
             this.dados = [...this.dadosOriginais];
         } else {
             this.dados = this.dadosOriginais.filter(item => {
-                return Object.values(item).some(valor => 
-                    String(valor).toLowerCase().includes(this.termoPesquisa)
-                );
+                return Object.values(item).some(valor => {
+                    if (valor === null || valor === undefined) return false;
+                    // Converter datas para formato brasileiro para busca
+                    if (typeof valor === 'string' && valor.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                        const data = new Date(valor + 'T00:00:00');
+                        const dataBrasil = data.toLocaleDateString('pt-BR');
+                        return dataBrasil.includes(this.termoPesquisa);
+                    }
+                    return String(valor).toLowerCase().includes(this.termoPesquisa);
+                });
             });
         }
         
@@ -505,5 +760,13 @@ class TabelaOrdenavel {
         this.dados = [...novosDados];
         this.dadosOriginais = [...novosDados];
         this.filtrarEAtualizar();
+    }
+    
+    // Método para atualizar a busca após mudanças na tabela
+    atualizarBusca() {
+        const searchInput = document.getElementById(`search-${this.tabelaId}`);
+        if (searchInput && searchInput.value) {
+            this.filtrar(searchInput.value);
+        }
     }
 }

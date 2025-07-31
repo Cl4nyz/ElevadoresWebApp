@@ -20,7 +20,8 @@
                         <th data-sort="cliente_nome">Cliente</th>
                         <th data-sort="data_venda">Data da Venda</th>
                         <th data-sort="data_entrega">Data Entrega</th>
-                        <th>Status</th>
+                        <th data-sort="vendedor">Vendedor</th>
+                        <th data-sort="status">Status</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -71,6 +72,23 @@
                                 <i class="fas fa-calendar-plus"></i> + Dias Úteis
                             </button>
                         </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="vendedor" class="form-label">Vendedor</label>
+                        <div class="input-group">
+                            <select class="form-select" id="vendedor">
+                                <option value="">Selecione um vendedor</option>
+                                <option value="Deuclides">Deuclides</option>
+                                <option value="Leandro">Leandro</option>
+                                <option value="Jean">Jean</option>
+                            </select>
+                            <input type="text" class="form-control" id="vendedorCustom" placeholder="Outro vendedor" style="display: none;">
+                            <button type="button" class="btn btn-outline-secondary" onclick="toggleVendedorCustom()" title="Outro vendedor">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                        <div class="form-text">Selecione um vendedor predefinido ou digite um novo nome</div>
                     </div>
                 </form>
             </div>
@@ -140,7 +158,7 @@
                     
                     <div class="mb-3">
                         <label for="cpfClienteContrato" class="form-label">CPF</label>
-                        <input type="text" class="form-control" id="cpfClienteContrato" maxlength="11" placeholder="Apenas números">
+                        <input type="text" class="form-control" id="cpfClienteContrato" maxlength="14" placeholder="000.000.000-00" oninput="aplicarMascaraCPF(this)">
                     </div>
                     
                     <hr>
@@ -230,8 +248,65 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Visualização Contrato -->
+<div class="modal fade" id="visualizarContratoModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-eye"></i> Visualizar Contrato
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">ID do Contrato:</label>
+                        <p class="form-control-plaintext" id="viewContratoId">-</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Status:</label>
+                        <p class="form-control-plaintext" id="viewContratoStatus">-</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">Cliente:</label>
+                        <p class="form-control-plaintext" id="viewContratoCliente">-</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Data da Venda:</label>
+                        <p class="form-control-plaintext" id="viewContratoDataVenda">-</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Data de Entrega:</label>
+                        <p class="form-control-plaintext" id="viewContratoDataEntrega">-</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Vendedor:</label>
+                        <p class="form-control-plaintext" id="viewContratoVendedor">-</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" onclick="editarContratoFromView()">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/contratos.js') }}"></script>
+<script src="{{ url_for('static', filename='js/contratos.js') }}?v=20250730121500"></script>
 {% endblock %}

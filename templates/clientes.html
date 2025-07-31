@@ -18,7 +18,7 @@
                     <tr>
                         <th data-sort="id">ID</th>
                         <th data-sort="nome">Nome</th>
-                        <th data-sort="cpf">CPF</th>
+                        <th data-sort="documento">CPF/CNPJ</th>
                         <th>Endereços</th>
                         <th>Ações</th>
                     </tr>
@@ -46,13 +46,20 @@
                     <input type="hidden" id="clienteId">
                     
                     <div class="row mb-3">
-                        <div class="col-md-8">
+                        <div class="col-md-6">
                             <label for="nome" class="form-label">Nome *</label>
                             <input type="text" class="form-control" id="nome" required>
                         </div>
-                        <div class="col-md-4">
-                            <label for="cpf" class="form-label">CPF</label>
-                            <input type="text" class="form-control" id="cpf" maxlength="11">
+                        <div class="col-md-3">
+                            <label for="comercial" class="form-label">Tipo de Cliente</label>
+                            <select class="form-select" id="comercial" onchange="alterarTipoCliente()">
+                                <option value="false">Pessoa Física</option>
+                                <option value="true">Pessoa Jurídica</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="documento" class="form-label" id="labelDocumento">CPF</label>
+                            <input type="text" class="form-control" id="documento" maxlength="18" placeholder="000.000.000-00" oninput="aplicarMascaraDocumento(this)">
                         </div>
                     </div>
 
@@ -157,7 +164,7 @@
 
 <!-- Modal Novo Endereço -->
 <div class="modal fade" id="novoEnderecoModal" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
@@ -235,6 +242,48 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="salvarEndereco()">
                     <i class="fas fa-save"></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Visualização Cliente -->
+<div class="modal fade" id="visualizarClienteModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-eye"></i> Visualizar Cliente
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Nome:</label>
+                        <p class="form-control-plaintext" id="viewClienteNome">-</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Tipo:</label>
+                        <p class="form-control-plaintext" id="viewClienteTipo">-</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold" id="viewLabelDocumento">CPF/CNPJ:</label>
+                        <p class="form-control-plaintext" id="viewClienteDocumento">-</p>
+                    </div>
+                </div>
+                
+                <hr>
+                <h6><i class="fas fa-map-marker-alt"></i> Endereços</h6>
+                <div id="viewEnderecos">
+                    <p class="text-muted">Nenhum endereço cadastrado</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" onclick="editarClienteFromView()">
+                    <i class="fas fa-edit"></i> Editar
                 </button>
             </div>
         </div>

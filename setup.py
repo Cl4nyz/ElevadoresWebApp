@@ -42,10 +42,10 @@ def setup_database():
         
         # Inserir clientes de exemplo
         cursor.execute("""
-            INSERT INTO cliente (nome, cpf) VALUES
-            ('João Silva', '12345678901'),
-            ('Maria Souza', '98765432100'),
-            ('Pedro Santos', '11111111111');
+            INSERT INTO cliente (nome, comercial, documento, email) VALUES
+            ('João Silva', 0, '12345678901', 'joao.silva@email.com'),
+            ('Maria Souza', 0, '98765432100', 'maria.souza@email.com'),
+            ('Pedro Santos', 0, '11111111111', 'pedro.santos@email.com');
         """)
         
         # Inserir endereços de exemplo

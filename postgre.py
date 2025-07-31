@@ -141,7 +141,8 @@ if __name__ == '__main__':
     cursor = conn.cursor()
     pop = False
 
-    if pop:
+    # Desabilitado temporariamente para evitar conflitos com recreate_db.py
+    if False and pop:
         drop_all_tables(conn)
         create_tables(conn)
         insert_initial_data(conn)  # Inserir dados iniciais obrigatórios
@@ -150,10 +151,10 @@ if __name__ == '__main__':
         try:
             # Inserir clientes (sem especificar ID - será auto-incrementado)
             cursor.execute("""
-                INSERT INTO cliente (nome, cpf) VALUES
-                ('João Silva Santos', '12345678901'),
-                ('Maria Oliveira Costa', '98765432100'),
-                ('Pedro Henrique Lima', '11111111111');
+                INSERT INTO cliente (nome, comercial, documento, email) VALUES
+                ('João Silva Santos', 0, '12345678901', 'joao.silva@email.com'),
+                ('Maria Oliveira Costa', 0, '98765432100', 'maria.oliveira@email.com'),
+                ('Pedro Henrique Lima', 0, '11111111111', 'pedro.lima@email.com');
             """)
 
             # Inserir endereços (usando siglas de estado válidas)

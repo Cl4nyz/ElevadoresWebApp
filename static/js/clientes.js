@@ -47,8 +47,11 @@ function renderizarTabelaClientes(dadosParaRenderizar = clientes) {
         
         row.innerHTML = `
             <td>${cliente.id}</td>
-            <td>${cliente.nome}</td>
-            <td>${formatarCPF(cliente.cpf)}</td>
+            <td>
+                ${cliente.nome}
+                ${cliente.comercial ? '<span class="badge bg-info ms-2">PJ</span>' : '<span class="badge bg-secondary ms-2">PF</span>'}
+            </td>
+            <td>${formatarDocumento(cliente.documento || cliente.cpf || '')}</td>
             <td>
                 ${enderecosHtml}
                 <button class="btn btn-sm btn-outline-secondary mt-1" onclick="gerenciarEnderecos(${cliente.id}, '${cliente.nome}')">
@@ -57,6 +60,9 @@ function renderizarTabelaClientes(dadosParaRenderizar = clientes) {
             </td>
             <td>
                 <div class="btn-group" role="group">
+                    <button class="btn btn-sm btn-outline-info" onclick="visualizarCliente(${cliente.id})" title="Visualizar">
+                        <i class="fas fa-eye"></i>
+                    </button>
                     <button class="btn btn-sm btn-outline-primary" onclick="editarCliente(${cliente.id})" title="Editar">
                         <i class="fas fa-edit"></i>
                     </button>
@@ -76,8 +82,152 @@ function novoCliente() {
     clienteAtual = null;
     document.getElementById('modalTitle').textContent = 'Novo Cliente';
     limparFormulario('clienteForm');
+    
+    // Resetar para pessoa física por padrão
+    document.getElementById('comercial').value = 'false';
+    
     const modal = new bootstrap.Modal(document.getElementById('clienteModal'));
+    
+    // Configurar o tipo de cliente quando o modal for totalmente mostrado
+    const modalElement = document.getElementById('clienteModal');
+    modalElement.addEventListener('shown.bs.modal', function handler() {
+        alterarTipoCliente();
+        // Remover o event listener após usar para evitar duplicatas
+        modalElement.removeEventListener('shown.bs.modal', handler);
+    });
+    
     modal.show();
+}
+
+// Função para alterar tipo de cliente
+function alterarTipoCliente() {
+    const comercial = document.getElementById('comercial').value === 'true';
+    const labelDocumento = document.getElementById('labelDocumento');
+    const inputDocumento = document.getElementById('documento');
+    
+    // Verificar se os elementos existem
+    if (!labelDocumento || !inputDocumento) {
+        console.warn('Elementos do formulário não encontrados ainda');
+        return;
+    }
+    
+    if (comercial) {
+        labelDocumento.textContent = 'CNPJ';
+        inputDocumento.placeholder = '00.000.000/0000-00';
+        inputDocumento.maxLength = '18'; // Formatado: 00.000.000/0000-00
+    } else {
+        labelDocumento.textContent = 'CPF';
+        inputDocumento.placeholder = '000.000.000-00';
+        inputDocumento.maxLength = '14'; // Formatado: 000.000.000-00
+    }
+    
+    // Limpar campo atual
+    inputDocumento.value = '';
+    
+    // Remover event listeners anteriores
+    inputDocumento.removeEventListener('input', limitarDigitosCPF);
+    inputDocumento.removeEventListener('input', limitarDigitosCNPJ);
+    
+    // Adicionar event listener apropriado
+    if (comercial) {
+        inputDocumento.addEventListener('input', limitarDigitosCNPJ);
+        console.log('Event listener CNPJ configurado');
+    } else {
+        inputDocumento.addEventListener('input', limitarDigitosCPF);
+        console.log('Event listener CPF configurado');
+    }
+}
+
+// Função para limitar entrada de CPF (máximo 11 dígitos)
+function limitarDigitosCPF(event) {
+    const input = event.target;
+    const valor = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+    
+    if (valor.length > 11) {
+        // Limitar a 11 dígitos
+        const valorLimitado = valor.substring(0, 11);
+        input.value = formatarCPF(valorLimitado);
+    } else {
+        input.value = formatarCPF(valor);
+    }
+}
+
+// Função para limitar entrada de CNPJ (máximo 14 dígitos)
+function limitarDigitosCNPJ(event) {
+    const input = event.target;
+    const valor = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+    
+    if (valor.length > 14) {
+        // Limitar a 14 dígitos
+        const valorLimitado = valor.substring(0, 14);
+        input.value = formatarCNPJ(valorLimitado);
+    } else {
+        input.value = formatarCNPJ(valor);
+    }
+}
+
+// Função para visualizar cliente
+function visualizarCliente(id) {
+    const cliente = clientes.find(c => c.id === id);
+    if (!cliente) return;
+    
+    // Preencher dados básicos
+    document.getElementById('viewClienteNome').textContent = cliente.nome || 'N/A';
+    document.getElementById('viewClienteTipo').innerHTML = cliente.comercial ? 
+        '<span class="badge bg-info">Pessoa Jurídica</span>' : 
+        '<span class="badge bg-secondary">Pessoa Física</span>';
+    
+    // Determinar o documento (novo campo ou campo legado)
+    const documento = cliente.documento || cliente.cpf || '';
+    const labelDocumento = document.getElementById('viewLabelDocumento');
+    
+    if (cliente.comercial) {
+        labelDocumento.textContent = 'CNPJ:';
+    } else {
+        labelDocumento.textContent = 'CPF:';
+    }
+    
+    document.getElementById('viewClienteDocumento').textContent = documento ? 
+        formatarDocumento(documento) : 'N/A';
+    
+    // Preencher endereços
+    const enderecosContainer = document.getElementById('viewClienteEnderecos');
+    if (cliente.enderecos && cliente.enderecos.length > 0) {
+        enderecosContainer.innerHTML = cliente.enderecos.map(endereco => `
+            <div class="border rounded p-2 mb-2">
+                <strong>${endereco.rua}, ${endereco.numero || 'S/N'}</strong><br>
+                <small class="text-muted">
+                    ${endereco.complemento ? endereco.complemento + '<br>' : ''}
+                    ${endereco.bairro ? endereco.bairro + ' - ' : ''}${endereco.cidade}/${endereco.estado}
+                    ${endereco.cep ? ' - CEP: ' + endereco.cep : ''}
+                </small>
+            </div>
+        `).join('');
+    } else {
+        enderecosContainer.innerHTML = '<p class="text-muted">Nenhum endereço cadastrado</p>';
+    }
+    
+    // Armazenar ID do cliente atual para o botão de editar
+    window.clienteVisualizacaoAtual = id;
+    
+    // Abrir modal
+    new bootstrap.Modal(document.getElementById('visualizarClienteModal')).show();
+}
+
+// Função para editar cliente a partir da visualização
+function editarClienteFromView() {
+    if (window.clienteVisualizacaoAtual) {
+        // Fechar modal de visualização
+        const modalVisualizacao = bootstrap.Modal.getInstance(document.getElementById('visualizarClienteModal'));
+        if (modalVisualizacao) {
+            modalVisualizacao.hide();
+        }
+        
+        // Abrir modal de edição
+        setTimeout(() => {
+            editarCliente(window.clienteVisualizacaoAtual);
+        }, 300); // Pequeno delay para permitir que o modal de visualização feche primeiro
+    }
 }
 
 // Função para editar cliente
@@ -91,7 +241,14 @@ function editarCliente(id) {
     // Preencher formulário
     document.getElementById('clienteId').value = cliente.id;
     document.getElementById('nome').value = cliente.nome;
-    document.getElementById('cpf').value = cliente.cpf || '';
+    
+    // Determinar tipo de cliente e documento
+    const comercial = cliente.comercial || false;
+    document.getElementById('comercial').value = comercial.toString();
+    
+    // Preencher documento (novo campo ou campo legado)
+    const documento = cliente.documento || cliente.cpf || '';
+    document.getElementById('documento').value = documento ? formatarDocumento(documento) : '';
     
     // Preencher primeiro endereço se existir
     if (cliente.enderecos && cliente.enderecos.length > 0) {
@@ -105,38 +262,49 @@ function editarCliente(id) {
     }
     
     const modal = new bootstrap.Modal(document.getElementById('clienteModal'));
+    
+    // Configurar o tipo de cliente quando o modal for totalmente mostrado
+    const modalElement = document.getElementById('clienteModal');
+    modalElement.addEventListener('shown.bs.modal', function handler() {
+        alterarTipoCliente(); // Atualizar labels, placeholders e event listeners
+        // Remover o event listener após usar para evitar duplicatas
+        modalElement.removeEventListener('shown.bs.modal', handler);
+    });
+    
     modal.show();
 }
 
 // Função para salvar cliente
 async function salvarCliente() {
-    if (!validarFormulario('clienteForm')) {
+    // Usar a nova função de validação global
+    if (!validarCamposObrigatorios('clienteForm')) {
         showToast('Por favor, preencha todos os campos obrigatórios', 'warning');
         return;
     }
     
-    const nome = document.getElementById('nome').value.trim();
-    const cpf = document.getElementById('cpf').value.trim();
+    // Limpar erros se validação passou
+    limparErrosCampos('clienteForm');
     
-    if (!nome) {
-        showToast('Nome é obrigatório', 'error');
-        return;
-    }
+    const nome = document.getElementById('nome').value.trim();
+    const comercial = document.getElementById('comercial').value === 'true';
+    const documento = document.getElementById('documento').value.trim();
     
     const formData = {
         nome: nome,
-        cpf: cpf || null
+        comercial: comercial,
+        documento: documento || null
     };
     
-    // Validar CPF se preenchido
-    if (cpf && !validarCPF(cpf)) {
-        showToast('CPF inválido. Digite apenas números (11 dígitos)', 'error');
+    // Validar documento se preenchido
+    if (documento && !validarDocumento(documento)) {
+        const tipoDoc = comercial ? 'CNPJ' : 'CPF';
+        showToast(`${tipoDoc} inválido. Verifique se todos os dígitos estão corretos`, 'error');
         return;
     }
     
-    // Remover caracteres não numéricos do CPF
-    if (cpf) {
-        formData.cpf = cpf.replace(/\D/g, '');
+    // Remover caracteres não numéricos do documento para salvar no banco
+    if (documento) {
+        formData.documento = documento.replace(/\D/g, '');
     }
     
     // Adicionar endereço se preenchido

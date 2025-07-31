@@ -110,11 +110,11 @@ def adicionar_dados_exemplo(conn):
     try:
         # Clientes
         cursor.execute("""
-            INSERT INTO cliente (nome, cpf) VALUES
-            ('João Silva Santos', '12345678901'),
-            ('Maria Oliveira Costa', '98765432100'),
-            ('Pedro Henrique Lima', '11111111111'),
-            ('Ana Carolina Souza', '22222222222')
+            INSERT INTO cliente (nome, comercial, documento, email) VALUES
+            ('João Silva Santos', 0, '12345678901', 'joao.silva@email.com'),
+            ('Maria Oliveira Costa', 0, '98765432100', 'maria.oliveira@email.com'),
+            ('Pedro Henrique Lima', 0, '11111111111', 'pedro.lima@email.com'),
+            ('Ana Carolina Souza', 0, '22222222222', 'ana.souza@email.com')
             ON CONFLICT DO NOTHING;
         """)
         

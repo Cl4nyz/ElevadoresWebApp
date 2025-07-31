@@ -3,6 +3,47 @@ body {
     background-color: #f8f9fa;
 }
 
+/* Estilos para validação de formulários */
+.campo-obrigatorio-erro {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+.campo-obrigatorio-erro:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+/* Animação para destacar campos com erro */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.campo-shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Estilos para campos vazios e preenchidos */
+.campo-vazio {
+    color: #6c757d !important;
+}
+
+.campo-preenchido {
+    color: #212529 !important;
+}
+
+.campo-adicional-ativo {
+    background-color: #1f3a5f !important;
+    color: white !important;
+    border-color: #1f3a5f !important;
+}
+
+.checkbox-adicional-ativo {
+    accent-color: #1f3a5f !important;
+}
+
 .hero-section {
     background: linear-gradient(135deg, #007bff, #0056b3);
     color: white;
