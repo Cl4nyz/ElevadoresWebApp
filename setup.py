@@ -40,12 +40,12 @@ def setup_database():
         # Adicionar dados de exemplo
         cursor = conn.cursor()
         
-        # Inserir clientes de exemplo
+                # Inserir clientes de exemplo
         cursor.execute("""
             INSERT INTO cliente (nome, comercial, documento, email) VALUES
-            ('João Silva', 0, '12345678901', 'joao.silva@email.com'),
-            ('Maria Souza', 0, '98765432100', 'maria.souza@email.com'),
-            ('Pedro Santos', 0, '11111111111', 'pedro.santos@email.com');
+            ('João Silva', 0, '12345678901', 'joao.silva.setup@email.com'),
+            ('Maria Souza', 0, '98765432100', 'maria.souza.setup@email.com'),
+            ('Pedro Santos', 0, '11111111111', 'pedro.santos.setup@email.com');
         """)
         
         # Inserir endereços de exemplo

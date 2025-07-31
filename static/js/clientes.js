@@ -52,6 +52,7 @@ function renderizarTabelaClientes(dadosParaRenderizar = clientes) {
                 ${cliente.comercial ? '<span class="badge bg-info ms-2">PJ</span>' : '<span class="badge bg-secondary ms-2">PF</span>'}
             </td>
             <td>${formatarDocumento(cliente.documento || cliente.cpf || '')}</td>
+            <td>${cliente.email || '<span class="text-muted">Não informado</span>'}</td>
             <td>
                 ${enderecosHtml}
                 <button class="btn btn-sm btn-outline-secondary mt-1" onclick="gerenciarEnderecos(${cliente.id}, '${cliente.nome}')">
@@ -176,6 +177,7 @@ function visualizarCliente(id) {
     document.getElementById('viewClienteTipo').innerHTML = cliente.comercial ? 
         '<span class="badge bg-info">Pessoa Jurídica</span>' : 
         '<span class="badge bg-secondary">Pessoa Física</span>';
+    document.getElementById('viewClienteEmail').textContent = cliente.email || 'Não informado';
     
     // Determinar o documento (novo campo ou campo legado)
     const documento = cliente.documento || cliente.cpf || '';
@@ -191,7 +193,7 @@ function visualizarCliente(id) {
         formatarDocumento(documento) : 'N/A';
     
     // Preencher endereços
-    const enderecosContainer = document.getElementById('viewClienteEnderecos');
+    const enderecosContainer = document.getElementById('viewEnderecos');
     if (cliente.enderecos && cliente.enderecos.length > 0) {
         enderecosContainer.innerHTML = cliente.enderecos.map(endereco => `
             <div class="border rounded p-2 mb-2">
@@ -241,6 +243,7 @@ function editarCliente(id) {
     // Preencher formulário
     document.getElementById('clienteId').value = cliente.id;
     document.getElementById('nome').value = cliente.nome;
+    document.getElementById('email').value = cliente.email || '';
     
     // Determinar tipo de cliente e documento
     const comercial = cliente.comercial || false;
@@ -288,11 +291,13 @@ async function salvarCliente() {
     const nome = document.getElementById('nome').value.trim();
     const comercial = document.getElementById('comercial').value === 'true';
     const documento = document.getElementById('documento').value.trim();
+    const email = document.getElementById('email').value.trim();
     
     const formData = {
         nome: nome,
         comercial: comercial,
-        documento: documento || null
+        documento: documento || null,
+        email: email || null
     };
     
     // Validar documento se preenchido

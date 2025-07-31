@@ -37,22 +37,44 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card">
+        <!-- Filtros -->
+        <div class="card mb-3">
             <div class="card-header">
-                <h6><i class="fas fa-info-circle"></i> Legenda</h6>
+                <h6><i class="fas fa-filter"></i> Filtros</h6>
             </div>
             <div class="card-body">
-                <div class="mb-2">
-                    <span class="badge bg-primary me-2">■</span> Entregas Programadas
-                </div>
-                <div class="mb-2">
-                    <span class="badge bg-success me-2">■</span> Entregas Concluídas
-                </div>
-                <div class="mb-2">
-                    <span class="badge bg-warning me-2">■</span> Entregas Pendentes
-                </div>
-                <div class="mb-2">
-                    <span class="badge bg-danger me-2">■</span> Entregas Atrasadas
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Status:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="todos" id="status-todos" checked>
+                        <label class="form-check-label" for="status-todos">
+                            Todos
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Não iniciado" id="status-nao-iniciado" checked>
+                        <label class="form-check-label" for="status-nao-iniciado">
+                            <span class="badge bg-secondary me-1">■</span> Não iniciado
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Em produção" id="status-em-producao" checked>
+                        <label class="form-check-label" for="status-em-producao">
+                            <span class="badge bg-warning me-1">■</span> Em produção
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Pronto" id="status-pronto" checked>
+                        <label class="form-check-label" for="status-pronto">
+                            <span class="badge bg-info me-1">■</span> Pronto
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Entregue" id="status-entregue" checked>
+                        <label class="form-check-label" for="status-entregue">
+                            <span class="badge bg-success me-1">■</span> Entregue
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -83,7 +105,7 @@
 
 <!-- Modal Detalhes do Evento -->
 <div class="modal fade" id="eventoModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">

@@ -214,19 +214,25 @@ function converterDataISOParaBr(dataISO) {
 function criarDataSegura(dataString) {
     if (!dataString) return null;
     
-    // Se é uma string no formato YYYY-MM-DD (formato padrão do input date)
+    // Se é uma string no formato YYYY-MM-DD (formato padrão do input date e ISO)
     if (/^\d{4}-\d{2}-\d{2}$/.test(dataString)) {
-        return new Date(dataString + 'T00:00:00');
+        const [ano, mes, dia] = dataString.split('-');
+        return new Date(parseInt(ano), parseInt(mes) - 1, parseInt(dia));
     }
     
     // Se é uma string no formato DD/MM/YYYY
     if (/^\d{2}\/\d{2}\/\d{4}$/.test(dataString)) {
         const [dia, mes, ano] = dataString.split('/');
-        return new Date(ano, parseInt(mes) - 1, dia);
+        return new Date(parseInt(ano), parseInt(mes) - 1, parseInt(dia));
     }
     
-    // Tentar criar a data normalmente
-    return new Date(dataString + 'T00:00:00');
+    // Tentar criar a data normalmente como último recurso
+    try {
+        return new Date(dataString);
+    } catch (e) {
+        console.error('Erro ao criar data:', dataString, e);
+        return null;
+    }
 }
 
 // Função para formatar CPF

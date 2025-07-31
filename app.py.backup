@@ -1079,9 +1079,9 @@ def gerar_pdf_elevador(elevador_id):
         # Buscar dados completos do elevador
         query = """
             SELECT 
-                e.id, e.comando, e.observacao, e.porta_inferior, e.porta_superior, e.cor,
-                c.id as contrato_id, c.data_venda, c.data_entrega,
-                cl.nome as cliente_nome, cl.cpf,
+                e.id, e.comando, e.observacao, e.porta_inferior, e.porta_superior, e.cor, e.status,
+                c.id as contrato_id, c.data_venda, c.data_entrega, c.vendedor,
+                cl.nome as cliente_nome, cl.documento,
                 cab.altura as cabine_altura, cab.largura as cabine_largura, 
                 cab.profundidade as cabine_profundidade, cab.piso as cabine_piso,
                 cab.montada as cabine_montada, cab.lado_entrada, cab.lado_saida,
@@ -1089,8 +1089,7 @@ def gerar_pdf_elevador(elevador_id):
                 ad.cancela, ad.porta, ad.portao, ad.barreira_eletronica,
                 ad.lados_enclausuramento, ad.sensor_esmagamento, ad.rampa_acesso,
                 ad.nobreak, ad.galvanizada,
-                en.rua, en.numero, en.complemento, en.cidade, en.estado, en.cep,
-                est.nome as estado_nome
+                en.rua, en.numero, en.complemento, en.cidade, en.estado, en.cep
             FROM elevador e
             LEFT JOIN contrato c ON e.id_contrato = c.id
             LEFT JOIN cliente cl ON c.id_cliente = cl.id
@@ -1098,7 +1097,6 @@ def gerar_pdf_elevador(elevador_id):
             LEFT JOIN coluna col ON e.id = col.id_elevador
             LEFT JOIN adicionais ad ON e.id = ad.id_elevador
             LEFT JOIN endereco en ON cl.id = en.id_cliente
-            LEFT JOIN estado est ON en.estado = est.sigla
             WHERE e.id = %s
         """
         
@@ -1108,587 +1106,531 @@ def gerar_pdf_elevador(elevador_id):
         if not result:
             return jsonify({'error': 'Elevador não encontrado'}), 404
         
-        # Imports necessários
-        import os
-        import subprocess
-        import tempfile
+        # Usar WeasyPrint para gerar PDF baseado no modelo da imagem
+        from weasyprint import HTML, CSS
         from datetime import datetime
+        import os
         
-        # Preparar dados para o template LaTeX
-        endereco_completo = 'Não informado'
-        if result[29]:  # rua
-            endereco_completo = f"{result[29]}, {result[30]}"
-            if result[31]:  # complemento
-                endereco_completo += f", {result[31]}"
-            endereco_completo += f" - {result[32]}/{result[33]} - CEP: {result[34]}"
-        
-        # Dicionário com os dados
+        # Preparar dados
         dados = {
-            'elevador_id': str(result[0]),
-            'comando': result[1] or 'Não informado',
-            'observacao': result[2] or 'Sem observações',
-            'porta_inferior': result[3] or 'Não especificada',
-            'porta_superior': result[4] or 'Não especificada',
-            'cor': result[5] or 'Não especificada',
-            'elevacao': str(result[18]) if result[18] else 'Não informada',
-            'cabine_altura': str(result[11]) if result[11] else 'N/A',
-            'cabine_largura': str(result[12]) if result[12] else 'N/A',
-            'cabine_profundidade': str(result[13]) if result[13] else 'N/A',
-            'cabine_piso': result[14] or 'N/A',
-            'cabine_montada': 'Sim' if result[15] else 'Não',
-            'lado_entrada': result[16] or 'Não especificado',
-            'lado_saida': result[17] or 'Não especificado',
-            'coluna_montada': 'Sim' if result[19] else 'Não',
-            'cancela': str(result[20]) if result[20] else '0',
-            'porta': str(result[21]) if result[21] else '0',
-            'portao': str(result[22]) if result[22] else '0',
-            'barreira_eletronica': str(result[23]) if result[23] else '0',
-            'lados_enclausuramento': str(result[24]) if result[24] else '0',
-            'sensor_esmagamento': str(result[25]) if result[25] else '0',
-            'rampa_acesso': str(result[26]) if result[26] else '0',
-            'nobreak': str(result[27]) if result[27] else '0',
-            'galvanizada': 'Sim' if result[28] else 'Não',
-            'cliente_nome': result[9] or 'Não informado',
-            'cliente_cpf': result[10] or 'Não informado',
-            'endereco_completo': endereco_completo,
-            'cidade': result[32] or 'Não informada',
-            'estado_nome': result[35] or 'Não informado',
-            'estado_sigla': result[33] or 'N/A',
-            'cep': result[34] or 'Não informado',
-            'contrato_id': str(result[6]) if result[6] else 'Não informado',
-            'data_venda': result[7].strftime('%d/%m/%Y') if result[7] else 'Não informada',
-            'data_entrega': result[8].strftime('%d/%m/%Y') if result[8] else 'Não informada',
-            'data_geracao': datetime.now().strftime('%d/%m/%Y às %H:%M')
+            'os': str(result[0]),  # OS = ID do elevador
+            'data_pedido': result[8].strftime('%d/%m/%Y') if result[8] else '',
+            'data_entrega': result[9].strftime('%d/%m/%Y') if result[9] else '',
+            'cliente': result[11] or '',
+            'endereco_entrega': f"{result[28] or ''}, {result[29] or ''}" if result[28] else '',
+            'altura_coluna': str(result[20] // 1000) if result[20] else '',  # Converter mm para metros
+            'percurso': str((result[20] + 1100) // 1000) if result[20] else '',  # Altura + 1100mm, convertido para metros
+            'fuso': str((result[20] + 1085) // 1000) if result[20] else '',  # Altura + 1085mm, convertido para metros
+            'cor': result[5] or 'BRANCO',
+            'cabine_altura': str(result[13]) if result[13] else '',
+            'cabine_largura': str(result[14]) if result[14] else '', 
+            'cabine_profundidade': str(result[15]) if result[15] else '',
+            'cabine_montada': 'montada' if result[17] else 'desmontada',
+            'coluna_montada': 'montada' if result[21] else 'desmontada',
+            'porta_inferior_direito': 'X' if result[3] == 'Direito' else '',
+            'porta_inferior_esquerdo': 'X' if result[3] == 'Esquerdo' else '',
+            'porta_superior_direito': 'X' if result[4] == 'Direito' else '',
+            'porta_superior_esquerdo': 'X' if result[4] == 'Esquerdo' else '',
+            'cancela': 'X' if result[22] and result[22] > 0 else '',
+            'barreira_eletronica': 'X' if result[25] and result[25] > 0 else '',
+            'enclausuramento': str(result[26]) if result[26] else '',
+            'sensor_esmagamento': 'X' if result[27] and result[27] > 0 else '',
+            'rampa_acesso': 'X' if result[28] and result[28] > 0 else '',
+            'nobreak': 'X' if result[29] and result[29] > 0 else '',
+            'galvanizada': 'X' if result[30] else '',  # Checkbox para galvanizada
+            'comando_pressao': 'X' if result[1] == 'Pressão constante' else '',
+            'comando_automatico': 'X' if result[1] == 'Automático' else '',
+            'comando_eletrico': 'X',  # Sempre marcado como padrão
+            'piso_borracha': 'X' if result[16] == 'Borracha' else '',
+            'piso_aluminio': 'X' if result[16] == 'Alumínio' else '',
+            'obs_cabine_vidro': 'CABINE REVESTIDA EM VIDRO' if 'vidro' in (result[2] or '').lower() else ''
         }
         
-        # Ler template LaTeX
-        template_path = os.path.join(app.template_folder, 'elevador_pdf_template.tex')
-        
-        if not os.path.exists(template_path):
-            return jsonify({'error': 'Template LaTeX não encontrado'}), 500
-        
-        with open(template_path, 'r', encoding='utf-8') as f:
-            template_content = f.read()
-        
-        # Substituir placeholders no template
-        latex_content = template_content
-        for key, value in dados.items():
-            # Escapar caracteres especiais do LaTeX
-            escaped_value = str(value).replace('&', '\\&').replace('%', '\\%').replace('$', '\\$').replace('#', '\\#').replace('_', '\\_').replace('{', '\\{').replace('}', '\\}')
-            latex_content = latex_content.replace(f'{{{{{key}}}}}', escaped_value)
-        
-        # Criar diretório temporário
-        with tempfile.TemporaryDirectory() as temp_dir:
-            # Salvar arquivo .tex temporário
-            tex_file = os.path.join(temp_dir, f'elevador_{elevador_id}.tex')
-            pdf_file = os.path.join(temp_dir, f'elevador_{elevador_id}.pdf')
+        # Usar ReportLab para gerar PDF
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                @page {{
+                    size: A4;
+                    margin: 15mm;
+                }}
+                * {{
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }}
+                body {{
+                    font-family: Arial, sans-serif;
+                    font-size: 10px;
+                    line-height: 1.2;
+                }}
+                .header {{
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 10px;
+                    border: 2px solid black;
+                    padding: 5px;
+                }}
+                .logo {{
+                    width: 150px;
+                    height: auto;
+                    margin-right: 20px;
+                }}
+                .header-info {{
+                    flex: 1;
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr;
+                    gap: 10px;
+                }}
+                .info-box {{
+                    border: 1px solid black;
+                    padding: 3px;
+                    height: 25px;
+                }}
+                .info-box label {{
+                    font-weight: bold;
+                    font-size: 8px;
+                }}
+                .info-box .value {{
+                    font-size: 12px;
+                    margin-top: 2px;
+                }}
+                .cliente-section {{
+                    border: 2px solid black;
+                    padding: 5px;
+                    margin-bottom: 5px;
+                }}
+                .cliente-section label {{
+                    font-weight: bold;
+                    font-size: 9px;
+                }}
+                .form-row {{
+                    display: flex;
+                    margin-bottom: 5px;
+                    gap: 5px;
+                }}
+                .form-box {{
+                    border: 1px solid black;
+                    padding: 3px;
+                    flex: 1;
+                    position: relative;
+                    height: 25px;
+                }}
+                .form-box.small {{
+                    flex: 0.3;
+                }}
+                .form-box.medium {{
+                    flex: 0.5;
+                }}
+                .form-box label {{
+                    font-weight: bold;
+                    font-size: 8px;
+                    position: absolute;
+                    top: 1px;
+                    left: 3px;
+                }}
+                .form-box .value {{
+                    margin-top: 12px;
+                    font-size: 11px;
+                    font-weight: bold;
+                }}
+                .checkbox {{
+                    display: inline-block;
+                    width: 12px;
+                    height: 12px;
+                    border: 1px solid black;
+                    text-align: center;
+                    line-height: 10px;
+                    margin-top: 8px;
+                    font-weight: bold;
+                }}
+                .section-title {{
+                    text-align: center;
+                    font-weight: bold;
+                    font-size: 10px;
+                    border: 1px solid black;
+                    padding: 3px;
+                    margin: 5px 0;
+                    background-color: #f0f0f0;
+                }}
+                .two-col {{
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 5px;
+                }}
+                .three-col {{
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr;
+                    gap: 5px;
+                }}
+                .obs-box {{
+                    border: 1px solid black;
+                    padding: 5px;
+                    height: 40px;
+                    margin: 5px 0;
+                }}
+                .diagram {{
+                    float: right;
+                    width: 80px;
+                    height: 80px;
+                    border: 1px solid black;
+                    margin: 10px;
+                    position: relative;
+                }}
+                .arrow {{
+                    position: absolute;
+                    font-size: 20px;
+                    font-weight: bold;
+                }}
+                .arrow.right {{
+                    right: -25px;
+                    top: 30px;
+                }}
+                .arrow.left {{
+                    left: -25px;
+                    top: 30px;
+                }}
+            </style>
+        </head>
+        <body>
+            <!-- Cabeçalho -->
+            <div class="header">
+                <img src="{logo_url}" alt="Home Elevadores" class="logo">
+                <div class="header-info">
+                    <div class="info-box">
+                        <label>OS:</label>
+                        <div class="value">{dados['os']}</div>
+                    </div>
+                    <div class="info-box">
+                        <label>DATA PEDIDO:</label>
+                        <div class="value">{dados['data_pedido']}</div>
+                    </div>
+                    <div class="info-box">
+                        <label>DATA ENTREGA:</label>
+                        <div class="value">{dados['data_entrega']}</div>
+                    </div>
+                </div>
+            </div>
             
-            with open(tex_file, 'w', encoding='utf-8') as f:
-                f.write(latex_content)
+            <!-- Cliente -->
+            <div class="cliente-section">
+                <label>CLIENTE:</label> {dados['cliente']}<br>
+                <label>ENDEREÇO DE ENTREGA:</label> {dados['endereco_entrega']}
+            </div>
             
-        # Tentar métodos alternativos se pdflatex não estiver disponível
-        try:
-            # Método 1: Verificar se pdflatex está disponível
-            result_version = subprocess.run(['pdflatex', '--version'], 
-                         capture_output=True, check=True, cwd=temp_dir)
-            use_pdflatex = True
-        except (subprocess.CalledProcessError, FileNotFoundError):
-            use_pdflatex = False
+            <!-- Coluna do Elevador -->
+            <div class="section-title">COLUNA DO ELEVADOR</div>
+            <div class="form-row">
+                <div class="form-box small">
+                    <label>ALTURA</label>
+                    <div class="value">{dados['altura_coluna']}</div>
+                    <div class="checkbox">✓</div>
+                </div>
+                <div class="form-box small">
+                    <label></label>
+                    <div class="value">2.500</div>
+                </div>
+                <div class="form-box medium">
+                    <label>PERCURSO</label>
+                    <div class="value">{dados['percurso']}</div>
+                </div>
+                <div class="form-box medium">
+                    <label>FUSO</label>
+                    <div class="value">{dados['fuso']}</div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-box">
+                    <label>OBS:</label>
+                </div>
+                <div class="form-box small">
+                    <label>COR:</label>
+                    <div class="value">{dados['cor']}</div>
+                    <div class="checkbox">✓</div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-box medium">
+                    <label>MONTADA</label>
+                </div>
+                <div class="form-box medium">
+                    <label>DESMONTADA</label>
+                    <div class="checkbox">{'X' if dados['coluna_montada'] == 'desmontada' else ''}</div>
+                </div>
+                <div class="form-box"></div>
+            </div>
+            
+            <!-- Cabine do Elevador -->
+            <div class="section-title">CABINE DO ELEVADOR</div>
+            <div class="form-row">
+                <div class="form-box small">
+                    <label>ALTURA</label>
+                    <div class="value">{dados['cabine_altura']}</div>
+                </div>
+                <div class="form-box small">
+                    <label>A<br>LARGURA</label>
+                    <div class="value">{dados['cabine_largura']}</div>
+                </div>
+                <div class="form-box small">
+                    <label>B<br>PROFUNDIDADE</label>
+                    <div class="value">{dados['cabine_profundidade']}</div>
+                </div>
+                <div class="form-box medium">
+                    <label>MONTADA</label>
+                </div>
+                <div class="form-box medium">
+                    <label>DESMONTADA</label>
+                    <div class="checkbox">{'X' if dados['cabine_montada'] == 'desmontada' else ''}</div>
+                </div>
+            </div>
+            
+            <!-- Sentido de Abertura -->
+            <div class="section-title">SENTIDO DE ABERTURA DA PORTA DO PAVIMENTO</div>
+            <div class="two-col">
+                <div>
+                    <div class="form-box">
+                        <label>PORTA INFERIOR</label>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-box">
+                            <label>DIREITO</label>
+                        </div>
+                        <div class="form-box">
+                            <label>ESQUERDO</label>
+                            <div class="checkbox">{dados['porta_inferior_esquerdo']}</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="form-box">
+                        <label>PORTA SUPERIOR</label>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-box">
+                            <label>DIREITO</label>
+                        </div>
+                        <div class="form-box">
+                            <label>ESQUERDO</label>
+                            <div class="checkbox">{dados['porta_superior_esquerdo']}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Itens Adicionais -->
+            <div class="section-title">ITENS ADICIONAIS (ELÉTRICA)</div>
+            <div class="form-row">
+                <div class="form-box small">
+                    <label>CANCELA</label>
+                    <div class="checkbox">{dados['cancela']}</div>
+                </div>
+                <div class="form-box medium">
+                    <label>BARREIRA ELÉTRICA<br>ENCLAUSURAMENTO<br>SENSOR ESMAGAMENTO</label>
+                </div>
+                <div class="form-box small">
+                    <label>RAMPA ACESSO<br>NOBREAK</label>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-box small">
+                    <label>PORTA</label>
+                </div>
+                <div class="form-box small">
+                    <label>PORTÃO</label>
+                </div>
+                <div class="form-box">
+                    <div class="value">{dados['galvanizada']}</div>
+                </div>
+            </div>
+            
+            <!-- Acionamento -->
+            <div class="section-title">ACIONAMENTO DO ELEVADOR</div>
+            <div class="form-row">
+                <div class="form-box">
+                    <label>COMANDO PRESSÃO CONSTANTE</label>
+                    <div class="checkbox">{dados['comando_pressao']}</div>
+                </div>
+                <div class="form-box"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-box">
+                    <label>COMANDO ELÉTRICO (ÚNICA)</label>
+                    <div class="checkbox">{dados['comando_eletrico']}</div>
+                </div>
+                <div class="form-box"></div>
+            </div>
+            
+            <!-- Acabamento do Piso -->
+            <div class="section-title">ACABAMENTO DO PISO</div>
+            <div class="form-row">
+                <div class="form-box">
+                    <label>BORRACHA</label>
+                </div>
+                <div class="form-box"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-box">
+                    <label>ALUMÍNIO</label>
+                    <div class="checkbox">{dados['piso_aluminio']}</div>
+                </div>
+                <div class="form-box"></div>
+            </div>
+            
+            <!-- Observações -->
+            <div class="obs-box">
+                <label style="font-weight: bold;">OBS: {dados['obs_cabine_vidro']}</label>
+            </div>
+            
+            <!-- Diagrama -->
+            <div class="diagram">
+                <div class="arrow right">→</div>
+                <div class="arrow left">←</div>
+            </div>
+        </body>
+        </html>
+        """
         
-        if use_pdflatex:
-            # Usar pdflatex local
-            try:
-                # Primeira compilação
-                result1 = subprocess.run(['pdflatex', '-interaction=nonstopmode', tex_file], 
-                             cwd=temp_dir, capture_output=True, check=True)
-                
-                # Segunda compilação (para resolver referências)
-                result2 = subprocess.run(['pdflatex', '-interaction=nonstopmode', tex_file], 
-                             cwd=temp_dir, capture_output=True, check=True)
-                
-            except subprocess.CalledProcessError as e:
-                # Se houver erro na compilação, usar fallback
-                use_pdflatex = False
-        
-        if not use_pdflatex:
-            # Fallback: Converter LaTeX para HTML e depois para PDF com WeasyPrint
-            return _gerar_pdf_weasyprint_from_latex(dados, elevador_id)
-        
-        # Verificar se o PDF foi gerado com pdflatex
-        if not os.path.exists(pdf_file):
-            return jsonify({'error': 'PDF não foi gerado corretamente'}), 500
-        
-        # Ler o PDF gerado
-        with open(pdf_file, 'rb') as f:
-            pdf_content = f.read()
-        
-        # Retornar o PDF
-        from flask import Response
-        return Response(
-            pdf_content,
-            mimetype='application/pdf',
-            headers={
-                'Content-Disposition': f'inline; filename="elevador_{elevador_id}.pdf"'
-            }
-        )
-        
-        # Imports necessários
+        # Usar ReportLab para gerar PDF
         from reportlab.lib.pagesizes import A4
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
         from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-        from reportlab.lib.units import inch
+        from reportlab.lib.units import inch, mm
         from reportlab.lib import colors
         from io import BytesIO
-        import os
-        from datetime import datetime
-        
-        # Ler template Markdown para estruturar os dados
-        template_path = os.path.join(app.template_folder, 'elevador_pdf_template.md')
-        template_structure = None
-        try:
-            with open(template_path, 'r', encoding='utf-8') as f:
-                template_content = f.read()
-                # O template será usado como referência de estrutura
-        except FileNotFoundError:
-            template_content = None
-        
-        # Preparar dados para o PDF
-        endereco_completo = 'Não informado'
-        if result[10]:  # rua
-            endereco_completo = f"{result[10]}, {result[11]}"
-            if result[12]:  # complemento
-                endereco_completo += f", {result[12]}"
-            endereco_completo += f" - {result[13]}/{result[14]} - CEP: {result[15]}"
-        
-        # Dicionário com os dados
-        dados = {
-            'elevador_id': str(result[0]),
-            'elevacao': str(result[1]) if result[1] else 'Não informada',
-            'cor': result[2] or 'Não especificada',
-            'cabine_altura': str(result[8]) if result[8] else 'N/A',
-            'cabine_descricao': result[9] or 'N/A',
-            'cliente_nome': result[6] or 'Não informado',
-            'cliente_cpf': result[7] or 'Não informado',
-            'endereco_completo': endereco_completo,
-            'cidade': result[13] or 'Não informada',
-            'estado_nome': result[16] or 'Não informado',
-            'estado_sigla': result[14] or 'N/A',
-            'cep': result[15] or 'Não informado',
-            'contrato_id': str(result[3]) if result[3] else 'Não informado',
-            'data_venda': result[4].strftime('%d/%m/%Y') if result[4] else 'Não informada',
-            'data_entrega': result[5].strftime('%d/%m/%Y') if result[5] else 'Não informada',
-            'data_geracao': datetime.now().strftime('%d/%m/%Y às %H:%M')
-        }
-        
-        # Processar template Markdown se disponível
-        if template_content:
-            # Substituir placeholders no template
-            markdown_processed = template_content
-            for key, value in dados.items():
-                markdown_processed = markdown_processed.replace(f'{{{{{key}}}}}', str(value))
-        else:
-            # Template padrão como fallback
-            markdown_processed = f"""
-# RELATÓRIO DE ELEVADOR
-
-## DADOS DO ELEVADOR
-- **ID:** {dados['elevador_id']}
-- **Elevação:** {dados['elevacao']} mm
-- **Cor:** {dados['cor']}
-- **Cabine:** {dados['cabine_altura']} cm - {dados['cabine_descricao']}
-
-## INFORMAÇÕES DO CLIENTE
-- **Nome:** {dados['cliente_nome']}
-- **CPF:** {dados['cliente_cpf']}
-
-## ENDEREÇO DE INSTALAÇÃO
-- **Endereço:** {dados['endereco_completo']}
-- **Cidade:** {dados['cidade']}
-- **Estado:** {dados['estado_nome']} ({dados['estado_sigla']})
-- **CEP:** {dados['cep']}
-
-## DADOS DO CONTRATO
-- **ID do Contrato:** {dados['contrato_id']}
-- **Data da Venda:** {dados['data_venda']}
-- **Data de Entrega:** {dados['data_entrega']}
-
----
-*Relatório gerado em: {dados['data_geracao']}*
-"""
         
         # Criar buffer em memória
         buffer = BytesIO()
         
         # Criar documento PDF
-        doc = SimpleDocTemplate(buffer, pagesize=A4, 
-                               topMargin=inch, bottomMargin=inch,
-                               leftMargin=inch, rightMargin=inch)
+        doc = SimpleDocTemplate(buffer, pagesize=A4,
+                               rightMargin=20*mm, leftMargin=20*mm,
+                               topMargin=20*mm, bottomMargin=20*mm)
+        
+        # Estilos
         styles = getSampleStyleSheet()
         
-        # Estilos personalizados baseados no template
         title_style = ParagraphStyle(
-            'CustomTitle',
-            parent=styles['Heading1'],
-            fontSize=20,
-            spaceAfter=30,
-            alignment=1,  # Centralizado
-            textColor=colors.HexColor('#2c3e50')
-        )
-        
-        section_style = ParagraphStyle(
-            'Section',
-            parent=styles['Heading2'],
-            fontSize=16,
-            spaceAfter=15,
-            textColor=colors.HexColor('#34495e'),
-            borderWidth=1,
-            borderColor=colors.HexColor('#bdc3c7'),
-            borderPadding=5
-        )
-        
-        normal_style = ParagraphStyle(
-            'Normal',
+            'Title',
             parent=styles['Normal'],
-            fontSize=11,
-            spaceAfter=8
+            fontSize=14,
+            spaceAfter=10,
+            alignment=1,  # Centralizado
+            fontName='Helvetica-Bold'
         )
         
-        footer_style = ParagraphStyle(
-            'FooterStyle',
+        label_style = ParagraphStyle(
+            'Label',
+            parent=styles['Normal'],
+            fontSize=9,
+            fontName='Helvetica-Bold'
+        )
+        
+        value_style = ParagraphStyle(
+            'Value',
             parent=styles['Normal'],
             fontSize=10,
-            alignment=1,  # Centralizado
-            textColor=colors.HexColor('#7f8c8d')
+            fontName='Helvetica'
         )
         
-        # Estilo para tabelas
-        table_style = TableStyle([
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#f8f9fa')),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 11),
-            ('PADDING', (0, 0), (-1, -1), 8),
-        ])
+        # Lista de elementos
+        elements = []
         
-        # Função para processar markdown e converter para elementos ReportLab
-        def markdown_to_reportlab_elements(markdown_text):
-            elements = []
-            lines = markdown_text.split('\n')
-            
-            current_table_data = []
-            in_table = False
-            
-            for line in lines:
-                line = line.strip()
-                
-                if not line:
-                    if not in_table:
-                        elements.append(Spacer(1, 12))
-                    continue
-                
-                # Processar tags de imagem
-                if '<img ' in line and 'src=' in line:
-                    if in_table and current_table_data:
-                        # Finalizar tabela anterior
-                        table = Table(current_table_data[1:], colWidths=[2*inch, 4*inch])
-                        table.setStyle(table_style)
-                        elements.append(table)
-                        current_table_data = []
-                        in_table = False
-                    
-                    # Extrair o src da imagem
-                    import re
-                    src_match = re.search(r'src=["\']([^"\']+)["\']', line)
-                    if src_match:
-                        img_src = src_match.group(1)
-                        # Construir caminho absoluto para a imagem
-                        if not img_src.startswith('/') and not img_src.startswith('http'):
-                            img_path = os.path.join('static', 'images', img_src)
-                        else:
-                            img_path = img_src
-                        
-                        try:
-                            # Verificar se a imagem existe
-                            if os.path.exists(img_path):
-                                # Criar elemento de imagem com dimensões ajustadas
-                                img = Image(img_path)
-                                
-                                # Ajustar tamanho da imagem para caber na página
-                                available_width = 6 * inch  # Largura disponível
-                                available_height = 2 * inch  # Altura máxima desejada
-                                
-                                # Calcular proporção
-                                img_width, img_height = img.drawWidth, img.drawHeight
-                                ratio = min(available_width / img_width, available_height / img_height)
-                                
-                                img.drawWidth = img_width * ratio
-                                img.drawHeight = img_height * ratio
-                                
-                                elements.append(img)
-                                elements.append(Spacer(1, 12))
-                            else:
-                                # Se a imagem não existe, adicionar texto indicativo
-                                elements.append(Paragraph(f"[Imagem não encontrada: {img_src}]", normal_style))
-                        except Exception as e:
-                            elements.append(Paragraph(f"[Erro ao carregar imagem: {img_src}]", normal_style))
-                    continue
-                
-                # Título principal (# )
-                if line.startswith('# '):
-                    if in_table and current_table_data:
-                        # Finalizar tabela anterior
-                        table = Table(current_table_data[1:], colWidths=[2*inch, 4*inch])
-                        table.setStyle(table_style)
-                        elements.append(table)
-                        current_table_data = []
-                        in_table = False
-                    
-                    title_text = line[2:].strip()
-                    elements.append(Paragraph(title_text, title_style))
-                    elements.append(Spacer(1, 20))
-                
-                # Subtítulo (## )
-                elif line.startswith('## '):
-                    if in_table and current_table_data:
-                        # Finalizar tabela anterior
-                        table = Table(current_table_data[1:], colWidths=[2*inch, 4*inch])
-                        table.setStyle(table_style)
-                        elements.append(table)
-                        current_table_data = []
-                        in_table = False
-                    
-                    subtitle_text = line[3:].strip()
-                    elements.append(Paragraph(subtitle_text, section_style))
-                    elements.append(Spacer(1, 10))
-                
-                # Cabeçalho de tabela
-                elif line.startswith('| Campo | Valor |'):
-                    in_table = True
-                    current_table_data = [['Campo', 'Valor']]
-                
-                # Separador de tabela
-                elif line.startswith('|----'):
-                    continue
-                
-                # Linha de tabela
-                elif line.startswith('|') and in_table:
-                    parts = [part.strip() for part in line.split('|')[1:-1]]
-                    if len(parts) >= 2:
-                        # Remover formatação markdown **texto**
-                        campo = parts[0].replace('**', '').strip()
-                        valor = parts[1].replace('**', '').strip()
-                        current_table_data.append([campo, valor])
-                
-                # Linha separadora ---
-                elif line.startswith('---'):
-                    if in_table and current_table_data:
-                        table = Table(current_table_data[1:], colWidths=[2*inch, 4*inch])
-                        table.setStyle(table_style)
-                        elements.append(table)
-                        current_table_data = []
-                        in_table = False
-                    elements.append(Spacer(1, 15))
-                
-                # Lista com marcadores (- )
-                elif line.startswith('- '):
-                    if in_table and current_table_data:
-                        table = Table(current_table_data[1:], colWidths=[2*inch, 4*inch])
-                        table.setStyle(table_style)
-                        elements.append(table)
-                        current_table_data = []
-                        in_table = False
-                    
-                    list_text = line[2:].strip().replace('**', '')
-                    elements.append(Paragraph(f"• {list_text}", normal_style))
-                
-                # Texto em div class="footer" ou texto em itálico
-                elif line.startswith('*') and line.endswith('*'):
-                    if in_table and current_table_data:
-                        table = Table(current_table_data[1:], colWidths=[2*inch, 4*inch])
-                        table.setStyle(table_style)
-                        elements.append(table)
-                        current_table_data = []
-                        in_table = False
-                    
-                    footer_text = line[1:-1].strip()
-                    elements.append(Paragraph(footer_text, footer_style))
-                
-                # Tags HTML e outras linhas
-                elif not line.startswith('<') and not line.startswith('</'):
-                    if in_table and current_table_data:
-                        table = Table(current_table_data[1:], colWidths=[2*inch, 4*inch])
-                        table.setStyle(table_style)
-                        elements.append(table)
-                        current_table_data = []
-                        in_table = False
-                    
-                    if line:
-                        elements.append(Paragraph(line, normal_style))
-            
-            # Finalizar última tabela se necessário
-            if in_table and current_table_data:
-                table = Table(current_table_data[1:], colWidths=[2*inch, 4*inch])
-                table.setStyle(table_style)
-                elements.append(table)
-            
-            return elements
-        
-        # Processar markdown e gerar elementos PDF
-        elements = markdown_to_reportlab_elements(markdown_processed)
-        
-        # Gerar PDF
-        doc.build(elements)
-        
-        # Retornar PDF
-        buffer.seek(0)
-        
-        from flask import Response
-        return Response(
-            buffer.getvalue(),
-            mimetype='application/pdf',
-            headers={
-                'Content-Disposition': f'inline; filename="elevador_{elevador_id}.pdf"'
-            }
-        )
-        elements.append(Paragraph("RELATÓRIO DE ELEVADOR", title_style))
-        elements.append(Spacer(1, 20))
-        
-        # Seção: Dados do Elevador
-        elements.append(Paragraph("DADOS DO ELEVADOR", section_style))
-        
-        elevador_data = [
-            ['ID do Elevador:', dados['elevador_id']],
-            ['Elevação:', f"{dados['elevacao']} mm"],
-            ['Cor:', dados['cor']],
-            ['Cabine:', f"{dados['cabine_altura']} cm - {dados['cabine_descricao']}"]
-        ]
-        
-        elevador_table = Table(elevador_data, colWidths=[2*inch, 4*inch])
-        elevador_table.setStyle(TableStyle([
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#e3f2fd')),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 11),
-            ('PADDING', (0, 0), (-1, -1), 8),
-        ]))
-        elements.append(elevador_table)
-        elements.append(Spacer(1, 20))
-        
-        # Seção: Informações do Cliente
-        elements.append(Paragraph("INFORMAÇÕES DO CLIENTE", section_style))
-        
-        cliente_data = [
-            ['Nome:', dados['cliente_nome']],
-            ['CPF:', dados['cliente_cpf']]
-        ]
-        
-        cliente_table = Table(cliente_data, colWidths=[2*inch, 4*inch])
-        cliente_table.setStyle(TableStyle([
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#e8f5e8')),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 11),
-            ('PADDING', (0, 0), (-1, -1), 8),
-        ]))
-        elements.append(cliente_table)
-        elements.append(Spacer(1, 20))
-        
-        # Seção: Endereço de Instalação
-        elements.append(Paragraph("ENDEREÇO DE INSTALAÇÃO", section_style))
-        
-        endereco_data = [
-            ['Endereço Completo:', dados['endereco_completo']],
-            ['Cidade:', dados['cidade']],
-            ['Estado:', f"{dados['estado_nome']} ({dados['estado_sigla']})"],
-            ['CEP:', dados['cep']]
-        ]
-        
-        endereco_table = Table(endereco_data, colWidths=[2*inch, 4*inch])
-        endereco_table.setStyle(TableStyle([
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#fff3e0')),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 11),
-            ('PADDING', (0, 0), (-1, -1), 8),
-        ]))
-        elements.append(endereco_table)
-        elements.append(Spacer(1, 20))
-        
-        # Seção: Dados do Contrato
-        elements.append(Paragraph("DADOS DO CONTRATO", section_style))
-        
-        contrato_data = [
-            ['ID do Contrato:', dados['contrato_id']],
-            ['Data da Venda:', dados['data_venda']],
-            ['Data de Entrega:', dados['data_entrega']]
-        ]
-        
-        contrato_table = Table(contrato_data, colWidths=[2*inch, 4*inch])
-        contrato_table.setStyle(TableStyle([
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#fce4ec')),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 11),
-            ('PADDING', (0, 0), (-1, -1), 8),
-        ]))
-        elements.append(contrato_table)
-        elements.append(Spacer(1, 20))
-        
-        # Seção: Observações Técnicas
-        elements.append(Paragraph("OBSERVAÇÕES TÉCNICAS", section_style))
-        
-        observacoes_data = [
-            ['Status:', 'Elevador registrado no sistema'],
-            ['Tipo de Relatório:', 'Relatório técnico completo'],
-            ['Versão do Sistema:', '1.0']
-        ]
-        
-        observacoes_table = Table(observacoes_data, colWidths=[2*inch, 4*inch])
-        observacoes_table.setStyle(TableStyle([
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#f0f0f0')),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 11),
-            ('PADDING', (0, 0), (-1, -1), 8),
-        ]))
-        elements.append(observacoes_table)
-        elements.append(Spacer(1, 40))
-        
-        # Rodapé
-        footer_style = ParagraphStyle(
-            'FooterStyle',
-            parent=styles['Normal'],
-            fontSize=10,
-            alignment=1,  # Centralizado
-            textColor=colors.HexColor('#7f8c8d')
-        )
-        
-        elements.append(Paragraph(f"Relatório gerado automaticamente em: {dados['data_geracao']}", footer_style))
+        # Título
+        elements.append(Paragraph("ORDEM DE SERVIÇO", title_style))
         elements.append(Spacer(1, 10))
-        elements.append(Paragraph(f"Sistema de Gerenciamento de Elevadores | Relatório de Elevador ID: {dados['elevador_id']}", footer_style))
+        
+        # Cabeçalho com informações básicas
+        header_data = [
+            ['OS:', dados['os'], 'DATA PEDIDO:', dados['data_pedido'], 'DATA ENTREGA:', dados['data_entrega']],
+            ['CLIENTE:', dados['cliente'], '', '', '', ''],
+            ['ENDEREÇO DE ENTREGA:', dados['endereco_entrega'], '', '', '', '']
+        ]
+        
+        header_table = Table(header_data, colWidths=[25*mm, 35*mm, 30*mm, 25*mm, 30*mm, 25*mm])
+        header_table.setStyle(TableStyle([
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 8),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('BACKGROUND', (0, 0), (0, -1), colors.lightgrey),
+            ('BACKGROUND', (2, 0), (2, -1), colors.lightgrey),
+            ('BACKGROUND', (4, 0), (4, -1), colors.lightgrey),
+        ]))
+        elements.append(header_table)
+        elements.append(Spacer(1, 15))
+        
+        # Seção de especificações
+        spec_data = [
+            ['ALTURA:', dados['altura_coluna'], 'PERCURSO:', dados['percurso'], 'FUSO:', dados['fuso']],
+            ['COR:', dados['cor'], 'CABINE MONTADA:', dados['cabine_montada'], 'COLUNA MONTADA:', dados['coluna_montada']],
+            ['CABINE (AxLxP):', f"{dados['cabine_altura']}x{dados['cabine_largura']}x{dados['cabine_profundidade']}", '', '', '', ''],
+        ]
+        
+        spec_table = Table(spec_data, colWidths=[30*mm, 30*mm, 25*mm, 25*mm, 25*mm, 35*mm])
+        spec_table.setStyle(TableStyle([
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 8),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('BACKGROUND', (0, 0), (0, -1), colors.lightgrey),
+            ('BACKGROUND', (2, 0), (2, -1), colors.lightgrey),
+            ('BACKGROUND', (4, 0), (4, -1), colors.lightgrey),
+        ]))
+        elements.append(spec_table)
+        elements.append(Spacer(1, 15))
+        
+        # Seção de comandos e opções
+        options_data = [
+            ['COMANDO:', '', '', '', '', ''],
+            ['PRESSÃO CONSTANTE:', dados['comando_pressao'], 'AUTOMÁTICO:', dados['comando_automatico'], 'ELÉTRICO:', dados['comando_eletrico']],
+            ['', '', '', '', '', ''],
+            ['PISO:', '', '', '', '', ''],
+            ['BORRACHA:', dados['piso_borracha'], 'ALUMÍNIO:', dados['piso_aluminio'], '', ''],
+            ['', '', '', '', '', ''],
+            ['ADICIONAIS:', '', '', '', '', ''],
+            ['CANCELA:', dados['cancela'], 'BARREIRA ELETRÔNICA:', dados['barreira_eletronica'], 'GALVANIZADA:', dados['galvanizada']],
+        ]
+        
+        options_table = Table(options_data, colWidths=[30*mm, 15*mm, 35*mm, 15*mm, 25*mm, 50*mm])
+        options_table.setStyle(TableStyle([
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 8),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('BACKGROUND', (0, 0), (0, 0), colors.lightgrey),
+            ('BACKGROUND', (0, 3), (0, 3), colors.lightgrey),
+            ('BACKGROUND', (0, 6), (0, 6), colors.lightgrey),
+        ]))
+        elements.append(options_table)
+        elements.append(Spacer(1, 15))
+        
+        # Observações
+        if dados['obs_cabine_vidro']:
+            elements.append(Paragraph(f"OBS: {dados['obs_cabine_vidro']}", value_style))
         
         # Gerar PDF
         doc.build(elements)
         
         # Retornar PDF
         buffer.seek(0)
+        pdf_bytes = buffer.getvalue()
         
         from flask import Response
         return Response(
-            buffer.getvalue(),
+            pdf_bytes,
             mimetype='application/pdf',
             headers={
-                'Content-Disposition': f'inline; filename="elevador_{elevador_id}.pdf"'
+                'Content-Disposition': f'inline; filename="OS_{dados["os"]}.pdf"'
             }
         )
         
     except Exception as e:
+        import traceback
+        print(f"Erro no PDF: {str(e)}")
+        print(f"Traceback: {traceback.format_exc()}")
         return jsonify({'error': str(e)}), 500
     finally:
         cursor.close()

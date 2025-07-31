@@ -19,6 +19,7 @@
                         <th data-sort="id">ID</th>
                         <th data-sort="nome">Nome</th>
                         <th data-sort="documento">CPF/CNPJ</th>
+                        <th data-sort="email">Email</th>
                         <th>Endereços</th>
                         <th>Ações</th>
                     </tr>
@@ -60,6 +61,13 @@
                         <div class="col-md-3">
                             <label for="documento" class="form-label" id="labelDocumento">CPF</label>
                             <input type="text" class="form-control" id="documento" maxlength="18" placeholder="000.000.000-00" oninput="aplicarMascaraDocumento(this)">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" placeholder="exemplo@email.com">
                         </div>
                     </div>
 
@@ -271,6 +279,13 @@
                     <div class="col-md-3">
                         <label class="form-label fw-bold" id="viewLabelDocumento">CPF/CNPJ:</label>
                         <p class="form-control-plaintext" id="viewClienteDocumento">-</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">Email:</label>
+                        <p class="form-control-plaintext" id="viewClienteEmail">-</p>
                     </div>
                 </div>
                 

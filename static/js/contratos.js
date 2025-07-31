@@ -338,7 +338,7 @@ function visualizarContrato(id) {
     // Preencher dados básicos
     document.getElementById('viewContratoId').textContent = contrato.id || 'N/A';
     document.getElementById('viewContratoCliente').textContent = 
-        cliente ? `${cliente.nome} - ${formatarCPF(cliente.cpf)}` : 'Cliente não encontrado';
+        cliente ? `${cliente.nome} - ${formatarDocumento(cliente.documento || cliente.cpf || '')}` : 'Cliente não encontrado';
     document.getElementById('viewContratoDataVenda').textContent = 
         contrato.data_venda ? formatarData(contrato.data_venda) : 'N/A';
     document.getElementById('viewContratoDataEntrega').textContent = 

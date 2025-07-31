@@ -5,25 +5,77 @@ let eventoAtual = null;
 
 // Inicializar calendário ao carregar a página
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM carregado - inicializando calendário'); // Debug
-    
     inicializarCalendario();
-    carregarEventos();
+    carregarEventosComFiltro(); // Usar a nova função
+    
+    // Aguardar um pouco mais para garantir que todos os elementos estejam renderizados
+    setTimeout(() => {
+        configurarFiltros();
+    }, 100);
     
     // Adicionar event listener para o botão de tela cheia
     const btnTelaCheia = document.getElementById('btnTelaCheia');
     if (btnTelaCheia) {
-        console.log('Botão de tela cheia encontrado'); // Debug
         btnTelaCheia.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('Clique no botão de tela cheia detectado'); // Debug
             toggleTelaCheia();
         });
-    } else {
-        console.error('Botão de tela cheia não encontrado!'); // Debug
     }
 });
+
+// Função separada para configurar os filtros
+function configurarFiltros() {
+    const statusTodos = document.getElementById('status-todos');
+    const statusNaoIniciado = document.getElementById('status-nao-iniciado');
+    const statusEmProducao = document.getElementById('status-em-producao');
+    const statusPronto = document.getElementById('status-pronto');
+    const statusEntregue = document.getElementById('status-entregue');
+    
+    // Remover event listeners existentes (se houver)
+    document.querySelectorAll('input[id^="status-"]').forEach(checkbox => {
+        const newCheckbox = checkbox.cloneNode(true);
+        checkbox.parentNode.replaceChild(newCheckbox, checkbox);
+    });
+    
+    // Configurar novos event listeners
+    const elementos = {
+        'status-nao-iniciado': 'Não iniciado', 
+        'status-em-producao': 'Em produção',
+        'status-pronto': 'Pronto',
+        'status-entregue': 'Entregue'
+    };
+    
+    // Event listener especial para "Todos"
+    const elementoTodos = document.getElementById('status-todos');
+    if (elementoTodos) {
+        elementoTodos.addEventListener('change', function() {
+            // Se "Todos" foi marcado, marcar todos os outros
+            if (this.checked) {
+                document.querySelectorAll('input[id^="status-"]:not(#status-todos)').forEach(checkbox => {
+                    checkbox.checked = true;
+                });
+            } else {
+                // Se "Todos" foi desmarcado, desmarcar todos os outros
+                document.querySelectorAll('input[id^="status-"]:not(#status-todos)').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+            }
+            
+            aplicarFiltroStatus();
+        });
+    }
+    
+    // Event listeners para os status específicos
+    Object.entries(elementos).forEach(([id, nome]) => {
+        const elemento = document.getElementById(id);
+        if (elemento) {
+            elemento.addEventListener('change', function() {
+                aplicarFiltroStatus();
+            });
+        }
+    });
+}
 
 // Função para inicializar o calendário
 function inicializarCalendario() {
@@ -165,72 +217,177 @@ function mostrarDetalhesEvento(evento) {
     eventoAtual = evento;
     const props = evento.extendedProps;
     
+    // Replicar exatamente a estrutura do modal de visualização de elevadores
     const detalhesHtml = `
-        <div class="row">
-            <div class="col-md-6">
-                <h6><i class="fas fa-elevator"></i> Informações do Elevador</h6>
-                <table class="table table-sm">
-                    <tr>
-                        <td><strong>ID:</strong></td>
-                        <td>#${props.elevador_id}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Elevação:</strong></td>
-                        <td>${props.elevacao} mm</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Cor:</strong></td>
-                        <td>
-                            ${props.cor ? 
-                                `<span class="badge" style="background-color: ${props.cor.toLowerCase()}; color: white;">${props.cor}</span>` :
-                                '<span class="badge bg-secondary">Sem cor</span>'
-                            }
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>Altura da Cabine:</strong></td>
-                        <td>${props.altura_cabine} cm</td>
-                    </tr>
-                </table>
+        <!-- Informações Básicas -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-info-circle"></i> Informações Básicas</h6>
             </div>
-            <div class="col-md-6">
-                <h6><i class="fas fa-user"></i> Informações do Cliente</h6>
-                <table class="table table-sm">
-                    <tr>
-                        <td><strong>Cliente:</strong></td>
-                        <td>${props.cliente_nome}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Localização:</strong></td>
-                        <td>${props.cidade && props.estado ? `${props.cidade}, ${props.estado}` : 'Não informado'}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Data da Venda:</strong></td>
-                        <td>${props.data_venda ? formatarData(props.data_venda) : 'Não definida'}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Data de Entrega:</strong></td>
-                        <td>${formatarData(evento.start)}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Status:</strong></td>
-                        <td>${obterStatusEntrega(criarDataSegura(evento.start))}</td>
-                    </tr>
-                </table>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Contrato:</label>
+                        <p class="form-control-plaintext">#${props.contrato_id} - ${props.cliente_nome}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Comando:</label>
+                        <p class="form-control-plaintext">${props.comando || 'N/A'}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Status:</label>
+                        <p class="form-control-plaintext">
+                            <span class="badge ${props.status === 'Entregue' ? 'bg-success' : 
+                                                  props.status === 'Pronto' ? 'bg-info' :
+                                                  props.status === 'Em produção' ? 'bg-warning' : 'bg-secondary'}">
+                                ${props.status || 'Não iniciado'}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Porta Inferior:</label>
+                        <p class="form-control-plaintext">${props.porta_inferior || 'N/A'}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Porta Superior:</label>
+                        <p class="form-control-plaintext">${props.porta_superior || 'N/A'}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Cor:</label>
+                        <p class="form-control-plaintext">${props.cor || 'N/A'}</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">Observações:</label>
+                        <p class="form-control-plaintext">${props.observacao || 'N/A'}</p>
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <div class="row mt-3">
-            <div class="col-12">
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i>
-                    <strong>Título do Evento:</strong> ${evento.title}
+
+        <!-- Dados da Cabine -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-cube"></i> Dados da Cabine</h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Altura:</label>
+                        <p class="form-control-plaintext">${props.altura_cabine || 'N/A'} mm</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Largura:</label>
+                        <p class="form-control-plaintext">${props.largura_cabine || 'N/A'} mm</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Profundidade:</label>
+                        <p class="form-control-plaintext">${props.profundidade_cabine || 'N/A'} mm</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Piso:</label>
+                        <p class="form-control-plaintext">N/A</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Lado de Entrada:</label>
+                        <p class="form-control-plaintext">${props.lado_entrada || 'N/A'}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Lado de Saída:</label>
+                        <p class="form-control-plaintext">${props.lado_saida || 'N/A'}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Cabine Montada:</label>
+                        <p class="form-control-plaintext"><span class="badge bg-secondary">N/A</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dados da Coluna -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-arrows-alt-v"></i> Dados da Coluna</h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Elevação:</label>
+                        <p class="form-control-plaintext">${props.elevacao || 'N/A'} mm</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Coluna Montada:</label>
+                        <p class="form-control-plaintext"><span class="badge bg-secondary">N/A</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Adicionais -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-plus-circle"></i> Adicionais</h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Cancela:</label>
+                        <p class="form-control-plaintext">${props.itens_adicionais?.cancela || '0'}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Porta:</label>
+                        <p class="form-control-plaintext">${props.itens_adicionais?.porta || '0'}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Portão:</label>
+                        <p class="form-control-plaintext">${props.itens_adicionais?.portao || '0'}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Barreira Eletrônica:</label>
+                        <p class="form-control-plaintext">${props.itens_adicionais?.barreira_eletronica || '0'}</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Lados Enclausuramento:</label>
+                        <p class="form-control-plaintext">${props.itens_adicionais?.lados_enclausuramento || '0'}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Sensor Esmagamento:</label>
+                        <p class="form-control-plaintext">${props.itens_adicionais?.sensor_esmagamento || '0'}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Rampa de Acesso:</label>
+                        <p class="form-control-plaintext">${props.itens_adicionais?.rampa_acesso || '0'}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Nobreak:</label>
+                        <p class="form-control-plaintext">${props.itens_adicionais?.nobreak || '0'}</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">Galvanizada:</label>
+                        <p class="form-control-plaintext">
+                            <span class="badge ${props.itens_adicionais?.galvanizada ? 'bg-success' : 'bg-secondary'}">
+                                ${props.itens_adicionais?.galvanizada ? 'Sim' : 'Não'}
+                            </span>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     `;
     
     document.getElementById('detalhesEvento').innerHTML = detalhesHtml;
+    
+    // Armazenar elevador atual para compatibilidade
+    window.elevadorVisualizacaoAtual = { id: props.elevador_id };
     
     const modal = new bootstrap.Modal(document.getElementById('eventoModal'));
     modal.show();
@@ -625,7 +782,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Atualizar eventos a cada 5 minutos
-    setInterval(carregarEventos, 5 * 60 * 1000);
+    setInterval(carregarEventosComFiltro, 5 * 60 * 1000);
 });
 
 // Função para exportar calendário
@@ -643,4 +800,75 @@ function exportarCalendario() {
     }));
     
     exportarCSV(dadosExportacao, 'calendario_entregas');
+}
+
+// Variável para armazenar eventos originais
+let eventosOriginais = [];
+
+// Função para aplicar filtro por status
+function aplicarFiltroStatus() {
+    // Primeiro, obter todos os status selecionados (exceto "Todos")
+    const statusSelecionados = [];
+    const checkboxesStatus = document.querySelectorAll('input[id^="status-"]:not(#status-todos)');
+    
+    checkboxesStatus.forEach(checkbox => {
+        if (checkbox.checked) {
+            statusSelecionados.push(checkbox.value);
+        }
+    });
+    
+    // Atualizar o estado do checkbox "Todos" baseado nos outros
+    const todosMarcado = statusSelecionados.length === checkboxesStatus.length;
+    const checkboxTodos = document.getElementById('status-todos');
+    
+    if (checkboxTodos.checked !== todosMarcado) {
+        checkboxTodos.checked = todosMarcado;
+    }
+    
+    // Se nenhum status específico está marcado, não mostrar eventos
+    if (statusSelecionados.length === 0) {
+        calendar.removeAllEvents();
+        return;
+    }
+    
+    // Se todos os status estão selecionados, mostrar todos os eventos
+    if (statusSelecionados.length === checkboxesStatus.length) {
+        calendar.removeAllEvents();
+        calendar.addEventSource(eventosOriginais);
+        return;
+    }
+    
+    // Filtrar eventos baseado no status selecionado
+    const eventosFiltrados = eventosOriginais.filter(evento => {
+        const statusEvento = evento.extendedProps?.status || 'Não iniciado';
+        return statusSelecionados.includes(statusEvento);
+    });
+    
+    // Atualizar calendário
+    calendar.removeAllEvents();
+    calendar.addEventSource(eventosFiltrados);
+}
+
+// Modificar a função carregarEventos para armazenar eventos originais
+async function carregarEventosComFiltro() {
+    try {
+        const eventosCarregados = await apiRequest('/api/calendario');
+        eventosOriginais = eventosCarregados;
+        eventos = eventosCarregados;
+        
+        calendar.removeAllEvents();
+        calendar.addEventSource(eventos);
+        atualizarEstatisticas();
+        
+        // Forçar remoção de horários após adicionar eventos
+        setTimeout(() => {
+            document.querySelectorAll('.fc-event-time').forEach(el => el.remove());
+            document.querySelectorAll('.fc-daygrid-event-time').forEach(el => el.remove());
+            document.querySelectorAll('.fc-list-event-time').forEach(el => el.remove());
+        }, 200);
+        
+    } catch (error) {
+        console.error('Erro ao carregar eventos:', error);
+        showToast('Erro ao carregar eventos do calendário: ' + error.message, 'error');
+    }
 }
