@@ -1844,6 +1844,179 @@ def get_calendario_data():
         cursor.close()
         end_pg_connection(conn)
 
+# Rotas para atualização do sistema (sem Git)
+@app.route('/api/sistema/verificar-atualizacoes')
+def verificar_atualizacoes():
+    """Verifica se há atualizações disponíveis comparando com GitHub API"""
+    try:
+        import requests
+        import os
+        
+        # Versão atual do sistema
+        versao_atual = "1.0.0"
+        try:
+            with open('version.txt', 'r') as f:
+                versao_atual = f.read().strip()
+        except:
+            pass
+        
+        # Verificar versão mais recente no GitHub
+        github_api_url = "https://api.github.com/repos/Cl4nyz/ElevadoresWebApp/releases/latest"
+        
+        response = requests.get(github_api_url, timeout=10)
+        if response.status_code == 200:
+            release_data = response.json()
+            
+            versao_nova = release_data.get('tag_name', '').replace('v', '')
+            descricao = release_data.get('body', 'Melhorias e correções gerais.')
+            
+            # URL para download do ZIP
+            download_url = f"https://github.com/Cl4nyz/ElevadoresWebApp/archive/refs/tags/{release_data.get('tag_name', 'main')}.zip"
+            
+            # Comparar versões (simplificado)
+            if versao_nova != versao_atual:
+                return jsonify({
+                    'atualizada': False,
+                    'versao_atual': versao_atual,
+                    'versao_nova': versao_nova,
+                    'descricao': descricao,
+                    'download_url': download_url
+                })
+            else:
+                return jsonify({
+                    'atualizada': True,
+                    'versao_atual': versao_atual
+                })
+        else:
+            # Fallback: sempre considerar que há uma nova versão disponível
+            return jsonify({
+                'atualizada': False,
+                'versao_atual': versao_atual,
+                'versao_nova': '1.0.1',
+                'descricao': 'Atualizações e melhorias disponíveis.',
+                'download_url': 'https://github.com/Cl4nyz/ElevadoresWebApp/archive/refs/heads/main.zip'
+            })
+            
+    except Exception as e:
+        return jsonify({'error': f'Erro ao verificar atualizações: {str(e)}'}), 500
+
+@app.route('/api/sistema/atualizar', methods=['POST'])
+def atualizar_sistema():
+    """Baixa e instala a atualização do sistema"""
+    try:
+        import requests
+        import zipfile
+        import os
+        import shutil
+        import tempfile
+        from pathlib import Path
+        
+        data = request.json
+        download_url = data.get('download_url')
+        nova_versao = data.get('versao')
+        
+        if not download_url:
+            return jsonify({'error': 'URL de download não fornecida'}), 400
+        
+        # Criar backup da versão atual
+        backup_dir = f"backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        
+        # Arquivos importantes para backup
+        arquivos_backup = [
+            'app.py',
+            'postgre.py', 
+            'requirements.txt',
+            'templates',
+            'static',
+            'version.txt'
+        ]
+        
+        print(f"Criando backup em: {backup_dir}")
+        os.makedirs(backup_dir, exist_ok=True)
+        
+        for item in arquivos_backup:
+            if os.path.exists(item):
+                if os.path.isdir(item):
+                    shutil.copytree(item, os.path.join(backup_dir, item))
+                else:
+                    shutil.copy2(item, backup_dir)
+        
+        # Baixar nova versão
+        print("Baixando nova versão...")
+        response = requests.get(download_url, timeout=300)
+        
+        if response.status_code != 200:
+            return jsonify({'error': 'Falha ao baixar atualização'}), 500
+        
+        # Salvar arquivo ZIP temporário
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.zip') as temp_file:
+            temp_file.write(response.content)
+            zip_path = temp_file.name
+        
+        # Extrair ZIP
+        print("Extraindo atualização...")
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            # Extrair para diretório temporário
+            with tempfile.TemporaryDirectory() as temp_dir:
+                zip_ref.extractall(temp_dir)
+                
+                # Encontrar pasta extraída (geralmente tem nome do repo)
+                extracted_folders = [f for f in os.listdir(temp_dir) if os.path.isdir(os.path.join(temp_dir, f))]
+                if not extracted_folders:
+                    return jsonify({'error': 'Estrutura de arquivo inválida'}), 500
+                
+                source_dir = os.path.join(temp_dir, extracted_folders[0])
+                
+                # Arquivos que devem ser atualizados
+                arquivos_atualizar = [
+                    'app.py',
+                    'templates',
+                    'static',
+                    'requirements.txt'
+                ]
+                
+                # Copiar arquivos atualizados
+                print("Instalando atualização...")
+                for item in arquivos_atualizar:
+                    source_path = os.path.join(source_dir, item)
+                    if os.path.exists(source_path):
+                        if os.path.exists(item):
+                            if os.path.isdir(item):
+                                shutil.rmtree(item)
+                            else:
+                                os.remove(item)
+                        
+                        if os.path.isdir(source_path):
+                            shutil.copytree(source_path, item)
+                        else:
+                            shutil.copy2(source_path, item)
+        
+        # Atualizar version.txt
+        with open('version.txt', 'w') as f:
+            f.write(nova_versao)
+        
+        # Limpar arquivo temporário
+        os.unlink(zip_path)
+        
+        print("Atualização instalada com sucesso!")
+        
+        # Restart do servidor em thread separada
+        def restart_server():
+            import time
+            time.sleep(2)  # Aguardar resposta ser enviada
+            os._exit(0)  # Força reinicialização
+        
+        threading.Timer(1, restart_server).start()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Atualização instalada com sucesso!',
+            'backup': backup_dir
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'Erro ao instalar atualização: {str(e)}'}), 500
+
 def open_browser():
     """Abre o navegador após o servidor iniciar"""
     webbrowser.open('http://localhost:5000')
