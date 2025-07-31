@@ -237,8 +237,8 @@ function mostrarDetalhesEvento(evento) {
                     <div class="col-md-3">
                         <label class="form-label fw-bold">Status:</label>
                         <p class="form-control-plaintext">
-                            <span class="badge ${props.status === 'Entregue' ? 'bg-success' : 
-                                                  props.status === 'Pronto' ? 'bg-info' :
+                            <span class="badge ${props.status === 'Entregue' ? 'bg-info' : 
+                                                  props.status === 'Pronto' ? 'bg-success' :
                                                   props.status === 'Em produção' ? 'bg-warning' : 'bg-secondary'}">
                                 ${props.status || 'Não iniciado'}
                             </span>

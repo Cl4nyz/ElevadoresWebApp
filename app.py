@@ -907,167 +907,6 @@ def delete_elevador(elevador_id):
         cursor.close()
         end_pg_connection(conn)
 
-def _gerar_pdf_weasyprint_from_latex(dados, elevador_id):
-    """Função de fallback para gerar PDF usando WeasyPrint quando LaTeX não está disponível"""
-    try:
-        from weasyprint import HTML, CSS
-        from io import StringIO
-        
-        # Converter dados LaTeX para HTML equivalente
-        html_content = f"""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <title>Ordem de Serviço - Elevador {dados['elevador_id']}</title>
-            <style>
-                @page {{
-                    margin: 1cm 2cm;
-                    size: A4;
-                }}
-                body {{
-                    font-family: 'Segoe UI', Arial, sans-serif;
-                    line-height: 1.4;
-                    color: #333;
-                }}
-                .header {{
-                    text-align: center;
-                    border-bottom: 2px solid #333;
-                    padding-bottom: 10px;
-                    margin-bottom: 20px;
-                }}
-                .header h1 {{
-                    font-size: 28px;
-                    margin: 0;
-                    font-weight: bold;
-                }}
-                .header p {{
-                    margin: 5px 0 0 0;
-                    font-size: 14px;
-                }}
-                .section {{
-                    margin: 20px 0;
-                }}
-                .section h2 {{
-                    font-size: 18px;
-                    font-weight: bold;
-                    margin-bottom: 10px;
-                    border-bottom: 1px solid #ccc;
-                    padding-bottom: 5px;
-                }}
-                table {{
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin: 10px 0;
-                }}
-                th, td {{
-                    border: 1px solid #333;
-                    padding: 8px;
-                    text-align: left;
-                }}
-                th {{
-                    background-color: #f5f5f5;
-                    font-weight: bold;
-                }}
-                .footer {{
-                    margin-top: 30px;
-                    text-align: center;
-                    font-size: 12px;
-                    color: #666;
-                    border-top: 1px solid #ccc;
-                    padding-top: 10px;
-                }}
-                ul {{
-                    margin: 10px 0;
-                    padding-left: 20px;
-                }}
-                li {{
-                    margin: 5px 0;
-                }}
-            </style>
-        </head>
-        <body>
-            <div class="header">
-                <h1>ORDEM DE SERVIÇO</h1>
-                <p>Sistema de Gerenciamento de Elevadores</p>
-            </div>
-            
-            <div class="section">
-                <h2>DADOS DO ELEVADOR</h2>
-                <table>
-                    <tr><th>Campo</th><th>Valor</th></tr>
-                    <tr><td><strong>OS</strong></td><td>{dados['elevador_id']}</td></tr>
-                    <tr><td><strong>DATA PEDIDO</strong></td><td>{dados['data_venda']}</td></tr>
-                    <tr><td><strong>DATA ENTREGA</strong></td><td>{dados['data_entrega']}</td></tr>
-                    <tr><td><strong>CLIENTE</strong></td><td>{dados['cliente_nome']}</td></tr>
-                    <tr><td><strong>CIDADE</strong></td><td>{dados['cidade']}</td></tr>
-                    <tr><td><strong>Elevação</strong></td><td>{dados['elevacao']} mm</td></tr>
-                    <tr><td><strong>Cor</strong></td><td>{dados['cor']}</td></tr>
-                    <tr><td><strong>Cabine</strong></td><td>{dados['cabine_altura']} cm - {dados['cabine_descricao']}</td></tr>
-                </table>
-            </div>
-            
-            <div class="section">
-                <h2>INFORMAÇÕES DO CLIENTE</h2>
-                <table>
-                    <tr><th>Campo</th><th>Valor</th></tr>
-                    <tr><td><strong>CPF</strong></td><td>{dados['cliente_cpf']}</td></tr>
-                </table>
-            </div>
-            
-            <div class="section">
-                <h2>ENDEREÇO DE INSTALAÇÃO</h2>
-                <table>
-                    <tr><th>Campo</th><th>Valor</th></tr>
-                    <tr><td><strong>Endereço Completo</strong></td><td>{dados['endereco_completo']}</td></tr>
-                    <tr><td><strong>Cidade</strong></td><td>{dados['cidade']}</td></tr>
-                    <tr><td><strong>Estado</strong></td><td>{dados['estado_nome']} ({dados['estado_sigla']})</td></tr>
-                    <tr><td><strong>CEP</strong></td><td>{dados['cep']}</td></tr>
-                </table>
-            </div>
-            
-            <div class="section">
-                <h2>DADOS DO CONTRATO</h2>
-                <table>
-                    <tr><th>Campo</th><th>Valor</th></tr>
-                    <tr><td><strong>ID do Contrato</strong></td><td>{dados['contrato_id']}</td></tr>
-                    <tr><td><strong>Data da Venda</strong></td><td>{dados['data_venda']}</td></tr>
-                    <tr><td><strong>Data de Entrega</strong></td><td>{dados['data_entrega']}</td></tr>
-                </table>
-            </div>
-            
-            <div class="section">
-                <h2>OBSERVAÇÕES TÉCNICAS</h2>
-                <ul>
-                    <li><strong>Status</strong>: Elevador registrado no sistema</li>
-                    <li><strong>Tipo de Relatório</strong>: Relatório técnico completo</li>
-                    <li><strong>Versão do Sistema</strong>: 1.0</li>
-                </ul>
-            </div>
-            
-            <div class="footer">
-                <em>Relatório gerado automaticamente em: {dados['data_geracao']}</em><br>
-                <strong>Sistema de Gerenciamento de Elevadores</strong> | Relatório de Elevador ID: {dados['elevador_id']}
-            </div>
-        </body>
-        </html>
-        """
-        
-        # Gerar PDF usando WeasyPrint
-        pdf_bytes = HTML(string=html_content).write_pdf()
-        
-        from flask import Response
-        return Response(
-            pdf_bytes,
-            mimetype='application/pdf',
-            headers={
-                'Content-Disposition': f'inline; filename="elevador_{elevador_id}.pdf"'
-            }
-        )
-        
-    except Exception as e:
-        return jsonify({'error': f'Erro ao gerar PDF com WeasyPrint: {str(e)}'}), 500
-
 @app.route('/api/elevadores/<int:elevador_id>/pdf')
 def gerar_pdf_elevador(elevador_id):
     conn = get_db_connection()
@@ -1080,8 +919,8 @@ def gerar_pdf_elevador(elevador_id):
         query = """
             SELECT 
                 e.id, e.comando, e.observacao, e.porta_inferior, e.porta_superior, e.cor,
-                c.id as contrato_id, c.data_venda, c.data_entrega,
-                cl.nome as cliente_nome, cl.cpf,
+                c.id as contrato_id, c.data_venda, c.data_entrega, c.vendedor,
+                cl.nome as cliente_nome, cl.documento,
                 cab.altura as cabine_altura, cab.largura as cabine_largura, 
                 cab.profundidade as cabine_profundidade, cab.piso as cabine_piso,
                 cab.montada as cabine_montada, cab.lado_entrada, cab.lado_saida,
@@ -1108,580 +947,442 @@ def gerar_pdf_elevador(elevador_id):
         if not result:
             return jsonify({'error': 'Elevador não encontrado'}), 404
         
-        # Imports necessários
-        import os
-        import subprocess
-        import tempfile
-        from datetime import datetime
-        
-        # Preparar dados para o template LaTeX
-        endereco_completo = 'Não informado'
-        if result[29]:  # rua
-            endereco_completo = f"{result[29]}, {result[30]}"
-            if result[31]:  # complemento
-                endereco_completo += f", {result[31]}"
-            endereco_completo += f" - {result[32]}/{result[33]} - CEP: {result[34]}"
-        
-        # Dicionário com os dados
-        dados = {
-            'elevador_id': str(result[0]),
-            'comando': result[1] or 'Não informado',
-            'observacao': result[2] or 'Sem observações',
-            'porta_inferior': result[3] or 'Não especificada',
-            'porta_superior': result[4] or 'Não especificada',
-            'cor': result[5] or 'Não especificada',
-            'elevacao': str(result[18]) if result[18] else 'Não informada',
-            'cabine_altura': str(result[11]) if result[11] else 'N/A',
-            'cabine_largura': str(result[12]) if result[12] else 'N/A',
-            'cabine_profundidade': str(result[13]) if result[13] else 'N/A',
-            'cabine_piso': result[14] or 'N/A',
-            'cabine_montada': 'Sim' if result[15] else 'Não',
-            'lado_entrada': result[16] or 'Não especificado',
-            'lado_saida': result[17] or 'Não especificado',
-            'coluna_montada': 'Sim' if result[19] else 'Não',
-            'cancela': str(result[20]) if result[20] else '0',
-            'porta': str(result[21]) if result[21] else '0',
-            'portao': str(result[22]) if result[22] else '0',
-            'barreira_eletronica': str(result[23]) if result[23] else '0',
-            'lados_enclausuramento': str(result[24]) if result[24] else '0',
-            'sensor_esmagamento': str(result[25]) if result[25] else '0',
-            'rampa_acesso': str(result[26]) if result[26] else '0',
-            'nobreak': str(result[27]) if result[27] else '0',
-            'galvanizada': 'Sim' if result[28] else 'Não',
-            'cliente_nome': result[9] or 'Não informado',
-            'cliente_cpf': result[10] or 'Não informado',
-            'endereco_completo': endereco_completo,
-            'cidade': result[32] or 'Não informada',
-            'estado_nome': result[35] or 'Não informado',
-            'estado_sigla': result[33] or 'N/A',
-            'cep': result[34] or 'Não informado',
-            'contrato_id': str(result[6]) if result[6] else 'Não informado',
-            'data_venda': result[7].strftime('%d/%m/%Y') if result[7] else 'Não informada',
-            'data_entrega': result[8].strftime('%d/%m/%Y') if result[8] else 'Não informada',
-            'data_geracao': datetime.now().strftime('%d/%m/%Y às %H:%M')
-        }
-        
-        # Ler template LaTeX
-        template_path = os.path.join(app.template_folder, 'elevador_pdf_template.tex')
-        
-        if not os.path.exists(template_path):
-            return jsonify({'error': 'Template LaTeX não encontrado'}), 500
-        
-        with open(template_path, 'r', encoding='utf-8') as f:
-            template_content = f.read()
-        
-        # Substituir placeholders no template
-        latex_content = template_content
-        for key, value in dados.items():
-            # Escapar caracteres especiais do LaTeX
-            escaped_value = str(value).replace('&', '\\&').replace('%', '\\%').replace('$', '\\$').replace('#', '\\#').replace('_', '\\_').replace('{', '\\{').replace('}', '\\}')
-            latex_content = latex_content.replace(f'{{{{{key}}}}}', escaped_value)
-        
-        # Criar diretório temporário
-        with tempfile.TemporaryDirectory() as temp_dir:
-            # Salvar arquivo .tex temporário
-            tex_file = os.path.join(temp_dir, f'elevador_{elevador_id}.tex')
-            pdf_file = os.path.join(temp_dir, f'elevador_{elevador_id}.pdf')
-            
-            with open(tex_file, 'w', encoding='utf-8') as f:
-                f.write(latex_content)
-            
-        # Tentar métodos alternativos se pdflatex não estiver disponível
-        try:
-            # Método 1: Verificar se pdflatex está disponível
-            result_version = subprocess.run(['pdflatex', '--version'], 
-                         capture_output=True, check=True, cwd=temp_dir)
-            use_pdflatex = True
-        except (subprocess.CalledProcessError, FileNotFoundError):
-            use_pdflatex = False
-        
-        if use_pdflatex:
-            # Usar pdflatex local
-            try:
-                # Primeira compilação
-                result1 = subprocess.run(['pdflatex', '-interaction=nonstopmode', tex_file], 
-                             cwd=temp_dir, capture_output=True, check=True)
-                
-                # Segunda compilação (para resolver referências)
-                result2 = subprocess.run(['pdflatex', '-interaction=nonstopmode', tex_file], 
-                             cwd=temp_dir, capture_output=True, check=True)
-                
-            except subprocess.CalledProcessError as e:
-                # Se houver erro na compilação, usar fallback
-                use_pdflatex = False
-        
-        if not use_pdflatex:
-            # Fallback: Converter LaTeX para HTML e depois para PDF com WeasyPrint
-            return _gerar_pdf_weasyprint_from_latex(dados, elevador_id)
-        
-        # Verificar se o PDF foi gerado com pdflatex
-        if not os.path.exists(pdf_file):
-            return jsonify({'error': 'PDF não foi gerado corretamente'}), 500
-        
-        # Ler o PDF gerado
-        with open(pdf_file, 'rb') as f:
-            pdf_content = f.read()
-        
-        # Retornar o PDF
-        from flask import Response
-        return Response(
-            pdf_content,
-            mimetype='application/pdf',
-            headers={
-                'Content-Disposition': f'inline; filename="elevador_{elevador_id}.pdf"'
-            }
-        )
-        
-        # Imports necessários
+        # Imports para PDF
         from reportlab.lib.pagesizes import A4
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
         from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-        from reportlab.lib.units import inch
+        from reportlab.lib.units import inch, cm
         from reportlab.lib import colors
+        from reportlab.graphics.shapes import Drawing, Rect, Line, Polygon, String
         from io import BytesIO
         import os
         from datetime import datetime
         
-        # Ler template Markdown para estruturar os dados
-        template_path = os.path.join(app.template_folder, 'elevador_pdf_template.md')
-        template_structure = None
-        try:
-            with open(template_path, 'r', encoding='utf-8') as f:
-                template_content = f.read()
-                # O template será usado como referência de estrutura
-        except FileNotFoundError:
-            template_content = None
+        # ========== CONSTANTES DE CONFIGURAÇÃO DO PDF ==========
+        # Margens do documento (você pode alterar estas margens individualmente)
+        MARGEM_ESQUERDA = 0.05*cm   # Margem esquerda - reduzida para aproveitar mais espaço
+        MARGEM_DIREITA = 0.05*cm    # Margem direita - reduzida para aproveitar mais espaço  
+        MARGEM_SUPERIOR = 0.3*cm    # Margem superior
+        MARGEM_INFERIOR = 0.3*cm    # Margem inferior
         
-        # Preparar dados para o PDF
+        # Tamanhos de fonte
+        FONTE_TITULO = 32
+        FONTE_SECAO = 20
+        FONTE_TABELA = 14
+        FONTE_CABECALHO = 14
+        FONTE_RODAPE = 12
+        FONTE_DESENHO = 12
+        
+        # Espaçamentos
+        ESPACAMENTO_TITULO = 16
+        ESPACAMENTO_SECAO_ANTES = 16
+        ESPACAMENTO_SECAO_DEPOIS = 8
+        ESPACAMENTO_RODAPE = 4
+        ESPACAMENTO_TABELA_VERTICAL = 6
+        ESPACAMENTO_TABELA_HORIZONTAL = 4
+        ESPACAMENTO_GERAL = 6
+        
+        # Dimensões de imagem
+        LOGO_LARGURA = 3*inch
+        LOGO_ALTURA = 0.8*inch
+        
+        # Dimensões de tabelas - otimizadas para melhor distribuição horizontal
+        LARGURA_COLUNA_PEQUENA = 2*cm
+        LARGURA_COLUNA_MEDIA = 2.5*cm
+        LARGURA_COLUNA_GRANDE = 4*cm
+        LARGURA_CABECALHO_1 = 3.5*cm      # Aumentada ligeiramente
+        LARGURA_CABECALHO_2 = 4.5*cm      # Aumentada para melhor proporção
+        LARGURA_CABECALHO_3 = 14*cm        # Aumentada para aproveitar espaço
+        LARGURA_DESENHO_CABINE = 6*cm     # Aumentada para melhor proporção
+        LARGURA_DESENHO_VISUAL = 10*cm    # Aumentada para aproveitar espaço extra
+        
+        # Larguras específicas para cada seção - otimizadas para melhor distribuição
+        LARGURA_INFO_COLUNA_1 = 3*cm      # Aumentada para melhor distribuição
+        LARGURA_INFO_COLUNA_2 = 4.5*cm    # Aumentada para aproveitar espaço
+        LARGURA_INFO_COLUNA_3 = 3*cm      # Aumentada para melhor distribuição
+        LARGURA_INFO_COLUNA_4 = 4.5*cm    # Aumentada para aproveitar espaço
+        
+        LARGURA_CABINE_COLUNA_1 = 2.5*cm  # Aumentada ligeiramente
+        LARGURA_CABINE_COLUNA_2 = 3.5*cm  # Aumentada para melhor proporção
+        
+        LARGURA_ESTRUTURA_COLUNA_1 = 3.5*cm   # Aumentada para melhor distribuição
+        LARGURA_ESTRUTURA_COLUNA_2 = 3*cm     # Aumentada ligeiramente
+        LARGURA_ESTRUTURA_COLUNA_3 = 3.5*cm   # Aumentada para melhor distribuição
+        LARGURA_ESTRUTURA_COLUNA_4 = 3*cm     # Aumentada ligeiramente
+        
+        LARGURA_ADICIONAIS_COLUNA_1 = 6*cm  # Aumentada para melhor distribuição
+        LARGURA_ADICIONAIS_COLUNA_2 = 1*cm    # Aumentada para aproveitar espaço
+        LARGURA_ADICIONAIS_COLUNA_3 = 6*cm  # Aumentada para melhor distribuição
+        LARGURA_ADICIONAIS_COLUNA_4 = 1*cm    # Aumentada para aproveitar espaço
+        
+        # Espaçamentos adicionais
+        ESPACAMENTO_TABELA_SECAO = 6
+        
+        # Dimensões e configurações do desenho da cabine
+        DESENHO_LARGURA = 180
+        DESENHO_ALTURA = 120
+        DESENHO_ESCALA = 1.5
+        DESENHO_LARGURA_PADRAO = 50
+        DESENHO_ALTURA_PADRAO = 35
+        DESENHO_MARGEM_PLATAFORMA = 6
+        DESENHO_TAMANHO_SETA = 12
+        DESENHO_OFFSET_SETA_DUPLA = 15
+        DESENHO_OFFSET_SETA_Y = 18
+        DESENHO_OFFSET_SETA_X = 18
+        DESENHO_POSICAO_DIMENSOES_Y = 10
+        DESENHO_POSICAO_CENTRO_X = 90
+        DESENHO_POSICAO_CENTRO_Y = 60
+        
+        # Dimensões do desenho da cabine
+        DESENHO_LARGURA = 180
+        DESENHO_ALTURA = 120
+        ESCALA_CABINE = 1.5
+        MARGEM_PLATAFORMA = 6
+        # ====================================================
+        
+        # Preparar dados
         endereco_completo = 'Não informado'
-        if result[10]:  # rua
-            endereco_completo = f"{result[10]}, {result[11]}"
-            if result[12]:  # complemento
-                endereco_completo += f", {result[12]}"
-            endereco_completo += f" - {result[13]}/{result[14]} - CEP: {result[15]}"
-        
-        # Dicionário com os dados
-        dados = {
-            'elevador_id': str(result[0]),
-            'elevacao': str(result[1]) if result[1] else 'Não informada',
-            'cor': result[2] or 'Não especificada',
-            'cabine_altura': str(result[8]) if result[8] else 'N/A',
-            'cabine_descricao': result[9] or 'N/A',
-            'cliente_nome': result[6] or 'Não informado',
-            'cliente_cpf': result[7] or 'Não informado',
-            'endereco_completo': endereco_completo,
-            'cidade': result[13] or 'Não informada',
-            'estado_nome': result[16] or 'Não informado',
-            'estado_sigla': result[14] or 'N/A',
-            'cep': result[15] or 'Não informado',
-            'contrato_id': str(result[3]) if result[3] else 'Não informado',
-            'data_venda': result[4].strftime('%d/%m/%Y') if result[4] else 'Não informada',
-            'data_entrega': result[5].strftime('%d/%m/%Y') if result[5] else 'Não informada',
-            'data_geracao': datetime.now().strftime('%d/%m/%Y às %H:%M')
-        }
-        
-        # Processar template Markdown se disponível
-        if template_content:
-            # Substituir placeholders no template
-            markdown_processed = template_content
-            for key, value in dados.items():
-                markdown_processed = markdown_processed.replace(f'{{{{{key}}}}}', str(value))
-        else:
-            # Template padrão como fallback
-            markdown_processed = f"""
-# RELATÓRIO DE ELEVADOR
-
-## DADOS DO ELEVADOR
-- **ID:** {dados['elevador_id']}
-- **Elevação:** {dados['elevacao']} mm
-- **Cor:** {dados['cor']}
-- **Cabine:** {dados['cabine_altura']} cm - {dados['cabine_descricao']}
-
-## INFORMAÇÕES DO CLIENTE
-- **Nome:** {dados['cliente_nome']}
-- **CPF:** {dados['cliente_cpf']}
-
-## ENDEREÇO DE INSTALAÇÃO
-- **Endereço:** {dados['endereco_completo']}
-- **Cidade:** {dados['cidade']}
-- **Estado:** {dados['estado_nome']} ({dados['estado_sigla']})
-- **CEP:** {dados['cep']}
-
-## DADOS DO CONTRATO
-- **ID do Contrato:** {dados['contrato_id']}
-- **Data da Venda:** {dados['data_venda']}
-- **Data de Entrega:** {dados['data_entrega']}
-
----
-*Relatório gerado em: {dados['data_geracao']}*
-"""
+        if result[30]:  # rua
+            endereco_completo = f"{result[30]}, {result[31]}"
+            if result[32]:  # complemento
+                endereco_completo += f", {result[32]}"
+            endereco_completo += f" - {result[33]}/{result[34]} - CEP: {result[35]}"
         
         # Criar buffer em memória
         buffer = BytesIO()
         
-        # Criar documento PDF
+        # Configurar documento PDF - margens configuráveis
         doc = SimpleDocTemplate(buffer, pagesize=A4, 
-                               topMargin=inch, bottomMargin=inch,
-                               leftMargin=inch, rightMargin=inch)
+                              rightMargin=MARGEM_DIREITA, leftMargin=MARGEM_ESQUERDA, 
+                              topMargin=MARGEM_SUPERIOR, bottomMargin=MARGEM_INFERIOR)
+        
+        # Configurar estilos com fontes maiores
         styles = getSampleStyleSheet()
         
-        # Estilos personalizados baseados no template
-        title_style = ParagraphStyle(
-            'CustomTitle',
-            parent=styles['Heading1'],
-            fontSize=20,
-            spaceAfter=30,
-            alignment=1,  # Centralizado
-            textColor=colors.HexColor('#2c3e50')
-        )
+        title_style = ParagraphStyle('CustomTitle',
+                                   parent=styles['Heading1'],
+                                   fontSize=FONTE_TITULO,
+                                   spaceAfter=ESPACAMENTO_TITULO,
+                                   alignment=1)  # Centralizado
         
-        section_style = ParagraphStyle(
-            'Section',
-            parent=styles['Heading2'],
-            fontSize=16,
-            spaceAfter=15,
-            textColor=colors.HexColor('#34495e'),
-            borderWidth=1,
-            borderColor=colors.HexColor('#bdc3c7'),
-            borderPadding=5
-        )
+        section_style = ParagraphStyle('SectionStyle',
+                                     parent=styles['Heading2'],
+                                     fontSize=FONTE_SECAO,
+                                     spaceAfter=ESPACAMENTO_SECAO_DEPOIS,
+                                     spaceBefore=ESPACAMENTO_SECAO_ANTES,
+                                     textColor=colors.darkblue,
+                                     alignment=1)
         
-        normal_style = ParagraphStyle(
-            'Normal',
-            parent=styles['Normal'],
-            fontSize=11,
-            spaceAfter=8
-        )
+        small_style = ParagraphStyle('Small',
+                                   parent=styles['Normal'],
+                                   fontSize=FONTE_RODAPE,
+                                   spaceAfter=ESPACAMENTO_RODAPE)
         
-        footer_style = ParagraphStyle(
-            'FooterStyle',
-            parent=styles['Normal'],
-            fontSize=10,
-            alignment=1,  # Centralizado
-            textColor=colors.HexColor('#7f8c8d')
-        )
+        text_style = ParagraphStyle('Text',
+                                    parent=styles['Normal'],
+                                    fontSize=FONTE_TABELA,
+                                    spaceAfter=ESPACAMENTO_GERAL)
         
-        # Estilo para tabelas
-        table_style = TableStyle([
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#f8f9fa')),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 11),
-            ('PADDING', (0, 0), (-1, -1), 8),
-        ])
+        # Conteúdo do PDF
+        story = []
         
-        # Função para processar markdown e converter para elementos ReportLab
-        def markdown_to_reportlab_elements(markdown_text):
-            elements = []
-            lines = markdown_text.split('\n')
-            
-            current_table_data = []
-            in_table = False
-            
-            for line in lines:
-                line = line.strip()
-                
-                if not line:
-                    if not in_table:
-                        elements.append(Spacer(1, 12))
-                    continue
-                
-                # Processar tags de imagem
-                if '<img ' in line and 'src=' in line:
-                    if in_table and current_table_data:
-                        # Finalizar tabela anterior
-                        table = Table(current_table_data[1:], colWidths=[2*inch, 4*inch])
-                        table.setStyle(table_style)
-                        elements.append(table)
-                        current_table_data = []
-                        in_table = False
-                    
-                    # Extrair o src da imagem
-                    import re
-                    src_match = re.search(r'src=["\']([^"\']+)["\']', line)
-                    if src_match:
-                        img_src = src_match.group(1)
-                        # Construir caminho absoluto para a imagem
-                        if not img_src.startswith('/') and not img_src.startswith('http'):
-                            img_path = os.path.join('static', 'images', img_src)
-                        else:
-                            img_path = img_src
-                        
-                        try:
-                            # Verificar se a imagem existe
-                            if os.path.exists(img_path):
-                                # Criar elemento de imagem com dimensões ajustadas
-                                img = Image(img_path)
-                                
-                                # Ajustar tamanho da imagem para caber na página
-                                available_width = 6 * inch  # Largura disponível
-                                available_height = 2 * inch  # Altura máxima desejada
-                                
-                                # Calcular proporção
-                                img_width, img_height = img.drawWidth, img.drawHeight
-                                ratio = min(available_width / img_width, available_height / img_height)
-                                
-                                img.drawWidth = img_width * ratio
-                                img.drawHeight = img_height * ratio
-                                
-                                elements.append(img)
-                                elements.append(Spacer(1, 12))
-                            else:
-                                # Se a imagem não existe, adicionar texto indicativo
-                                elements.append(Paragraph(f"[Imagem não encontrada: {img_src}]", normal_style))
-                        except Exception as e:
-                            elements.append(Paragraph(f"[Erro ao carregar imagem: {img_src}]", normal_style))
-                    continue
-                
-                # Título principal (# )
-                if line.startswith('# '):
-                    if in_table and current_table_data:
-                        # Finalizar tabela anterior
-                        table = Table(current_table_data[1:], colWidths=[2*inch, 4*inch])
-                        table.setStyle(table_style)
-                        elements.append(table)
-                        current_table_data = []
-                        in_table = False
-                    
-                    title_text = line[2:].strip()
-                    elements.append(Paragraph(title_text, title_style))
-                    elements.append(Spacer(1, 20))
-                
-                # Subtítulo (## )
-                elif line.startswith('## '):
-                    if in_table and current_table_data:
-                        # Finalizar tabela anterior
-                        table = Table(current_table_data[1:], colWidths=[2*inch, 4*inch])
-                        table.setStyle(table_style)
-                        elements.append(table)
-                        current_table_data = []
-                        in_table = False
-                    
-                    subtitle_text = line[3:].strip()
-                    elements.append(Paragraph(subtitle_text, section_style))
-                    elements.append(Spacer(1, 10))
-                
-                # Cabeçalho de tabela
-                elif line.startswith('| Campo | Valor |'):
-                    in_table = True
-                    current_table_data = [['Campo', 'Valor']]
-                
-                # Separador de tabela
-                elif line.startswith('|----'):
-                    continue
-                
-                # Linha de tabela
-                elif line.startswith('|') and in_table:
-                    parts = [part.strip() for part in line.split('|')[1:-1]]
-                    if len(parts) >= 2:
-                        # Remover formatação markdown **texto**
-                        campo = parts[0].replace('**', '').strip()
-                        valor = parts[1].replace('**', '').strip()
-                        current_table_data.append([campo, valor])
-                
-                # Linha separadora ---
-                elif line.startswith('---'):
-                    if in_table and current_table_data:
-                        table = Table(current_table_data[1:], colWidths=[2*inch, 4*inch])
-                        table.setStyle(table_style)
-                        elements.append(table)
-                        current_table_data = []
-                        in_table = False
-                    elements.append(Spacer(1, 15))
-                
-                # Lista com marcadores (- )
-                elif line.startswith('- '):
-                    if in_table and current_table_data:
-                        table = Table(current_table_data[1:], colWidths=[2*inch, 4*inch])
-                        table.setStyle(table_style)
-                        elements.append(table)
-                        current_table_data = []
-                        in_table = False
-                    
-                    list_text = line[2:].strip().replace('**', '')
-                    elements.append(Paragraph(f"• {list_text}", normal_style))
-                
-                # Texto em div class="footer" ou texto em itálico
-                elif line.startswith('*') and line.endswith('*'):
-                    if in_table and current_table_data:
-                        table = Table(current_table_data[1:], colWidths=[2*inch, 4*inch])
-                        table.setStyle(table_style)
-                        elements.append(table)
-                        current_table_data = []
-                        in_table = False
-                    
-                    footer_text = line[1:-1].strip()
-                    elements.append(Paragraph(footer_text, footer_style))
-                
-                # Tags HTML e outras linhas
-                elif not line.startswith('<') and not line.startswith('</'):
-                    if in_table and current_table_data:
-                        table = Table(current_table_data[1:], colWidths=[2*inch, 4*inch])
-                        table.setStyle(table_style)
-                        elements.append(table)
-                        current_table_data = []
-                        in_table = False
-                    
-                    if line:
-                        elements.append(Paragraph(line, normal_style))
-            
-            # Finalizar última tabela se necessário
-            if in_table and current_table_data:
-                table = Table(current_table_data[1:], colWidths=[2*inch, 4*inch])
-                table.setStyle(table_style)
-                elements.append(table)
-            
-            return elements
-        
-        # Processar markdown e gerar elementos PDF
-        elements = markdown_to_reportlab_elements(markdown_processed)
-        
-        # Gerar PDF
-        doc.build(elements)
-        
-        # Retornar PDF
-        buffer.seek(0)
-        
-        from flask import Response
-        return Response(
-            buffer.getvalue(),
-            mimetype='application/pdf',
-            headers={
-                'Content-Disposition': f'inline; filename="elevador_{elevador_id}.pdf"'
-            }
-        )
-        elements.append(Paragraph("RELATÓRIO DE ELEVADOR", title_style))
-        elements.append(Spacer(1, 20))
-        
-        # Seção: Dados do Elevador
-        elements.append(Paragraph("DADOS DO ELEVADOR", section_style))
-        
-        elevador_data = [
-            ['ID do Elevador:', dados['elevador_id']],
-            ['Elevação:', f"{dados['elevacao']} mm"],
-            ['Cor:', dados['cor']],
-            ['Cabine:', f"{dados['cabine_altura']} cm - {dados['cabine_descricao']}"]
+        # # Título principal
+        # title = Paragraph(f"RELATÓRIO DO ELEVADOR #{result[0]}", title_style)
+        # story.append(title)
+        # story.append(Spacer(1, 4))
+
+        # ====== CABEÇALHO COM LOGO, PEDIDO E CLIENTE ======
+        pedido_data = [
+            ['OS:', str(result[6]) if result[6] else 'N/A'],
+            ['Data Venda:', result[7].strftime('%d/%m/%Y') if result[7] else 'N/A'],
+            ['Data Entrega:', result[8].strftime('%d/%m/%Y') if result[8] else 'N/A']
         ]
-        
-        elevador_table = Table(elevador_data, colWidths=[2*inch, 4*inch])
-        elevador_table.setStyle(TableStyle([
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#e3f2fd')),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 11),
-            ('PADDING', (0, 0), (-1, -1), 8),
-        ]))
-        elements.append(elevador_table)
-        elements.append(Spacer(1, 20))
-        
-        # Seção: Informações do Cliente
-        elements.append(Paragraph("INFORMAÇÕES DO CLIENTE", section_style))
-        
+
+        if result[33] and result[34]:
+            cidade_estado = f"{result[33]}, {result[34]}"
+        elif result[33]:
+            cidade_estado = result[33]
+        else:
+            cidade_estado = 'N/A'
+
         cliente_data = [
-            ['Nome:', dados['cliente_nome']],
-            ['CPF:', dados['cliente_cpf']]
+            ['Cliente:', result[10] or 'N/A'],
+            ['Cidade:', cidade_estado]
         ]
-        
-        cliente_table = Table(cliente_data, colWidths=[2*inch, 4*inch])
+
+        # Montar logo + pedido_data lado a lado
+        logo_path = os.path.join(app.static_folder, 'images', 'home.png')
+        logo_img = None
+        if os.path.exists(logo_path):
+            logo_img = Image(logo_path, width=LOGO_LARGURA, height=LOGO_ALTURA)
+            logo_img.hAlign = 'LEFT'
+
+        pedido_table = Table(pedido_data, colWidths=[LARGURA_CABECALHO_1, LARGURA_CABECALHO_2])
+        pedido_table.setStyle(TableStyle([
+            ('FONTSIZE', (0, 0), (-1, -1), FONTE_CABECALHO),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), ESPACAMENTO_TABELA_HORIZONTAL),
+            ('TOPPADDING', (0, 0), (-1, -1), ESPACAMENTO_TABELA_HORIZONTAL),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ]))
+
+        # Cabeçalho: logo à esquerda, pedido à direita - larguras otimizadas
+        if logo_img:
+            cabecalho_table = Table([[logo_img, pedido_table]], colWidths=[8*cm, 6*cm])
+        else:
+            cabecalho_table = Table([['', pedido_table]], colWidths=[8*cm, 6*cm])
+        cabecalho_table.setStyle(TableStyle([
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
+            ('LEFTPADDING', (0, 0), (-1, -1), 0),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+        ]))
+        story.append(cabecalho_table)
+
+        # Cliente_data logo abaixo do cabeçalho
+        cliente_table = Table(cliente_data, colWidths=[LARGURA_CABECALHO_1, LARGURA_CABECALHO_3])
         cliente_table.setStyle(TableStyle([
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#e8f5e8')),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 11),
-            ('PADDING', (0, 0), (-1, -1), 8),
+            ('FONTSIZE', (0, 0), (-1, -1), FONTE_CABECALHO),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), ESPACAMENTO_TABELA_HORIZONTAL),
+            ('TOPPADDING', (0, 0), (-1, -1), ESPACAMENTO_TABELA_HORIZONTAL),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ]))
-        elements.append(cliente_table)
-        elements.append(Spacer(1, 20))
+        story.append(cliente_table)
+        story.append(Spacer(1, ESPACAMENTO_GERAL))
         
-        # Seção: Endereço de Instalação
-        elements.append(Paragraph("ENDEREÇO DE INSTALAÇÃO", section_style))
+        # Função para criar desenho da cabine
+        def criar_desenho_cabine(largura, profundidade, lado_entrada, lado_saida):
+            try:
+                # Criar desenho
+                drawing = Drawing(DESENHO_LARGURA, DESENHO_ALTURA)
+                
+                # Dimensões base para o desenho (escaladas)
+                scale = DESENHO_ESCALA
+                
+                # Usar dimensões reais se disponíveis, senão usar valores padrão
+                cab_width = float(largura) * scale if largura else DESENHO_LARGURA_PADRAO
+                cab_height = float(profundidade) * scale if profundidade else DESENHO_ALTURA_PADRAO
+                
+                # Centralizar desenho
+                start_x = DESENHO_POSICAO_CENTRO_X - cab_width/2
+                start_y = DESENHO_POSICAO_CENTRO_Y - cab_height/2
+                
+                # Desenhar cabine (retângulo principal)
+                cabine_rect = Rect(start_x, start_y, cab_width, cab_height)
+                cabine_rect.fillColor = colors.lightblue
+                cabine_rect.strokeColor = colors.black
+                cabine_rect.strokeWidth = 2
+                drawing.add(cabine_rect)
+                
+                # Desenhar plataforma (retângulo menor dentro da cabine)
+                plat_margin = DESENHO_MARGEM_PLATAFORMA
+                plataforma = Rect(start_x + plat_margin, start_y + plat_margin, 
+                                cab_width - 2*plat_margin, cab_height - 2*plat_margin)
+                plataforma.fillColor = colors.lightyellow
+                plataforma.strokeColor = colors.darkgray
+                plataforma.strokeWidth = 1
+                drawing.add(plataforma)
+                
+                # Função para desenhar seta
+                def desenhar_seta(x, y, direcao, cor=colors.red):
+                    seta_tamanho = DESENHO_TAMANHO_SETA
+                    if direcao == 'direita':
+                        # Seta para direita
+                        seta = Polygon([x, y, x+seta_tamanho, y+seta_tamanho/2, x, y+seta_tamanho, x+2, y+seta_tamanho/2])
+                    elif direcao == 'esquerda':
+                        # Seta para esquerda
+                        seta = Polygon([x+seta_tamanho, y, x, y+seta_tamanho/2, x+seta_tamanho, y+seta_tamanho, x+seta_tamanho-2, y+seta_tamanho/2])
+                    elif direcao == 'cima':
+                        # Seta para cima
+                        seta = Polygon([x, y+seta_tamanho, x+seta_tamanho/2, y, x+seta_tamanho, y+seta_tamanho, x+seta_tamanho/2, y+seta_tamanho-2])
+                    elif direcao == 'baixo':
+                        # Seta para baixo
+                        seta = Polygon([x, y, x+seta_tamanho/2, y+seta_tamanho, x+seta_tamanho, y, x+seta_tamanho/2, y+2])
+                    else:
+                        return
+                    
+                    seta.fillColor = cor
+                    seta.strokeColor = colors.darkred
+                    seta.strokeWidth = 1
+                    drawing.add(seta)
+                
+                # Mapear lados para posições e direções
+                lados_config = {
+                    'frente': {'pos': (start_x + cab_width/2 - DESENHO_TAMANHO_SETA/2, start_y - DESENHO_OFFSET_SETA_Y), 'dir': 'cima'},
+                    'tras': {'pos': (start_x + cab_width/2 - DESENHO_TAMANHO_SETA/2, start_y + cab_height + 6), 'dir': 'baixo'},
+                    'direita': {'pos': (start_x + cab_width + 6, start_y + cab_height/2 - DESENHO_TAMANHO_SETA/2), 'dir': 'direita'},
+                    'esquerda': {'pos': (start_x - DESENHO_OFFSET_SETA_X, start_y + cab_height/2 - DESENHO_TAMANHO_SETA/2), 'dir': 'esquerda'}
+                }
+                
+                # Desenhar seta de entrada
+                if lado_entrada and lado_entrada.lower() in lados_config:
+                    config = lados_config[lado_entrada.lower()]
+                    desenhar_seta(config['pos'][0], config['pos'][1], config['dir'], colors.green)
+                    
+                    # Adicionar texto "E"
+                    entrada_text = String(config['pos'][0] + DESENHO_TAMANHO_SETA/2, config['pos'][1] - 8, 'E')
+                    entrada_text.fontSize = FONTE_DESENHO
+                    entrada_text.fillColor = colors.green
+                    entrada_text.textAnchor = 'middle'
+                    drawing.add(entrada_text)
+                
+                # Desenhar seta de saída
+                if lado_saida and lado_saida.lower() in lados_config:
+                    config = lados_config[lado_saida.lower()]
+                    # Usar posição ligeiramente deslocada se for o mesmo lado da entrada
+                    offset_x = DESENHO_OFFSET_SETA_DUPLA if lado_entrada == lado_saida else 0
+                    desenhar_seta(config['pos'][0] + offset_x, config['pos'][1], config['dir'], colors.red)
+                    
+                    # Adicionar texto "S"
+                    saida_text = String(config['pos'][0] + offset_x + DESENHO_TAMANHO_SETA/2, config['pos'][1] - 8, 'S')
+                    saida_text.fontSize = FONTE_DESENHO
+                    saida_text.fillColor = colors.red
+                    saida_text.textAnchor = 'middle'
+                    drawing.add(saida_text)
+                
+                # Adicionar dimensões como texto
+                if largura and profundidade:
+                    dim_text = String(DESENHO_POSICAO_CENTRO_X, DESENHO_POSICAO_DIMENSOES_Y, f'{largura} x {profundidade}')
+                    dim_text.fontSize = FONTE_DESENHO
+                    dim_text.fillColor = colors.black
+                    dim_text.textAnchor = 'middle'
+                    drawing.add(dim_text)
+                
+                return drawing
+                
+            except Exception as e:
+                print(f"Erro ao criar desenho da cabine: {e}")
+                # Retornar desenho vazio em caso de erro
+                return Drawing(DESENHO_LARGURA, DESENHO_ALTURA)
         
-        endereco_data = [
-            ['Endereço Completo:', dados['endereco_completo']],
-            ['Cidade:', dados['cidade']],
-            ['Estado:', f"{dados['estado_nome']} ({dados['estado_sigla']})"],
-            ['CEP:', dados['cep']]
+        # SETOR 1: INFORMAÇÕES BÁSICAS
+        section_title = Paragraph("INFORMAÇÕES BÁSICAS", section_style)
+        story.append(section_title)
+        
+        info_data = [
+            ['Comando:', result[1] or 'Não informado', 'Cor:', result[5] or 'Não especificada'],
+            ['Porta Inferior:', result[3] or 'N/A', 'Porta Superior:', result[4] or 'N/A']]
+        
+        info_table = Table(info_data, colWidths=[LARGURA_INFO_COLUNA_1, LARGURA_INFO_COLUNA_2, LARGURA_INFO_COLUNA_3, LARGURA_INFO_COLUNA_4])
+        info_table.setStyle(TableStyle([
+            ('FONTSIZE', (0, 0), (-1, -1), FONTE_TABELA),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), ESPACAMENTO_TABELA_HORIZONTAL),
+            ('TOPPADDING', (0, 0), (-1, -1), ESPACAMENTO_TABELA_HORIZONTAL),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.gray),
+            ('BACKGROUND', (0, 0), (0, -1), colors.lightgrey),
+            ('BACKGROUND', (2, 0), (2, -1), colors.lightgrey),
+        ]))
+        story.append(info_table)
+        story.append(Spacer(1, ESPACAMENTO_TABELA_SECAO))
+
+        if result[2]:
+            text = f'Observação: {result[2]}.'
+        else:
+            text = 'Sem observações.'
+        obs = Paragraph(text, text_style)
+        story.append(obs)
+        
+        # SETOR 2 e 3: CABINE E DESENHO (lado a lado)
+        section_title = Paragraph("CABINE E VISUALIZAÇÃO", section_style)
+        story.append(section_title)
+        
+        # Dados da cabine
+        cabine_data = [
+            ['Altura:', str(result[12]) if result[12] else 'N/A'],
+            ['Largura:', str(result[13]) if result[13] else 'N/A'],
+            ['Profundidade:', str(result[14]) if result[14] else 'N/A'],
+            ['Piso:', result[15] or 'N/A'],
+            ['Montada:', 'Sim' if result[16] else 'Não'],
+            ['Entrada:', result[17] or 'N/A'],
+            ['Saída:', result[18] or 'N/A']
         ]
         
-        endereco_table = Table(endereco_data, colWidths=[2*inch, 4*inch])
-        endereco_table.setStyle(TableStyle([
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#fff3e0')),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 11),
-            ('PADDING', (0, 0), (-1, -1), 8),
+        cabine_table = Table(cabine_data, colWidths=[LARGURA_CABINE_COLUNA_1, LARGURA_CABINE_COLUNA_2])
+        cabine_table.setStyle(TableStyle([
+            ('FONTSIZE', (0, 0), (-1, -1), FONTE_TABELA),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), ESPACAMENTO_TABELA_HORIZONTAL),
+            ('TOPPADDING', (0, 0), (-1, -1), ESPACAMENTO_TABELA_HORIZONTAL),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.gray),
+            ('BACKGROUND', (0, 0), (0, -1), colors.lightblue),
         ]))
-        elements.append(endereco_table)
-        elements.append(Spacer(1, 20))
         
-        # Seção: Dados do Contrato
-        elements.append(Paragraph("DADOS DO CONTRATO", section_style))
-        
-        contrato_data = [
-            ['ID do Contrato:', dados['contrato_id']],
-            ['Data da Venda:', dados['data_venda']],
-            ['Data de Entrega:', dados['data_entrega']]
-        ]
-        
-        contrato_table = Table(contrato_data, colWidths=[2*inch, 4*inch])
-        contrato_table.setStyle(TableStyle([
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#fce4ec')),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 11),
-            ('PADDING', (0, 0), (-1, -1), 8),
-        ]))
-        elements.append(contrato_table)
-        elements.append(Spacer(1, 20))
-        
-        # Seção: Observações Técnicas
-        elements.append(Paragraph("OBSERVAÇÕES TÉCNICAS", section_style))
-        
-        observacoes_data = [
-            ['Status:', 'Elevador registrado no sistema'],
-            ['Tipo de Relatório:', 'Relatório técnico completo'],
-            ['Versão do Sistema:', '1.0']
-        ]
-        
-        observacoes_table = Table(observacoes_data, colWidths=[2*inch, 4*inch])
-        observacoes_table.setStyle(TableStyle([
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#f0f0f0')),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 11),
-            ('PADDING', (0, 0), (-1, -1), 8),
-        ]))
-        elements.append(observacoes_table)
-        elements.append(Spacer(1, 40))
-        
-        # Rodapé
-        footer_style = ParagraphStyle(
-            'FooterStyle',
-            parent=styles['Normal'],
-            fontSize=10,
-            alignment=1,  # Centralizado
-            textColor=colors.HexColor('#7f8c8d')
+        # Criar desenho da cabine
+        desenho_cabine = criar_desenho_cabine(
+            result[13],  # largura
+            result[14],  # profundidade  
+            result[17],  # lado_entrada
+            result[18]   # lado_saida
         )
         
-        elements.append(Paragraph(f"Relatório gerado automaticamente em: {dados['data_geracao']}", footer_style))
-        elements.append(Spacer(1, 10))
-        elements.append(Paragraph(f"Sistema de Gerenciamento de Elevadores | Relatório de Elevador ID: {dados['elevador_id']}", footer_style))
+        # Juntar cabine e desenho lado a lado
+        cabine_desenho_table = Table([[cabine_table, desenho_cabine]], colWidths=[LARGURA_DESENHO_CABINE, LARGURA_DESENHO_VISUAL])
+        cabine_desenho_table.setStyle(TableStyle([
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('LEFTPADDING', (0, 0), (-1, -1), 5),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 5),
+        ]))
+        story.append(cabine_desenho_table)
+        story.append(Spacer(1, ESPACAMENTO_TABELA_SECAO))
         
-        # Gerar PDF
-        doc.build(elements)
+        # SETOR 4: COLUNA E ESTRUTURA
+        section_title = Paragraph("COLUNA E ESTRUTURA", section_style)
+        story.append(section_title)
+        
+        coluna_data = [
+            ['Elevação:', str(result[19]) if result[19] else 'N/A', 'Coluna Montada:', 'Sim' if result[20] else 'Não'],
+            ['Galvanizada:', 'Sim' if result[29] else 'Não', '', '']
+        ]
+        
+        coluna_table = Table(coluna_data, colWidths=[LARGURA_ESTRUTURA_COLUNA_1, LARGURA_ESTRUTURA_COLUNA_2, LARGURA_ESTRUTURA_COLUNA_3, LARGURA_ESTRUTURA_COLUNA_4])
+        coluna_table.setStyle(TableStyle([
+            ('FONTSIZE', (0, 0), (-1, -1), FONTE_TABELA),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), ESPACAMENTO_TABELA_HORIZONTAL),
+            ('TOPPADDING', (0, 0), (-1, -1), ESPACAMENTO_TABELA_HORIZONTAL),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.gray),
+            ('BACKGROUND', (0, 0), (0, -1), colors.lightgreen),
+            ('BACKGROUND', (2, 0), (2, -1), colors.lightgreen),
+        ]))
+        story.append(coluna_table)
+        story.append(Spacer(1, ESPACAMENTO_TABELA_SECAO))
+        
+        # SETOR 5: ADICIONAIS
+        section_title = Paragraph("ADICIONAIS", section_style)
+        story.append(section_title)
+        
+        adicionais_data = [
+            ['Cancela:', str(result[21]) if result[21] else '0', 'Porta:', str(result[22]) if result[22] else '0'],
+            ['Portão:', str(result[23]) if result[23] else '0', 'Barreira Eletrônica:', str(result[24]) if result[24] else '0'],
+            ['Lados Enclausuramento:', str(result[25]) if result[25] else '0', 'Sensor Esmagamento:', str(result[26]) if result[26] else '0'],
+            ['Rampa Acesso:', str(result[27]) if result[27] else '0', 'NoBreak:', str(result[28]) if result[28] else '0']
+        ]
+        
+        adicionais_table = Table(adicionais_data, colWidths=[LARGURA_ADICIONAIS_COLUNA_1, LARGURA_ADICIONAIS_COLUNA_2, LARGURA_ADICIONAIS_COLUNA_3, LARGURA_ADICIONAIS_COLUNA_4])
+        adicionais_table.setStyle(TableStyle([
+            ('FONTSIZE', (0, 0), (-1, -1), FONTE_TABELA),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), ESPACAMENTO_TABELA_HORIZONTAL),
+            ('TOPPADDING', (0, 0), (-1, -1), ESPACAMENTO_TABELA_HORIZONTAL),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.gray),
+            ('BACKGROUND', (0, 0), (0, -1), colors.lightyellow),
+            ('BACKGROUND', (2, 0), (2, -1), colors.lightyellow),
+        ]))
+        story.append(adicionais_table)
+        story.append(Spacer(1, ESPACAMENTO_RODAPE))
+        
+        # Rodapé com data de geração
+        story.append(Spacer(1, ESPACAMENTO_TABELA_SECAO))
+        rodape = Paragraph(f"Relatório gerado em {datetime.now().strftime('%d/%m/%Y às %H:%M')}", small_style)
+        story.append(rodape)
+        
+        # Construir PDF
+        doc.build(story)
+        
+        # Obter dados do buffer
+        pdf_data = buffer.getvalue()
+        buffer.close()
         
         # Retornar PDF
-        buffer.seek(0)
-        
         from flask import Response
         return Response(
-            buffer.getvalue(),
+            pdf_data,
             mimetype='application/pdf',
             headers={
                 'Content-Disposition': f'inline; filename="elevador_{elevador_id}.pdf"'
@@ -2074,9 +1775,9 @@ def get_calendario_data():
             elif status == 'Em produção':
                 cor_evento = '#ffc107'  # Amarelo
             elif status == 'Pronto':
-                cor_evento = '#17a2b8'  # Azul claro (info)
-            elif status == 'Entregue':
                 cor_evento = '#28a745'  # Verde
+            elif status == 'Entregue':
+                cor_evento = '#17a2b8'  # Azul claro (info)
             else:
                 cor_evento = row[1] or '#007bff'  # Usar cor do elevador como fallback
             

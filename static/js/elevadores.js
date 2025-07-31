@@ -697,7 +697,7 @@ function renderizarElevadores(dadosParaRenderizar = elevadores) {
                     <button class="btn btn-sm btn-outline-primary" onclick="editarElevador(${elevador.id})" title="Editar">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-success" onclick="gerarPDF(${elevador.id})" title="Gerar PDF">
+                    <button class="btn btn-sm btn-outline-success" onclick="gerarPDF(${elevador.id})" title="Visualizar PDF">
                         <i class="fas fa-file-pdf"></i>
                     </button>
                     <button class="btn btn-sm btn-outline-danger" onclick="confirmarExclusao(() => excluirElevador(${elevador.id}))" title="Excluir">
@@ -1133,43 +1133,6 @@ async function excluirElevador(elevadorId) {
     }
 }
 
-// Gerar PDF
-async function gerarPDF(elevadorId) {
-    try {
-        showToast('Gerando PDF...', 'info');
-        
-        const response = await fetch(`/api/elevadores/${elevadorId}/pdf`, {
-            method: 'GET'
-        });
-        
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Erro ${response.status}: ${errorText}`);
-        }
-        
-        const blob = await response.blob();
-        
-        // Verificar se o blob tem conteúdo
-        if (blob.size === 0) {
-            throw new Error('PDF vazio recebido do servidor');
-        }
-        
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `elevador_${elevadorId}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-        
-        showToast('PDF gerado com sucesso', 'success');
-    } catch (error) {
-        console.error('Erro ao gerar PDF:', error);
-        showToast('Erro ao gerar PDF: ' + error.message, 'error');
-    }
-}
-
 // Atualizar desenho da cabine na visualização
 function atualizarDesenhoCabineVisualizacao(elevador) {    
     // Esconder todas as setas inicialmente e remover classes de sobreposição
@@ -1349,115 +1312,51 @@ function atualizarVisualizacaoCabine() {
         }
     }
 }
-// Função para imprimir a visualização do elevador
-function imprimirVisualizacaoElevador() {
-    console.log('Imprimindo visualização do elevador...');
-    
-    // Salvar o título original da página
-    const tituloOriginal = document.title;
-    
-    // Obter o ID do elevador atual
-    const elevadorId = window.elevadorVisualizacaoAtual ? window.elevadorVisualizacaoAtual.id : 'N/A';
-    
-    // Alterar título para a impressão
-    document.title = `Elevador ${elevadorId} - Visualização`;
-    
-    // Criar uma nova janela de impressão com apenas o conteúdo do modal
-    const modalContent = document.querySelector('#visualizarElevadorModal .modal-body').cloneNode(true);
-    
-    // Criar documento para impressão
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Elevador ${elevadorId} - Visualização</title>
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-            <style>
-                body { 
-                    font-family: Arial, sans-serif; 
-                    padding: 20px;
-                    background: white;
-                }
-                .card { 
-                    border: 1px solid #ddd; 
-                    margin-bottom: 20px;
-                    page-break-inside: avoid;
-                }
-                .card-header { 
-                    background-color: #f8f9fa; 
-                    font-weight: bold;
-                    padding: 10px 15px;
-                }
-                .card-body { 
-                    padding: 15px; 
-                }
-                .form-label { 
-                    font-weight: bold; 
-                    color: #495057;
-                }
-                .form-control-plaintext { 
-                    margin: 0; 
-                    padding: 5px 0;
-                    border-bottom: 1px solid #eee;
-                }
-                .row { 
-                    margin-bottom: 10px; 
-                }
-                h1 {
-                    text-align: center;
-                    color: #0d6efd;
-                    margin-bottom: 30px;
-                    font-size: 24px;
-                }
-                .print-header {
-                    text-align: center;
-                    margin-bottom: 30px;
-                    border-bottom: 2px solid #0d6efd;
-                    padding-bottom: 15px;
-                }
-                .print-date {
-                    text-align: right;
-                    color: #6c757d;
-                    font-size: 12px;
-                    margin-bottom: 20px;
-                }
-                @media print {
-                    body { 
-                        margin: 0; 
-                        padding: 15px;
-                    }
-                    .card {
-                        box-shadow: none;
-                        border: 1px solid #000;
-                    }
-                }
-            </style>
-        </head>
-        <body>
-            <div class="print-header">
-                <h1><i class="fas fa-elevator"></i> Visualização do Elevador ${elevadorId}</h1>
-            </div>
-            <div class="print-date">
-                Impresso em: ${new Date().toLocaleString('pt-BR')}
-            </div>
-            <div class="container-fluid">
-                ${modalContent.innerHTML}
-            </div>
-        </body>
-        </html>
-    `);
-    
-    printWindow.document.close();
-    
-    // Aguardar o carregamento e imprimir
-    printWindow.onload = function() {
-        printWindow.focus();
-        printWindow.print();
-        printWindow.close();
-    };
-    
-    // Restaurar título original
-    document.title = tituloOriginal;
+// Função para gerar PDF do elevador
+async function gerarPDF(elevadorId) {
+    try {
+        showToast('Preparando PDF para visualização...', 'info');
+        
+        const response = await fetch(`/api/elevadores/${elevadorId}/pdf`, {
+            method: 'GET'
+        });
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Erro ${response.status}: ${errorText}`);
+        }
+        
+        const blob = await response.blob();
+        
+        // Verificar se o blob tem conteúdo
+        if (blob.size === 0) {
+            throw new Error('PDF vazio recebido do servidor');
+        }
+        
+        // Criar URL do blob e abrir em nova aba
+        const url = window.URL.createObjectURL(blob);
+        const newWindow = window.open(url, '_blank');
+        
+        // Verificar se a janela foi aberta (pode estar bloqueada pelo popup blocker)
+        if (!newWindow) {
+            // Fallback: fazer download se popup for bloqueado
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `elevador_${elevadorId}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast('PDF gerado e baixado (popup bloqueado)', 'info');
+        } else {
+            showToast('PDF aberto em nova aba', 'success');
+        }
+        
+        // Limpar URL do blob após um tempo
+        setTimeout(() => {
+            window.URL.revokeObjectURL(url);
+        }, 60000); // 1 minuto
+    } catch (error) {
+        console.error('Erro ao gerar PDF:', error);
+        showToast('Erro ao gerar PDF: ' + error.message, 'error');
+    }
 }

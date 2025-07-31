@@ -201,9 +201,6 @@ function renderizarTabelaElevadores(dadosElevadores = null) {
                     <button class="btn btn-sm btn-outline-primary" onclick="editarElevador(${elevador.id})" title="Editar">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-success" onclick="gerarPDFElevador(${elevador.id})" title="Gerar PDF">
-                        <i class="fas fa-file-pdf"></i>
-                    </button>
                     <button class="btn btn-sm btn-outline-danger" onclick="confirmarExclusao(() => excluirElevador(${elevador.id}))" title="Excluir">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -379,19 +376,6 @@ async function excluirElevador(id) {
         console.error('Erro ao excluir elevador:', error);
         showToast('Erro ao excluir elevador: ' + error.message, 'error');
     }
-}
-
-// Função para gerar PDF do elevador
-function gerarPDFElevador(id) {
-    const elevador = elevadores.find(e => e.id === id);
-    if (!elevador) {
-        showToast('Elevador não encontrado', 'error');
-        return;
-    }
-    
-    // Abrir nova janela/aba com o PDF
-    const url = `/api/elevadores/${id}/pdf`;
-    window.open(url, '_blank');
 }
 
 // Adicionar event listener para abrir modal com botão "Novo Elevador"
