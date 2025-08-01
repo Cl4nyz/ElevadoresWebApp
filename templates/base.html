@@ -94,20 +94,21 @@
             }
         }
         
-        // Parar servidor de forma segura
+        // Parar servidor de forma segura (REMOVIDO - era muito agressivo)
         function stopServer() {
-            console.log('Parando servidor...');
-            heartbeatActive = false;
+            console.log('Função stopServer desabilitada para evitar desligamentos acidentais');
+            // heartbeatActive = false;
             
-            if (navigator.sendBeacon) {
-                navigator.sendBeacon('/api/shutdown', JSON.stringify({}));
-            } else {
-                // Fallback síncrono para garantir que seja enviado
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', '/api/shutdown', false); // false = síncrono
-                xhr.setRequestHeader('Content-Type', 'application/json');
-                xhr.send(JSON.stringify({}));
-            }
+            // COMENTADO: Não para mais o servidor automaticamente
+            // if (navigator.sendBeacon) {
+            //     navigator.sendBeacon('/api/shutdown', JSON.stringify({}));
+            // } else {
+            //     // Fallback síncrono para garantir que seja enviado
+            //     const xhr = new XMLHttpRequest();
+            //     xhr.open('POST', '/api/shutdown', false); // false = síncrono
+            //     xhr.setRequestHeader('Content-Type', 'application/json');
+            //     xhr.send(JSON.stringify({}));
+            // }
         }
         
         // Detectar quando a página se torna visível/invisível
@@ -126,17 +127,17 @@
             }
         });
         
-        // Detectar quando o usuário está saindo da página
-        window.addEventListener('beforeunload', function(e) {
-            console.log('beforeunload disparado');
-            stopServer();
-        });
+        // Detectar quando o usuário está saindo da página (DESABILITADO)
+        // window.addEventListener('beforeunload', function(e) {
+        //     console.log('beforeunload disparado');
+        //     stopServer();
+        // });
         
-        // Detectar quando a página está sendo descarregada (mais confiável)
-        window.addEventListener('unload', function(e) {
-            console.log('unload disparado');
-            stopServer();
-        });
+        // Detectar quando a página está sendo descarregada (DESABILITADO)
+        // window.addEventListener('unload', function(e) {
+        //     console.log('unload disparado');
+        //     stopServer();
+        // });
         
         // Detectar quando a janela perde o foco
         window.addEventListener('blur', function() {
@@ -163,16 +164,17 @@
             }
         });
         
-        // Detectar fechamento de aba via Page Visibility API (mais moderno)
+        // Detectar fechamento de aba via Page Visibility API (DESABILITADO - muito agressivo)
         document.addEventListener('visibilitychange', function() {
             if (document.visibilityState === 'hidden') {
-                // Aguardar um pouco para ver se a página volta a ficar visível
-                setTimeout(function() {
-                    if (document.visibilityState === 'hidden') {
-                        console.log('Página oculta por muito tempo - parando servidor');
-                        stopServer();
-                    }
-                }, 2000); // 2 segundos de espera
+                console.log('Página oculta - mas mantendo servidor ativo');
+                // REMOVIDO: Não para mais o servidor quando página fica oculta
+                // setTimeout(function() {
+                //     if (document.visibilityState === 'hidden') {
+                //         console.log('Página oculta por muito tempo - parando servidor');
+                //         stopServer();
+                //     }
+                // }, 2000); // 2 segundos de espera
             }
         });
     </script>
