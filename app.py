@@ -13,6 +13,7 @@ import logging
 from datetime import datetime
 from postgre import create_pg_connection, end_pg_connection
 
+#Teste update
 # Configurar logging para debug
 logging.basicConfig(
     level=logging.INFO,
