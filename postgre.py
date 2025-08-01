@@ -40,9 +40,16 @@ def create_database():
 def create_pg_connection(verbose=False):
     """Cria uma conexão com o banco de dados PostgreSQL."""
     try:
+        # Verificar se as variáveis de ambiente estão definidas
+        if not all([NAME, USER, PASSWORD, HOST, PORT]):
+            missing = [var for var, val in [('PG_NAME', NAME), ('PG_USER', USER), ('PG_PASSWORD', PASSWORD), ('PG_HOST', HOST), ('PG_PORT', PORT)] if not val]
+            print(f"Erro: Variáveis de ambiente não definidas: {', '.join(missing)}")
+            print("Verifique o arquivo .env")
+            return None
+            
         conn = psycopg2.connect(
             dbname=NAME,
-            user=USER,
+            user=USER,  
             password=PASSWORD,
             host=HOST,
             port=PORT
@@ -50,6 +57,9 @@ def create_pg_connection(verbose=False):
         if verbose:
             print(f'Nome: {NAME}')
         return conn
+    except psycopg2.OperationalError as e:
+        print(f"Erro de conexão PostgreSQL: {e}")
+        return None
     except Exception as e:
         print(f"Erro ao conectar ao banco de dados: {e}")
         return None

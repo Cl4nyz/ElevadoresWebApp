@@ -93,7 +93,14 @@ def signal_handler(signum, frame):
 signal.signal(signal.SIGINT, signal_handler)
 
 def get_db_connection():
-    return create_pg_connection()
+    try:
+        conn = create_pg_connection()
+        if conn is None:
+            logging.error("Falha ao criar conexão com o banco de dados")
+        return conn
+    except Exception as e:
+        logging.error(f"Erro ao conectar ao banco de dados: {e}")
+        return None
 
 def parse_date_safe(date_string):
     """
@@ -2164,8 +2171,13 @@ if __name__ == '__main__':
         
         sys.exit(0)
     
-    # Abrir navegador após 1 segundo (tempo para o servidor iniciar)
-    threading.Timer(1, open_browser).start()
+    # Verificar se deve abrir navegador automaticamente
+    # Se foi iniciado com argumento --no-browser, não abre
+    auto_open_browser = '--no-browser' not in sys.argv
+    
+    # Abrir navegador após 1 segundo (tempo para o servidor iniciar) - apenas se habilitado
+    if auto_open_browser:
+        threading.Timer(1, open_browser).start()
     
     # Iniciar thread de monitoramento de atividade
     monitor_thread = threading.Thread(target=monitor_activity, daemon=True)

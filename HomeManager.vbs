@@ -61,11 +61,11 @@ End If
 WriteLog "Porta 5000 disponível - iniciando servidor"
 
 ' Executar o aplicativo sem mostrar janela usando pythonw.exe
-WriteLog "Executando: " & venvPath & " app.py"
+WriteLog "Executando: " & venvPath & " app.py --no-browser"
 
 ' Usar WScript.Shell.Run com parâmetros específicos para execução silenciosa
 Dim executeCmd
-executeCmd = """" & venvPath & """ app.py"
+executeCmd = """" & venvPath & """ app.py --no-browser"
 
 ' Executar em background
 ' 0 = janela oculta, False = não aguardar conclusão

@@ -19,3 +19,1332 @@
 2025-08-01 09:03:52,599 - INFO - 127.0.0.1 - - [01/Aug/2025 09:03:52] "GET /api/heartbeat HTTP/1.1" 200 -
 2025-08-01 09:04:07,293 - INFO - Atividade registrada: heartbeat - 127.0.0.1
 2025-08-01 09:04:07,294 - INFO - 127.0.0.1 - - [01/Aug/2025 09:04:07] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 12:25:14,735 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 12:25:14,736 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 12:25:24,673 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 12:25:24,673 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 12:25:39,722 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 12:25:39,722 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 12:40:39,853 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 12:40:39,854 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 13:33:44,847 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 13:33:44,848 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 13:33:47,156 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:33:47,247 - INFO - 127.0.0.1 - - [01/Aug/2025 13:33:47] "GET / HTTP/1.1" 200 -
+2025-08-01 13:33:47,573 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:33:47,574 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:33:47,574 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:33:47,575 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:33:47,911 - INFO - 127.0.0.1 - - [01/Aug/2025 13:33:47] "GET /static/js/common.js HTTP/1.1" 200 -
+2025-08-01 13:33:47,911 - INFO - 127.0.0.1 - - [01/Aug/2025 13:33:47] "GET /static/images/home.png HTTP/1.1" 200 -
+2025-08-01 13:33:47,925 - INFO - 127.0.0.1 - - [01/Aug/2025 13:33:47] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-08-01 13:33:47,936 - INFO - 127.0.0.1 - - [01/Aug/2025 13:33:47] "GET /static/js/locale-config.js HTTP/1.1" 200 -
+2025-08-01 13:33:47,990 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:33:47,990 - INFO - 127.0.0.1 - - [01/Aug/2025 13:33:47] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:33:50,441 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:33:50,444 - INFO - 127.0.0.1 - - [01/Aug/2025 13:33:50] "GET / HTTP/1.1" 200 -
+2025-08-01 13:33:50,956 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:33:50,959 - INFO - 127.0.0.1 - - [01/Aug/2025 13:33:50] "GET / HTTP/1.1" 200 -
+2025-08-01 13:33:50,972 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:33:50,973 - INFO - 127.0.0.1 - - [01/Aug/2025 13:33:50] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:33:51,208 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:33:51,210 - INFO - 127.0.0.1 - - [01/Aug/2025 13:33:51] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:33:51,276 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:33:51,277 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:33:51,279 - INFO - 127.0.0.1 - - [01/Aug/2025 13:33:51] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:33:51,280 - INFO - 127.0.0.1 - - [01/Aug/2025 13:33:51] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:33:51,589 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:33:51,589 - INFO - 127.0.0.1 - - [01/Aug/2025 13:33:51] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:34:06,292 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:34:06,293 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:06] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:34:20,274 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:34:20,275 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:20] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:34:32,271 - INFO - Atividade registrada: clientes - 127.0.0.1
+2025-08-01 13:34:32,293 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:32] "GET /clientes HTTP/1.1" 200 -
+2025-08-01 13:34:32,576 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:34:32,579 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:32] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:34:32,615 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:34:32,615 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:34:32,616 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:34:32,617 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:34:32,617 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:32] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:34:32,618 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:32] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:34:32,619 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:32] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:34:32,650 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:32] "GET /static/js/clientes.js HTTP/1.1" 200 -
+2025-08-01 13:34:32,975 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:34:32,975 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:32] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:34:32,977 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:34:33,151 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:33] "[35m[1mGET /api/clientes HTTP/1.1[0m" 500 -
+2025-08-01 13:34:38,787 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:34:38,787 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:38] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:34:43,477 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:34:43,481 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:43] "GET / HTTP/1.1" 200 -
+2025-08-01 13:34:43,522 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:34:43,523 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:43] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:34:43,977 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:34:43,978 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:34:43,979 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:34:43,980 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:43] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:34:43,981 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:43] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:34:43,981 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:43] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:34:44,310 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:34:44,310 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:44] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:34:54,666 - INFO - Atividade registrada: clientes - 127.0.0.1
+2025-08-01 13:34:54,667 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:54] "GET /clientes HTTP/1.1" 200 -
+2025-08-01 13:34:54,894 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:34:54,897 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:54] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:34:54,912 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:34:54,914 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:54] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:34:54,994 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:34:54,995 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:34:54,997 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:34:54,999 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:54] "[36mGET /static/js/clientes.js HTTP/1.1[0m" 304 -
+2025-08-01 13:34:55,000 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:55] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:34:55,002 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:55] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:34:55,012 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:34:55,013 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:55] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:34:55,329 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:34:55,388 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:55] "[35m[1mGET /api/clientes HTTP/1.1[0m" 500 -
+2025-08-01 13:34:59,710 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:34:59,713 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:59] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:34:59,729 - INFO - Atividade registrada: None - 127.0.0.1
+2025-08-01 13:34:59,730 - INFO - 127.0.0.1 - - [01/Aug/2025 13:34:59] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025-08-01 13:35:10,011 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:35:10,012 - INFO - 127.0.0.1 - - [01/Aug/2025 13:35:10] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:36:01,641 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:36:01,642 - INFO - 127.0.0.1 - - [01/Aug/2025 13:36:01] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:36:10,020 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:36:10,020 - INFO - 127.0.0.1 - - [01/Aug/2025 13:36:10] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:38:17,429 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:38:17,431 - INFO - 127.0.0.1 - - [01/Aug/2025 13:38:17] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:38:17,686 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:38:17,687 - INFO - 127.0.0.1 - - [01/Aug/2025 13:38:17] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:38:21,971 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:38:21,974 - INFO - 127.0.0.1 - - [01/Aug/2025 13:38:21] "GET / HTTP/1.1" 200 -
+2025-08-01 13:38:22,305 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:38:22,306 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:38:22,306 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:38:22,307 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:38:22,309 - INFO - 127.0.0.1 - - [01/Aug/2025 13:38:22] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:38:22,309 - INFO - 127.0.0.1 - - [01/Aug/2025 13:38:22] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:38:22,310 - INFO - 127.0.0.1 - - [01/Aug/2025 13:38:22] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:38:22,311 - INFO - 127.0.0.1 - - [01/Aug/2025 13:38:22] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:38:22,565 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:38:22,565 - INFO - 127.0.0.1 - - [01/Aug/2025 13:38:22] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:38:24,582 - INFO - Atividade registrada: clientes - 127.0.0.1
+2025-08-01 13:38:24,585 - INFO - 127.0.0.1 - - [01/Aug/2025 13:38:24] "GET /clientes HTTP/1.1" 200 -
+2025-08-01 13:38:24,819 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:38:24,820 - INFO - 127.0.0.1 - - [01/Aug/2025 13:38:24] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:38:24,830 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:38:24,831 - INFO - 127.0.0.1 - - [01/Aug/2025 13:38:24] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:38:24,923 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:38:24,926 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:38:24,928 - INFO - 127.0.0.1 - - [01/Aug/2025 13:38:24] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:38:24,929 - INFO - 127.0.0.1 - - [01/Aug/2025 13:38:24] "[36mGET /static/js/clientes.js HTTP/1.1[0m" 304 -
+2025-08-01 13:38:24,930 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:38:24,937 - INFO - 127.0.0.1 - - [01/Aug/2025 13:38:24] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:38:24,947 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:38:24,948 - INFO - 127.0.0.1 - - [01/Aug/2025 13:38:24] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:38:25,253 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:38:25,316 - INFO - 127.0.0.1 - - [01/Aug/2025 13:38:25] "[35m[1mGET /api/clientes HTTP/1.1[0m" 500 -
+2025-08-01 13:38:59,541 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:38:59,593 - INFO - 127.0.0.1 - - [01/Aug/2025 13:38:59] "[35m[1mGET /api/clientes HTTP/1.1[0m" 500 -
+2025-08-01 13:39:49,907 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 13:39:49,908 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 13:39:52,189 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:39:52,191 - INFO - 127.0.0.1 - - [01/Aug/2025 13:39:52] "GET / HTTP/1.1" 200 -
+2025-08-01 13:39:52,571 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:39:52,572 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:39:52,573 - INFO - 127.0.0.1 - - [01/Aug/2025 13:39:52] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:39:52,575 - INFO - 127.0.0.1 - - [01/Aug/2025 13:39:52] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:39:52,587 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:39:52,587 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:39:52,588 - INFO - 127.0.0.1 - - [01/Aug/2025 13:39:52] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:39:52,591 - INFO - 127.0.0.1 - - [01/Aug/2025 13:39:52] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:39:52,826 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:39:52,827 - INFO - 127.0.0.1 - - [01/Aug/2025 13:39:52] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:39:56,753 - INFO - Atividade registrada: clientes - 127.0.0.1
+2025-08-01 13:39:56,755 - INFO - 127.0.0.1 - - [01/Aug/2025 13:39:56] "GET /clientes HTTP/1.1" 200 -
+2025-08-01 13:39:57,060 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:39:57,063 - INFO - 127.0.0.1 - - [01/Aug/2025 13:39:57] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:39:57,076 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:39:57,077 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:39:57,078 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:39:57,080 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:39:57,084 - INFO - 127.0.0.1 - - [01/Aug/2025 13:39:57] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:39:57,084 - INFO - 127.0.0.1 - - [01/Aug/2025 13:39:57] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:39:57,088 - INFO - 127.0.0.1 - - [01/Aug/2025 13:39:57] "[36mGET /static/js/clientes.js HTTP/1.1[0m" 304 -
+2025-08-01 13:39:57,092 - INFO - 127.0.0.1 - - [01/Aug/2025 13:39:57] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:39:57,410 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:39:57,412 - INFO - 127.0.0.1 - - [01/Aug/2025 13:39:57] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:39:57,413 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:39:57,478 - INFO - 127.0.0.1 - - [01/Aug/2025 13:39:57] "[35m[1mGET /api/clientes HTTP/1.1[0m" 500 -
+2025-08-01 13:40:28,302 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 13:40:28,303 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 13:40:30,412 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:40:30,413 - INFO - 127.0.0.1 - - [01/Aug/2025 13:40:30] "GET / HTTP/1.1" 200 -
+2025-08-01 13:40:30,746 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:40:30,747 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:40:30,747 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:40:30,749 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:40:30,750 - INFO - 127.0.0.1 - - [01/Aug/2025 13:40:30] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:40:30,750 - INFO - 127.0.0.1 - - [01/Aug/2025 13:40:30] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:40:30,752 - INFO - 127.0.0.1 - - [01/Aug/2025 13:40:30] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:40:30,754 - INFO - 127.0.0.1 - - [01/Aug/2025 13:40:30] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:40:31,011 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:40:31,012 - INFO - 127.0.0.1 - - [01/Aug/2025 13:40:31] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:40:50,668 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:40:50,818 - INFO - 127.0.0.1 - - [01/Aug/2025 13:40:50] "[35m[1mGET /api/clientes HTTP/1.1[0m" 500 -
+2025-08-01 13:41:04,597 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:41:04,598 - INFO - 127.0.0.1 - - [01/Aug/2025 13:41:04] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:41:10,766 - INFO - Atividade registrada: clientes - 127.0.0.1
+2025-08-01 13:41:10,770 - INFO - 127.0.0.1 - - [01/Aug/2025 13:41:10] "GET /clientes HTTP/1.1" 200 -
+2025-08-01 13:41:10,995 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:41:10,996 - INFO - 127.0.0.1 - - [01/Aug/2025 13:41:10] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:41:11,015 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:41:11,017 - INFO - 127.0.0.1 - - [01/Aug/2025 13:41:11] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:41:11,114 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:41:11,114 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:41:11,116 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:41:11,117 - INFO - 127.0.0.1 - - [01/Aug/2025 13:41:11] "[36mGET /static/js/clientes.js HTTP/1.1[0m" 304 -
+2025-08-01 13:41:11,118 - INFO - 127.0.0.1 - - [01/Aug/2025 13:41:11] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:41:11,119 - INFO - 127.0.0.1 - - [01/Aug/2025 13:41:11] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:41:11,145 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:41:11,146 - INFO - 127.0.0.1 - - [01/Aug/2025 13:41:11] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:41:11,451 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:41:11,534 - INFO - 127.0.0.1 - - [01/Aug/2025 13:41:11] "[35m[1mGET /api/clientes HTTP/1.1[0m" 500 -
+2025-08-01 13:42:42,202 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 13:42:42,203 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 13:42:43,569 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:42:43,670 - INFO - 127.0.0.1 - - [01/Aug/2025 13:42:43] "GET / HTTP/1.1" 200 -
+2025-08-01 13:42:43,687 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:42:43,773 - INFO - 127.0.0.1 - - [01/Aug/2025 13:42:43] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:42:43,835 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:42:43,875 - INFO - 127.0.0.1 - - [01/Aug/2025 13:42:43] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:42:44,006 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:42:44,007 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:42:44,017 - INFO - 127.0.0.1 - - [01/Aug/2025 13:42:44] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:42:44,032 - INFO - 127.0.0.1 - - [01/Aug/2025 13:42:44] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:42:44,349 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:42:44,352 - INFO - 127.0.0.1 - - [01/Aug/2025 13:42:44] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:42:46,226 - INFO - Atividade registrada: clientes - 127.0.0.1
+2025-08-01 13:42:46,258 - INFO - 127.0.0.1 - - [01/Aug/2025 13:42:46] "GET /clientes HTTP/1.1" 200 -
+2025-08-01 13:42:46,535 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:42:46,539 - INFO - 127.0.0.1 - - [01/Aug/2025 13:42:46] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:42:46,581 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:42:46,581 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:42:46,583 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:42:46,584 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:42:46,587 - INFO - 127.0.0.1 - - [01/Aug/2025 13:42:46] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:42:46,588 - INFO - 127.0.0.1 - - [01/Aug/2025 13:42:46] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:42:46,591 - INFO - 127.0.0.1 - - [01/Aug/2025 13:42:46] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:42:46,619 - INFO - 127.0.0.1 - - [01/Aug/2025 13:42:46] "[36mGET /static/js/clientes.js HTTP/1.1[0m" 304 -
+2025-08-01 13:42:46,935 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:42:46,938 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:42:46,939 - INFO - 127.0.0.1 - - [01/Aug/2025 13:42:46] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:42:47,134 - INFO - 127.0.0.1 - - [01/Aug/2025 13:42:47] "GET /api/clientes HTTP/1.1" 200 -
+2025-08-01 13:42:55,645 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:42:55,696 - INFO - 127.0.0.1 - - [01/Aug/2025 13:42:55] "GET /api/clientes HTTP/1.1" 200 -
+2025-08-01 13:43:09,051 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:43:09,055 - INFO - 127.0.0.1 - - [01/Aug/2025 13:43:09] "GET /?id=be13cc0f-4eae-41f0-b28b-753c2fa8d076&vscodeBrowserReqId=1754066588731 HTTP/1.1" 200 -
+2025-08-01 13:43:09,313 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:43:09,315 - INFO - 127.0.0.1 - - [01/Aug/2025 13:43:09] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-08-01 13:43:09,401 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:43:09,402 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:43:09,403 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:43:09,405 - INFO - 127.0.0.1 - - [01/Aug/2025 13:43:09] "GET /static/js/common.js HTTP/1.1" 200 -
+2025-08-01 13:43:09,405 - INFO - 127.0.0.1 - - [01/Aug/2025 13:43:09] "GET /static/js/locale-config.js HTTP/1.1" 200 -
+2025-08-01 13:43:09,406 - INFO - 127.0.0.1 - - [01/Aug/2025 13:43:09] "GET /static/images/home.png HTTP/1.1" 200 -
+2025-08-01 13:43:09,431 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:43:09,432 - INFO - 127.0.0.1 - - [01/Aug/2025 13:43:09] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:43:13,187 - INFO - Atividade registrada: clientes - 127.0.0.1
+2025-08-01 13:43:13,190 - INFO - 127.0.0.1 - - [01/Aug/2025 13:43:13] "GET /clientes HTTP/1.1" 200 -
+2025-08-01 13:43:13,454 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:43:13,457 - INFO - 127.0.0.1 - - [01/Aug/2025 13:43:13] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:43:13,521 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:43:13,522 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:43:13,523 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:43:13,525 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:43:13,526 - INFO - 127.0.0.1 - - [01/Aug/2025 13:43:13] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:43:13,528 - INFO - 127.0.0.1 - - [01/Aug/2025 13:43:13] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:43:13,529 - INFO - 127.0.0.1 - - [01/Aug/2025 13:43:13] "GET /static/js/clientes.js HTTP/1.1" 200 -
+2025-08-01 13:43:13,530 - INFO - 127.0.0.1 - - [01/Aug/2025 13:43:13] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:43:13,550 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:43:13,551 - INFO - 127.0.0.1 - - [01/Aug/2025 13:43:13] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:43:13,854 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:43:13,911 - INFO - 127.0.0.1 - - [01/Aug/2025 13:43:13] "GET /api/clientes HTTP/1.1" 200 -
+2025-08-01 13:43:28,863 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:43:28,863 - INFO - 127.0.0.1 - - [01/Aug/2025 13:43:28] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:43:33,914 - INFO - Atividade registrada: update_cliente - 127.0.0.1
+2025-08-01 13:43:34,003 - INFO - 127.0.0.1 - - [01/Aug/2025 13:43:34] "PUT /api/clientes/3 HTTP/1.1" 200 -
+2025-08-01 13:43:34,322 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:43:34,369 - INFO - 127.0.0.1 - - [01/Aug/2025 13:43:34] "GET /api/clientes HTTP/1.1" 200 -
+2025-08-01 13:43:43,568 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:43:43,569 - INFO - 127.0.0.1 - - [01/Aug/2025 13:43:43] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:43:58,872 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:43:58,873 - INFO - 127.0.0.1 - - [01/Aug/2025 13:43:58] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:44:13,558 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:44:13,558 - INFO - 127.0.0.1 - - [01/Aug/2025 13:44:13] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:44:56,125 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:44:56,127 - INFO - 127.0.0.1 - - [01/Aug/2025 13:44:56] "GET / HTTP/1.1" 200 -
+2025-08-01 13:44:56,141 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:44:56,143 - INFO - 127.0.0.1 - - [01/Aug/2025 13:44:56] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:44:56,392 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:44:56,395 - INFO - 127.0.0.1 - - [01/Aug/2025 13:44:56] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:44:56,458 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:44:56,460 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:44:56,462 - INFO - 127.0.0.1 - - [01/Aug/2025 13:44:56] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:44:56,462 - INFO - 127.0.0.1 - - [01/Aug/2025 13:44:56] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:44:56,776 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:44:56,777 - INFO - 127.0.0.1 - - [01/Aug/2025 13:44:56] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:45:00,203 - INFO - Atividade registrada: clientes - 127.0.0.1
+2025-08-01 13:45:00,207 - INFO - 127.0.0.1 - - [01/Aug/2025 13:45:00] "GET /clientes HTTP/1.1" 200 -
+2025-08-01 13:45:00,510 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:45:00,512 - INFO - 127.0.0.1 - - [01/Aug/2025 13:45:00] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:45:00,524 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:45:00,525 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:45:00,527 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:45:00,530 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:45:00,531 - INFO - 127.0.0.1 - - [01/Aug/2025 13:45:00] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:45:00,533 - INFO - 127.0.0.1 - - [01/Aug/2025 13:45:00] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:45:00,534 - INFO - 127.0.0.1 - - [01/Aug/2025 13:45:00] "[36mGET /static/js/clientes.js HTTP/1.1[0m" 304 -
+2025-08-01 13:45:00,535 - INFO - 127.0.0.1 - - [01/Aug/2025 13:45:00] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:45:00,860 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:45:00,861 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:45:00,863 - INFO - 127.0.0.1 - - [01/Aug/2025 13:45:00] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:45:00,922 - INFO - 127.0.0.1 - - [01/Aug/2025 13:45:00] "GET /api/clientes HTTP/1.1" 200 -
+2025-08-01 13:48:32,053 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 13:48:32,053 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 13:48:34,237 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:48:34,250 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:34] "GET / HTTP/1.1" 200 -
+2025-08-01 13:48:34,571 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:48:34,573 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:48:34,574 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:48:34,574 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:48:34,758 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:34] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:48:34,762 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:34] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:48:34,766 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:34] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:48:34,767 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:34] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:48:34,845 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:48:34,846 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:34] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:48:35,157 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:48:35,159 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:35] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:48:37,121 - INFO - Atividade registrada: clientes - 127.0.0.1
+2025-08-01 13:48:37,140 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:37] "GET /clientes HTTP/1.1" 200 -
+2025-08-01 13:48:37,352 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:48:37,355 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:37] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:48:37,372 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:48:37,373 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:37] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:48:37,471 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:48:37,472 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:48:37,473 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:48:37,475 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:37] "[36mGET /static/js/clientes.js HTTP/1.1[0m" 304 -
+2025-08-01 13:48:37,478 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:37] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:48:37,478 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:37] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:48:37,485 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:48:37,488 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:37] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:48:37,790 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:48:37,912 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:37] "GET /api/clientes HTTP/1.1" 200 -
+2025-08-01 13:48:38,526 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:48:38,527 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:38] "GET / HTTP/1.1" 200 -
+2025-08-01 13:48:39,005 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:48:39,009 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:39] "GET / HTTP/1.1" 200 -
+2025-08-01 13:48:39,033 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:48:39,034 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:39] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:48:39,257 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:48:39,260 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:39] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:48:39,344 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:48:39,346 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:48:39,349 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:39] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:48:39,350 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:39] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:48:39,673 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:48:39,675 - INFO - 127.0.0.1 - - [01/Aug/2025 13:48:39] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:49:08,043 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:49:08,043 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:08] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:49:20,830 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:49:20,831 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:20] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:49:21,915 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:49:21,916 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:21] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:49:22,413 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:49:22,415 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:22] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:49:28,658 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:49:28,659 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:28] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:49:53,132 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 13:49:53,132 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 13:49:54,575 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:49:54,587 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:54] "GET / HTTP/1.1" 200 -
+2025-08-01 13:49:54,602 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:49:54,669 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:54] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:49:54,839 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:49:54,843 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:54] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:49:54,908 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:49:54,910 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:49:54,912 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:54] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:49:54,912 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:54] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:49:55,225 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:49:55,227 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:55] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:49:57,236 - INFO - Atividade registrada: clientes - 127.0.0.1
+2025-08-01 13:49:57,255 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:57] "GET /clientes HTTP/1.1" 200 -
+2025-08-01 13:49:57,560 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:49:57,563 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:57] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:49:57,629 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:49:57,631 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:49:57,631 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:49:57,632 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:49:57,635 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:57] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:49:57,637 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:57] "[36mGET /static/js/clientes.js HTTP/1.1[0m" 304 -
+2025-08-01 13:49:57,639 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:57] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:49:57,645 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:57] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:49:57,977 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:49:57,978 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:49:57,979 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:57] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:49:58,060 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:58] "GET /api/clientes HTTP/1.1" 200 -
+2025-08-01 13:49:58,353 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:49:58,355 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:58] "GET / HTTP/1.1" 200 -
+2025-08-01 13:49:58,502 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:49:58,504 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:58] "GET / HTTP/1.1" 200 -
+2025-08-01 13:49:58,808 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:49:58,811 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:58] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:49:58,850 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:49:58,852 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:58] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:49:58,853 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:49:58,854 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:49:58,859 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:58] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:49:58,861 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:58] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:49:59,246 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:49:59,247 - INFO - 127.0.0.1 - - [01/Aug/2025 13:49:59] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:50:16,943 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:50:16,944 - INFO - 127.0.0.1 - - [01/Aug/2025 13:50:16] "GET /?id=c27a992b-35b0-4385-8679-b03751e7bf26&vscodeBrowserReqId=1754067016630 HTTP/1.1" 200 -
+2025-08-01 13:50:17,204 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:50:17,205 - INFO - 127.0.0.1 - - [01/Aug/2025 13:50:17] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:50:17,258 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:50:17,258 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:50:17,260 - INFO - 127.0.0.1 - - [01/Aug/2025 13:50:17] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:50:17,260 - INFO - 127.0.0.1 - - [01/Aug/2025 13:50:17] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:50:17,265 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:50:17,266 - INFO - 127.0.0.1 - - [01/Aug/2025 13:50:17] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:50:17,294 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:50:17,295 - INFO - 127.0.0.1 - - [01/Aug/2025 13:50:17] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:50:32,616 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:50:32,616 - INFO - 127.0.0.1 - - [01/Aug/2025 13:50:32] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:50:47,298 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:50:47,298 - INFO - 127.0.0.1 - - [01/Aug/2025 13:50:47] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:50:53,939 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:50:53,939 - INFO - 127.0.0.1 - - [01/Aug/2025 13:50:53] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:50:55,478 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:50:55,479 - INFO - 127.0.0.1 - - [01/Aug/2025 13:50:55] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:50:55,676 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:50:55,677 - INFO - 127.0.0.1 - - [01/Aug/2025 13:50:55] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:50:55,792 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:50:55,793 - INFO - 127.0.0.1 - - [01/Aug/2025 13:50:55] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:51:02,607 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:51:02,608 - INFO - 127.0.0.1 - - [01/Aug/2025 13:51:02] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:51:11,797 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:51:11,798 - INFO - 127.0.0.1 - - [01/Aug/2025 13:51:11] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:51:17,746 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 13:51:17,747 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 13:51:19,762 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:51:19,764 - INFO - 127.0.0.1 - - [01/Aug/2025 13:51:19] "GET / HTTP/1.1" 200 -
+2025-08-01 13:51:20,096 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:51:20,096 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:51:20,096 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:51:20,097 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:51:20,098 - INFO - 127.0.0.1 - - [01/Aug/2025 13:51:20] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:51:20,099 - INFO - 127.0.0.1 - - [01/Aug/2025 13:51:20] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:51:20,099 - INFO - 127.0.0.1 - - [01/Aug/2025 13:51:20] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:51:20,100 - INFO - 127.0.0.1 - - [01/Aug/2025 13:51:20] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:51:20,347 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:51:20,347 - INFO - 127.0.0.1 - - [01/Aug/2025 13:51:20] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:51:22,496 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:51:22,499 - INFO - 127.0.0.1 - - [01/Aug/2025 13:51:22] "GET / HTTP/1.1" 200 -
+2025-08-01 13:51:22,927 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:51:22,930 - INFO - 127.0.0.1 - - [01/Aug/2025 13:51:22] "GET / HTTP/1.1" 200 -
+2025-08-01 13:51:22,951 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:51:22,952 - INFO - 127.0.0.1 - - [01/Aug/2025 13:51:22] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:51:23,180 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:51:23,181 - INFO - 127.0.0.1 - - [01/Aug/2025 13:51:23] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:51:23,262 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:51:23,263 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:51:23,265 - INFO - 127.0.0.1 - - [01/Aug/2025 13:51:23] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:51:23,266 - INFO - 127.0.0.1 - - [01/Aug/2025 13:51:23] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:51:23,576 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:51:23,576 - INFO - 127.0.0.1 - - [01/Aug/2025 13:51:23] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:53:12,355 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 13:53:12,356 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 13:53:17,304 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:53:17,318 - INFO - 127.0.0.1 - - [01/Aug/2025 13:53:17] "GET / HTTP/1.1" 200 -
+2025-08-01 13:53:17,783 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:53:17,786 - INFO - 127.0.0.1 - - [01/Aug/2025 13:53:17] "GET / HTTP/1.1" 200 -
+2025-08-01 13:53:17,801 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:53:17,888 - INFO - 127.0.0.1 - - [01/Aug/2025 13:53:17] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:53:18,045 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:53:18,046 - INFO - 127.0.0.1 - - [01/Aug/2025 13:53:18] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:53:18,136 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:53:18,136 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:53:18,137 - INFO - 127.0.0.1 - - [01/Aug/2025 13:53:18] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:53:18,138 - INFO - 127.0.0.1 - - [01/Aug/2025 13:53:18] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:53:18,454 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:53:18,455 - INFO - 127.0.0.1 - - [01/Aug/2025 13:53:18] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:53:23,545 - INFO - Atividade registrada: contratos - 127.0.0.1
+2025-08-01 13:53:23,610 - INFO - 127.0.0.1 - - [01/Aug/2025 13:53:23] "GET /contratos HTTP/1.1" 200 -
+2025-08-01 13:53:23,853 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:53:23,855 - INFO - 127.0.0.1 - - [01/Aug/2025 13:53:23] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:53:23,936 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:53:23,937 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:53:23,938 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:53:23,940 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:53:23,944 - INFO - 127.0.0.1 - - [01/Aug/2025 13:53:23] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:53:23,945 - INFO - 127.0.0.1 - - [01/Aug/2025 13:53:23] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:53:23,947 - INFO - 127.0.0.1 - - [01/Aug/2025 13:53:23] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:53:23,977 - INFO - 127.0.0.1 - - [01/Aug/2025 13:53:23] "GET /static/js/contratos.js?v=20250730121500 HTTP/1.1" 200 -
+2025-08-01 13:53:24,306 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:53:24,308 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:53:24,308 - INFO - Atividade registrada: get_opcoes_filtros - 127.0.0.1
+2025-08-01 13:53:24,309 - INFO - Atividade registrada: get_contratos - 127.0.0.1
+2025-08-01 13:53:24,310 - INFO - 127.0.0.1 - - [01/Aug/2025 13:53:24] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:53:24,411 - INFO - 127.0.0.1 - - [01/Aug/2025 13:53:24] "GET /api/clientes HTTP/1.1" 200 -
+2025-08-01 13:53:24,425 - INFO - 127.0.0.1 - - [01/Aug/2025 13:53:24] "GET /api/contratos HTTP/1.1" 200 -
+2025-08-01 13:53:24,439 - INFO - 127.0.0.1 - - [01/Aug/2025 13:53:24] "GET /api/relatorios/opcoes-filtros HTTP/1.1" 200 -
+2025-08-01 13:53:52,589 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:53:52,590 - INFO - 127.0.0.1 - - [01/Aug/2025 13:53:52] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:54:00,570 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 13:54:00,570 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 13:54:05,321 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:54:05,322 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:05] "GET / HTTP/1.1" 200 -
+2025-08-01 13:54:06,101 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:54:06,102 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:06] "GET / HTTP/1.1" 200 -
+2025-08-01 13:54:06,423 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:54:06,424 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:54:06,425 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:54:06,426 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:06] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:54:06,427 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:54:06,427 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:06] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:54:06,428 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:06] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:54:06,435 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:06] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:54:06,689 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:54:06,690 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:06] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:54:11,163 - INFO - Atividade registrada: clientes - 127.0.0.1
+2025-08-01 13:54:11,172 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:11] "GET /clientes HTTP/1.1" 200 -
+2025-08-01 13:54:11,402 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:54:11,404 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:11] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:54:11,412 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:54:11,413 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:11] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:54:11,503 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:54:11,505 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:54:11,506 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:54:11,508 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:11] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:54:11,508 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:11] "[36mGET /static/js/clientes.js HTTP/1.1[0m" 304 -
+2025-08-01 13:54:11,509 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:11] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:54:11,516 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:54:11,517 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:11] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:54:11,819 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:54:11,872 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:11] "GET /api/clientes HTTP/1.1" 200 -
+2025-08-01 13:54:38,279 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 13:54:38,279 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 13:54:42,924 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:54:42,941 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:42] "GET / HTTP/1.1" 200 -
+2025-08-01 13:54:43,423 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:54:43,424 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:43] "GET / HTTP/1.1" 200 -
+2025-08-01 13:54:43,438 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:54:43,510 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:43] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:54:43,692 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:54:43,693 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:43] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:54:43,759 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:54:43,760 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:54:43,761 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:43] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:54:43,762 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:43] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:54:44,078 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:54:44,079 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:44] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:54:47,517 - INFO - Atividade registrada: clientes - 127.0.0.1
+2025-08-01 13:54:47,525 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:47] "GET /clientes HTTP/1.1" 200 -
+2025-08-01 13:54:47,825 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:54:47,828 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:47] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:54:47,861 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:54:47,862 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:54:47,863 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:54:47,864 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:54:47,867 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:47] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:54:47,868 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:47] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:54:47,869 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:47] "[36mGET /static/js/clientes.js HTTP/1.1[0m" 304 -
+2025-08-01 13:54:47,873 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:47] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:54:48,210 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:54:48,211 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:54:48,212 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:48] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:54:48,329 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:48] "GET /api/clientes HTTP/1.1" 200 -
+2025-08-01 13:54:53,514 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:54:53,515 - INFO - 127.0.0.1 - - [01/Aug/2025 13:54:53] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:55:30,100 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:55:30,101 - INFO - 127.0.0.1 - - [01/Aug/2025 13:55:30] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:55:33,468 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 13:55:33,468 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 13:55:38,532 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:55:38,534 - INFO - 127.0.0.1 - - [01/Aug/2025 13:55:38] "GET / HTTP/1.1" 200 -
+2025-08-01 13:55:39,641 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:55:39,643 - INFO - 127.0.0.1 - - [01/Aug/2025 13:55:39] "GET / HTTP/1.1" 200 -
+2025-08-01 13:55:39,976 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:55:39,976 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:55:39,976 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:55:39,977 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:55:39,978 - INFO - 127.0.0.1 - - [01/Aug/2025 13:55:39] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:55:39,979 - INFO - 127.0.0.1 - - [01/Aug/2025 13:55:39] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:55:39,979 - INFO - 127.0.0.1 - - [01/Aug/2025 13:55:39] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:55:39,979 - INFO - 127.0.0.1 - - [01/Aug/2025 13:55:39] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:55:40,227 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:55:40,227 - INFO - 127.0.0.1 - - [01/Aug/2025 13:55:40] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:55:43,170 - INFO - Atividade registrada: elevadores - 127.0.0.1
+2025-08-01 13:55:43,218 - INFO - 127.0.0.1 - - [01/Aug/2025 13:55:43] "GET /elevadores HTTP/1.1" 200 -
+2025-08-01 13:55:43,409 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:55:43,412 - INFO - 127.0.0.1 - - [01/Aug/2025 13:55:43] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:55:43,422 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:55:43,423 - INFO - 127.0.0.1 - - [01/Aug/2025 13:55:43] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:55:43,544 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:55:43,546 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:55:43,547 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:55:43,550 - INFO - 127.0.0.1 - - [01/Aug/2025 13:55:43] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:55:43,552 - INFO - 127.0.0.1 - - [01/Aug/2025 13:55:43] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:55:43,577 - INFO - 127.0.0.1 - - [01/Aug/2025 13:55:43] "GET /static/js/elevadores.js?v=10 HTTP/1.1" 200 -
+2025-08-01 13:55:43,590 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:55:43,591 - INFO - 127.0.0.1 - - [01/Aug/2025 13:55:43] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:55:43,895 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:55:43,956 - INFO - 127.0.0.1 - - [01/Aug/2025 13:55:43] "GET /api/clientes HTTP/1.1" 200 -
+2025-08-01 13:55:44,275 - INFO - Atividade registrada: get_contratos - 127.0.0.1
+2025-08-01 13:55:44,326 - INFO - 127.0.0.1 - - [01/Aug/2025 13:55:44] "GET /api/contratos HTTP/1.1" 200 -
+2025-08-01 13:55:44,528 - INFO - Atividade registrada: get_elevadores - 127.0.0.1
+2025-08-01 13:55:44,591 - INFO - 127.0.0.1 - - [01/Aug/2025 13:55:44] "GET /api/elevadores HTTP/1.1" 200 -
+2025-08-01 13:55:44,661 - INFO - Atividade registrada: get_opcoes_filtros - 127.0.0.1
+2025-08-01 13:55:44,717 - INFO - 127.0.0.1 - - [01/Aug/2025 13:55:44] "GET /api/relatorios/opcoes-filtros HTTP/1.1" 200 -
+2025-08-01 13:56:21,958 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 13:56:21,959 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 13:56:26,040 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:56:26,055 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:26] "GET / HTTP/1.1" 200 -
+2025-08-01 13:56:27,547 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:56:27,548 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:27] "GET / HTTP/1.1" 200 -
+2025-08-01 13:56:27,884 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:27,885 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:27,886 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:27,886 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:28,166 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:28] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:56:28,171 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:28] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:56:28,175 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:28] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:56:28,179 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:28] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:56:28,269 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:56:28,270 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:28] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:56:31,049 - INFO - Atividade registrada: clientes - 127.0.0.1
+2025-08-01 13:56:31,058 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:31] "GET /clientes HTTP/1.1" 200 -
+2025-08-01 13:56:31,466 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:31,466 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:31,467 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:31,467 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:31,468 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:31,469 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:31] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:56:31,469 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:31] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:56:31,470 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:31] "[36mGET /static/js/clientes.js HTTP/1.1[0m" 304 -
+2025-08-01 13:56:31,471 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:31] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:56:31,471 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:31] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:56:31,919 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:56:31,921 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:56:32,083 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:32] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:56:32,221 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:32] "GET /api/clientes HTTP/1.1" 200 -
+2025-08-01 13:56:37,423 - INFO - Atividade registrada: contratos - 127.0.0.1
+2025-08-01 13:56:37,428 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:37] "GET /contratos HTTP/1.1" 200 -
+2025-08-01 13:56:37,719 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:37,721 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:37] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:56:37,752 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:37,753 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:37,753 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:37,754 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:37,755 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:37] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:56:37,756 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:37] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:56:37,756 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:37] "[36mGET /static/js/contratos.js?v=20250730121500 HTTP/1.1[0m" 304 -
+2025-08-01 13:56:37,757 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:37] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:56:38,081 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:56:38,082 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:38] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:56:38,084 - INFO - Atividade registrada: get_contratos - 127.0.0.1
+2025-08-01 13:56:38,085 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:56:38,088 - INFO - Atividade registrada: get_opcoes_filtros - 127.0.0.1
+2025-08-01 13:56:38,177 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:38] "GET /api/clientes HTTP/1.1" 200 -
+2025-08-01 13:56:38,184 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:38] "GET /api/contratos HTTP/1.1" 200 -
+2025-08-01 13:56:38,192 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:38] "GET /api/relatorios/opcoes-filtros HTTP/1.1" 200 -
+2025-08-01 13:56:43,371 - INFO - Atividade registrada: clientes - 127.0.0.1
+2025-08-01 13:56:43,372 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:43] "GET /clientes HTTP/1.1" 200 -
+2025-08-01 13:56:43,686 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:43,689 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:43] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:56:43,709 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:43,709 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:43,710 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:43,712 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:43,714 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:43] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:56:43,716 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:43] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:56:43,716 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:43] "[36mGET /static/js/clientes.js HTTP/1.1[0m" 304 -
+2025-08-01 13:56:43,721 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:43] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:56:44,035 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:56:44,036 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:44] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:56:44,038 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 13:56:44,101 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:44] "GET /api/clientes HTTP/1.1" 200 -
+2025-08-01 13:56:45,193 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:56:45,195 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:45] "GET / HTTP/1.1" 200 -
+2025-08-01 13:56:45,501 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:45,504 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:45] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:56:45,534 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:45,535 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:45,537 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:56:45,537 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:45] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:56:45,539 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:45] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:56:45,543 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:45] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:56:45,853 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:56:45,854 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:45] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:56:50,501 - INFO - Atividade registrada: verificar_atualizacoes - 127.0.0.1
+2025-08-01 13:56:51,839 - INFO - 127.0.0.1 - - [01/Aug/2025 13:56:51] "GET /api/sistema/verificar-atualizacoes HTTP/1.1" 200 -
+2025-08-01 13:57:00,555 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:57:00,556 - INFO - 127.0.0.1 - - [01/Aug/2025 13:57:00] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:58:04,819 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:58:04,820 - INFO - 127.0.0.1 - - [01/Aug/2025 13:58:04] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:58:11,402 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 13:58:11,402 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 13:58:14,136 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 13:58:14,136 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 13:58:16,371 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:58:16,374 - INFO - 127.0.0.1 - - [01/Aug/2025 13:58:16] "GET / HTTP/1.1" 200 -
+2025-08-01 13:58:17,375 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:58:17,378 - INFO - 127.0.0.1 - - [01/Aug/2025 13:58:17] "GET / HTTP/1.1" 200 -
+2025-08-01 13:58:17,704 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:58:17,705 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:58:17,707 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:58:17,709 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:58:17,710 - INFO - 127.0.0.1 - - [01/Aug/2025 13:58:17] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:58:17,711 - INFO - 127.0.0.1 - - [01/Aug/2025 13:58:17] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:58:17,713 - INFO - 127.0.0.1 - - [01/Aug/2025 13:58:17] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:58:17,715 - INFO - 127.0.0.1 - - [01/Aug/2025 13:58:17] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:58:17,971 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:58:17,972 - INFO - 127.0.0.1 - - [01/Aug/2025 13:58:17] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:58:18,932 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:58:18,934 - INFO - 127.0.0.1 - - [01/Aug/2025 13:58:18] "GET / HTTP/1.1" 200 -
+2025-08-01 13:58:19,082 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:58:19,084 - INFO - 127.0.0.1 - - [01/Aug/2025 13:58:19] "GET / HTTP/1.1" 200 -
+2025-08-01 13:58:19,388 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:58:19,391 - INFO - 127.0.0.1 - - [01/Aug/2025 13:58:19] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:58:19,420 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:58:19,420 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:58:19,421 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:58:19,422 - INFO - 127.0.0.1 - - [01/Aug/2025 13:58:19] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:58:19,423 - INFO - 127.0.0.1 - - [01/Aug/2025 13:58:19] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:58:19,425 - INFO - 127.0.0.1 - - [01/Aug/2025 13:58:19] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:58:19,771 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:58:19,773 - INFO - 127.0.0.1 - - [01/Aug/2025 13:58:19] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:58:24,306 - INFO - Atividade registrada: verificar_atualizacoes - 127.0.0.1
+2025-08-01 13:58:24,998 - INFO - 127.0.0.1 - - [01/Aug/2025 13:58:24] "GET /api/sistema/verificar-atualizacoes HTTP/1.1" 200 -
+2025-08-01 13:59:22,512 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:59:22,512 - INFO - 127.0.0.1 - - [01/Aug/2025 13:59:22] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:59:26,085 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 13:59:26,085 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 13:59:30,816 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:59:30,818 - INFO - 127.0.0.1 - - [01/Aug/2025 13:59:30] "GET / HTTP/1.1" 200 -
+2025-08-01 13:59:31,908 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 13:59:31,910 - INFO - 127.0.0.1 - - [01/Aug/2025 13:59:31] "GET / HTTP/1.1" 200 -
+2025-08-01 13:59:32,245 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:59:32,246 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:59:32,247 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:59:32,248 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 13:59:32,250 - INFO - 127.0.0.1 - - [01/Aug/2025 13:59:32] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 13:59:32,251 - INFO - 127.0.0.1 - - [01/Aug/2025 13:59:32] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 13:59:32,253 - INFO - 127.0.0.1 - - [01/Aug/2025 13:59:32] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 13:59:32,257 - INFO - 127.0.0.1 - - [01/Aug/2025 13:59:32] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 13:59:32,496 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 13:59:32,497 - INFO - 127.0.0.1 - - [01/Aug/2025 13:59:32] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 13:59:36,110 - INFO - Atividade registrada: verificar_atualizacoes - 127.0.0.1
+2025-08-01 13:59:36,850 - INFO - 127.0.0.1 - - [01/Aug/2025 13:59:36] "GET /api/sistema/verificar-atualizacoes HTTP/1.1" 200 -
+2025-08-01 14:02:30,663 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 14:02:30,664 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 14:02:35,452 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:02:35,464 - INFO - 127.0.0.1 - - [01/Aug/2025 14:02:35] "GET / HTTP/1.1" 200 -
+2025-08-01 14:02:36,636 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:02:36,637 - INFO - 127.0.0.1 - - [01/Aug/2025 14:02:36] "GET / HTTP/1.1" 200 -
+2025-08-01 14:02:36,971 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:02:36,972 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:02:36,972 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:02:36,973 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:02:37,228 - INFO - 127.0.0.1 - - [01/Aug/2025 14:02:37] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:02:37,237 - INFO - 127.0.0.1 - - [01/Aug/2025 14:02:37] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:02:37,258 - INFO - 127.0.0.1 - - [01/Aug/2025 14:02:37] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:02:37,263 - INFO - 127.0.0.1 - - [01/Aug/2025 14:02:37] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:02:37,370 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:02:37,371 - INFO - 127.0.0.1 - - [01/Aug/2025 14:02:37] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:03:02,429 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 14:03:02,429 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 14:03:07,021 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:03:07,022 - INFO - 127.0.0.1 - - [01/Aug/2025 14:03:07] "GET / HTTP/1.1" 200 -
+2025-08-01 14:03:07,523 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:03:07,524 - INFO - 127.0.0.1 - - [01/Aug/2025 14:03:07] "GET / HTTP/1.1" 200 -
+2025-08-01 14:03:07,549 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:03:07,550 - INFO - 127.0.0.1 - - [01/Aug/2025 14:03:07] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:03:07,786 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:03:07,788 - INFO - 127.0.0.1 - - [01/Aug/2025 14:03:07] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:03:07,871 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:03:07,873 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:03:07,873 - INFO - 127.0.0.1 - - [01/Aug/2025 14:03:07] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:03:07,874 - INFO - 127.0.0.1 - - [01/Aug/2025 14:03:07] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:03:08,191 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:03:08,191 - INFO - 127.0.0.1 - - [01/Aug/2025 14:03:08] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:03:57,760 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 14:03:57,760 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 14:04:02,331 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:04:02,352 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:02] "GET / HTTP/1.1" 200 -
+2025-08-01 14:04:02,885 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:04:02,888 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:02] "GET / HTTP/1.1" 200 -
+2025-08-01 14:04:02,908 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:03,010 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:03] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:04:03,124 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:03,126 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:03] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:04:03,218 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:03,219 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:03,220 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:03] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:04:03,222 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:03] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:04:03,552 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:04:03,553 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:03] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:04:03,899 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 14:04:03,899 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 14:04:04,424 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 14:04:04,424 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 14:04:05,234 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 14:04:05,234 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 14:04:06,284 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 14:04:06,284 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 14:04:08,357 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:04:08,359 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:08] "GET / HTTP/1.1" 200 -
+2025-08-01 14:04:08,581 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:04:08,583 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:08] "GET / HTTP/1.1" 200 -
+2025-08-01 14:04:08,888 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:08,892 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:08] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:04:08,921 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:08,924 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:08,927 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:08,928 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:08] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:04:08,928 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:08] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:04:08,930 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:08] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:04:09,051 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:04:09,052 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:09] "GET / HTTP/1.1" 200 -
+2025-08-01 14:04:09,344 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:04:09,345 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:09] "GET / HTTP/1.1" 200 -
+2025-08-01 14:04:09,594 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:09,595 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:09] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:04:09,642 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:04:09,644 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:09] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:04:09,676 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:09,679 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:09,681 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:09,684 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:09] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:04:09,686 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:09] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:04:09,686 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:09] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:04:09,710 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:04:09,711 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:09] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:04:09,877 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:04:09,881 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:09] "GET / HTTP/1.1" 200 -
+2025-08-01 14:04:10,542 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:04:10,544 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:10] "GET / HTTP/1.1" 200 -
+2025-08-01 14:04:10,564 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:10,565 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:10] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:04:10,791 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:10,792 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:10] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:04:10,874 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:10,876 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:10,877 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:10] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:04:10,879 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:10] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:04:10,960 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:04:10,961 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:10] "GET / HTTP/1.1" 200 -
+2025-08-01 14:04:11,210 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:04:11,211 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:11] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:04:11,475 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:04:11,476 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:11] "GET / HTTP/1.1" 200 -
+2025-08-01 14:04:11,570 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:11,572 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:11] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:04:11,811 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:11,812 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:11,812 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:04:11,813 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:11] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:04:11,814 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:11] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:04:11,816 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:11] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:04:11,837 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:04:11,838 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:11] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:04:17,614 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:04:17,615 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:17] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:04:18,548 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:04:18,549 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:18] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:04:33,243 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:04:33,243 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:33] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:04:48,560 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:04:48,560 - INFO - 127.0.0.1 - - [01/Aug/2025 14:04:48] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:05:16,402 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 14:05:16,403 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 14:05:18,554 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:05:18,555 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:18] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:05:21,171 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:05:21,208 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:21] "GET / HTTP/1.1" 200 -
+2025-08-01 14:05:21,470 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:05:21,472 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:21] "GET / HTTP/1.1" 200 -
+2025-08-01 14:05:21,746 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:21,829 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:21,830 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:21,831 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:21,917 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:21] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:05:22,132 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:22] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:05:22,154 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:22] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:05:22,156 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:22] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:05:22,485 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:05:22,486 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:22] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:05:23,188 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 14:05:23,189 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 14:05:25,613 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:05:25,614 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:25] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:05:25,924 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:05:25,926 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:25] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:05:26,725 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:05:26,729 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:26] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:05:27,598 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:05:27,600 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:27] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:05:27,680 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:05:27,682 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:27] "GET / HTTP/1.1" 200 -
+2025-08-01 14:05:27,850 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:05:27,851 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:27] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:05:28,112 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:05:28,114 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:28] "GET / HTTP/1.1" 200 -
+2025-08-01 14:05:28,264 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:28,265 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:28] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:05:28,377 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:05:28,379 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:28] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:05:28,444 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:28,446 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:28,447 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:28] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:05:28,448 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:28] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:05:28,471 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:28,473 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:28] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:05:28,576 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:05:28,576 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:28] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:05:29,814 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:05:29,816 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:29] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:05:30,463 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:05:30,463 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:30] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:05:30,522 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 14:05:30,522 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 14:05:34,878 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:05:34,880 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:34] "GET / HTTP/1.1" 200 -
+2025-08-01 14:05:35,124 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:05:35,126 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:35] "GET / HTTP/1.1" 200 -
+2025-08-01 14:05:35,438 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:35,440 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:35] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:05:35,471 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:35,472 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:35] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:05:35,474 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:35,485 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:35] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:05:35,486 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:35,487 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:35] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:05:35,897 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:05:35,898 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:35] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:05:36,649 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:05:36,649 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:36] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:05:37,148 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 14:05:37,149 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 14:05:41,620 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:05:41,621 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:41] "GET / HTTP/1.1" 200 -
+2025-08-01 14:05:41,880 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:05:41,883 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:41] "GET / HTTP/1.1" 200 -
+2025-08-01 14:05:42,181 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:42,183 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:42] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:05:42,215 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:42,216 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:42] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:05:42,219 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:42,219 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:42,221 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:42] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:05:42,221 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:42] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:05:42,615 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:05:42,616 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:42] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:05:44,412 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 14:05:44,412 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 14:05:48,961 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:05:48,962 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:48] "GET / HTTP/1.1" 200 -
+2025-08-01 14:05:49,149 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:05:49,150 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:49] "GET / HTTP/1.1" 200 -
+2025-08-01 14:05:49,458 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:49,459 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:49] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:05:49,491 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:49,492 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:49,493 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:05:49,495 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:49] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:05:49,496 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:49] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:05:49,498 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:49] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:05:49,844 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:05:49,845 - INFO - 127.0.0.1 - - [01/Aug/2025 14:05:49] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:06:04,538 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:06:04,539 - INFO - 127.0.0.1 - - [01/Aug/2025 14:06:04] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:06:19,846 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:06:19,847 - INFO - 127.0.0.1 - - [01/Aug/2025 14:06:19] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:06:34,549 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:06:34,549 - INFO - 127.0.0.1 - - [01/Aug/2025 14:06:34] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:06:49,865 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:06:49,866 - INFO - 127.0.0.1 - - [01/Aug/2025 14:06:49] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:07:04,551 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:07:04,551 - INFO - 127.0.0.1 - - [01/Aug/2025 14:07:04] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:07:19,853 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:07:19,854 - INFO - 127.0.0.1 - - [01/Aug/2025 14:07:19] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:07:34,550 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:07:34,551 - INFO - 127.0.0.1 - - [01/Aug/2025 14:07:34] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:07:49,869 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:07:49,871 - INFO - 127.0.0.1 - - [01/Aug/2025 14:07:49] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:08:04,539 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:08:04,540 - INFO - 127.0.0.1 - - [01/Aug/2025 14:08:04] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:08:19,852 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:08:19,852 - INFO - 127.0.0.1 - - [01/Aug/2025 14:08:19] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:08:22,524 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:08:22,524 - INFO - 127.0.0.1 - - [01/Aug/2025 14:08:22] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:08:22,835 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:08:22,836 - INFO - 127.0.0.1 - - [01/Aug/2025 14:08:22] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:08:23,107 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:08:23,108 - INFO - 127.0.0.1 - - [01/Aug/2025 14:08:23] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:08:23,415 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:08:23,416 - INFO - 127.0.0.1 - - [01/Aug/2025 14:08:23] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:08:23,669 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:08:23,670 - INFO - 127.0.0.1 - - [01/Aug/2025 14:08:23] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:08:23,934 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:08:23,935 - INFO - 127.0.0.1 - - [01/Aug/2025 14:08:23] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:08:29,342 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 14:08:29,343 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 14:08:34,222 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:08:34,254 - INFO - 127.0.0.1 - - [01/Aug/2025 14:08:34] "GET / HTTP/1.1" 200 -
+2025-08-01 14:08:34,740 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:08:34,742 - INFO - 127.0.0.1 - - [01/Aug/2025 14:08:34] "GET / HTTP/1.1" 200 -
+2025-08-01 14:08:34,773 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:08:34,848 - INFO - 127.0.0.1 - - [01/Aug/2025 14:08:34] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:08:35,005 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:08:35,008 - INFO - 127.0.0.1 - - [01/Aug/2025 14:08:35] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:08:35,090 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:08:35,091 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:08:35,093 - INFO - 127.0.0.1 - - [01/Aug/2025 14:08:35] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:08:35,093 - INFO - 127.0.0.1 - - [01/Aug/2025 14:08:35] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:08:35,406 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:08:35,408 - INFO - 127.0.0.1 - - [01/Aug/2025 14:08:35] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:08:41,595 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:08:41,595 - INFO - 127.0.0.1 - - [01/Aug/2025 14:08:41] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:08:45,076 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:08:45,077 - INFO - 127.0.0.1 - - [01/Aug/2025 14:08:45] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:10:44,704 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 14:10:44,705 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 14:10:49,557 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:10:49,573 - INFO - 127.0.0.1 - - [01/Aug/2025 14:10:49] "GET / HTTP/1.1" 200 -
+2025-08-01 14:10:50,625 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:10:50,626 - INFO - 127.0.0.1 - - [01/Aug/2025 14:10:50] "GET / HTTP/1.1" 200 -
+2025-08-01 14:10:50,963 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:10:50,964 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:10:50,965 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:10:50,965 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:10:51,239 - INFO - 127.0.0.1 - - [01/Aug/2025 14:10:51] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:10:51,266 - INFO - 127.0.0.1 - - [01/Aug/2025 14:10:51] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:10:51,271 - INFO - 127.0.0.1 - - [01/Aug/2025 14:10:51] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:10:51,276 - INFO - 127.0.0.1 - - [01/Aug/2025 14:10:51] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:10:51,334 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:10:51,335 - INFO - 127.0.0.1 - - [01/Aug/2025 14:10:51] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:10:56,671 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:10:56,673 - INFO - 127.0.0.1 - - [01/Aug/2025 14:10:56] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:14:41,076 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 14:14:41,077 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 14:14:45,976 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:14:45,991 - INFO - 127.0.0.1 - - [01/Aug/2025 14:14:45] "GET / HTTP/1.1" 200 -
+2025-08-01 14:14:47,224 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:14:47,226 - INFO - 127.0.0.1 - - [01/Aug/2025 14:14:47] "GET / HTTP/1.1" 200 -
+2025-08-01 14:14:47,591 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:14:47,592 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:14:47,592 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:14:47,592 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:14:47,800 - INFO - 127.0.0.1 - - [01/Aug/2025 14:14:47] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:14:47,808 - INFO - 127.0.0.1 - - [01/Aug/2025 14:14:47] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:14:47,813 - INFO - 127.0.0.1 - - [01/Aug/2025 14:14:47] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:14:47,815 - INFO - 127.0.0.1 - - [01/Aug/2025 14:14:47] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:14:47,898 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:14:47,899 - INFO - 127.0.0.1 - - [01/Aug/2025 14:14:47] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:14:50,658 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:14:50,660 - INFO - 127.0.0.1 - - [01/Aug/2025 14:14:50] "GET / HTTP/1.1" 200 -
+2025-08-01 14:14:50,707 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:14:50,709 - INFO - 127.0.0.1 - - [01/Aug/2025 14:14:50] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:14:50,925 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:14:50,927 - INFO - 127.0.0.1 - - [01/Aug/2025 14:14:50] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:14:51,012 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:14:51,014 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:14:51,016 - INFO - 127.0.0.1 - - [01/Aug/2025 14:14:51] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:14:51,017 - INFO - 127.0.0.1 - - [01/Aug/2025 14:14:51] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:14:51,337 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:14:51,337 - INFO - 127.0.0.1 - - [01/Aug/2025 14:14:51] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:15:02,427 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:15:02,427 - INFO - 127.0.0.1 - - [01/Aug/2025 14:15:02] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:15:03,375 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:15:03,376 - INFO - 127.0.0.1 - - [01/Aug/2025 14:15:03] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:15:50,262 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 14:15:50,262 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 14:15:54,981 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:15:54,996 - INFO - 127.0.0.1 - - [01/Aug/2025 14:15:54] "GET / HTTP/1.1" 200 -
+2025-08-01 14:15:56,058 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:15:56,059 - INFO - 127.0.0.1 - - [01/Aug/2025 14:15:56] "GET / HTTP/1.1" 200 -
+2025-08-01 14:15:56,394 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:15:56,394 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:15:56,395 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:15:56,395 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:15:56,739 - INFO - 127.0.0.1 - - [01/Aug/2025 14:15:56] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:15:56,766 - INFO - 127.0.0.1 - - [01/Aug/2025 14:15:56] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:15:56,773 - INFO - 127.0.0.1 - - [01/Aug/2025 14:15:56] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:15:56,783 - INFO - 127.0.0.1 - - [01/Aug/2025 14:15:56] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:15:56,810 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:15:56,811 - INFO - 127.0.0.1 - - [01/Aug/2025 14:15:56] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:16:04,794 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:16:04,797 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:04] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:16:05,452 - INFO - Atividade registrada: clientes - 127.0.0.1
+2025-08-01 14:16:05,457 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:05] "GET /clientes HTTP/1.1" 200 -
+2025-08-01 14:16:05,763 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:16:05,765 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:05] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:16:05,773 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:16:05,773 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:16:05,774 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:16:05,775 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:16:05,776 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:05] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:16:05,777 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:05] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:16:05,777 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:05] "[36mGET /static/js/clientes.js HTTP/1.1[0m" 304 -
+2025-08-01 14:16:05,778 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:05] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:16:06,111 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:16:06,113 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 14:16:06,114 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:06] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:16:06,225 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:06] "GET /api/clientes HTTP/1.1" 200 -
+2025-08-01 14:16:22,153 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:16:22,154 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:22] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:16:26,479 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 14:16:26,479 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 14:16:31,230 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:16:31,232 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:31] "GET / HTTP/1.1" 200 -
+2025-08-01 14:16:32,376 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:16:32,377 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:32] "GET / HTTP/1.1" 200 -
+2025-08-01 14:16:32,713 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:16:32,713 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:16:32,714 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:16:32,715 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:16:32,716 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:32] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:16:32,717 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:32] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:16:32,718 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:32] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:16:32,719 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:32] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:16:32,978 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:16:32,978 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:32] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:16:39,989 - INFO - Atividade registrada: clientes - 127.0.0.1
+2025-08-01 14:16:39,990 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:39] "GET /clientes HTTP/1.1" 200 -
+2025-08-01 14:16:40,214 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:16:40,216 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:40] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:16:40,252 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:16:40,254 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:40] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:16:40,333 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:16:40,334 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:16:40,335 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:16:40,337 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:40] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:16:40,339 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:40] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:16:40,340 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:40] "[36mGET /static/js/clientes.js HTTP/1.1[0m" 304 -
+2025-08-01 14:16:40,350 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:16:40,351 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:40] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:16:40,662 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 14:16:40,721 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:40] "GET /api/clientes HTTP/1.1" 200 -
+2025-08-01 14:16:45,931 - INFO - Atividade registrada: contratos - 127.0.0.1
+2025-08-01 14:16:45,937 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:45] "GET /contratos HTTP/1.1" 200 -
+2025-08-01 14:16:46,162 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:16:46,164 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:46] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:16:46,185 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:16:46,187 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:46] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:16:46,267 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:16:46,268 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:16:46,269 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:16:46,270 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:46] "[36mGET /static/js/contratos.js?v=20250730121500 HTTP/1.1[0m" 304 -
+2025-08-01 14:16:46,271 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:46] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:16:46,272 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:46] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:16:46,280 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:16:46,280 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:46] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:16:46,599 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 14:16:46,600 - INFO - Atividade registrada: get_contratos - 127.0.0.1
+2025-08-01 14:16:46,603 - INFO - Atividade registrada: get_opcoes_filtros - 127.0.0.1
+2025-08-01 14:16:46,691 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:46] "GET /api/contratos HTTP/1.1" 200 -
+2025-08-01 14:16:46,705 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:46] "GET /api/relatorios/opcoes-filtros HTTP/1.1" 200 -
+2025-08-01 14:16:46,769 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:46] "GET /api/clientes HTTP/1.1" 200 -
+2025-08-01 14:16:58,096 - INFO - Atividade registrada: update_contrato - 127.0.0.1
+2025-08-01 14:16:58,173 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:58] "PUT /api/contratos/2 HTTP/1.1" 200 -
+2025-08-01 14:16:58,349 - INFO - Atividade registrada: get_contratos - 127.0.0.1
+2025-08-01 14:16:58,517 - INFO - 127.0.0.1 - - [01/Aug/2025 14:16:58] "GET /api/contratos HTTP/1.1" 200 -
+2025-08-01 14:17:01,281 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:17:01,282 - INFO - 127.0.0.1 - - [01/Aug/2025 14:17:01] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:17:07,630 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:17:07,631 - INFO - 127.0.0.1 - - [01/Aug/2025 14:17:07] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:17:11,220 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:17:11,222 - INFO - 127.0.0.1 - - [01/Aug/2025 14:17:11] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:17:11,748 - INFO - Atividade registrada: None - 127.0.0.1
+2025-08-01 14:17:11,750 - INFO - 127.0.0.1 - - [01/Aug/2025 14:17:11] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025-08-01 14:17:16,282 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:17:16,283 - INFO - 127.0.0.1 - - [01/Aug/2025 14:17:16] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:17:38,876 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:17:38,892 - INFO - 127.0.0.1 - - [01/Aug/2025 14:17:38] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:17:46,287 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:17:46,288 - INFO - 127.0.0.1 - - [01/Aug/2025 14:17:46] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:18:21,379 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:18:21,380 - INFO - 127.0.0.1 - - [01/Aug/2025 14:18:21] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:18:55,451 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.15.49:5000
+2025-08-01 14:18:55,452 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-01 14:19:00,134 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:19:00,160 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:00] "GET / HTTP/1.1" 200 -
+2025-08-01 14:19:01,481 - INFO - Atividade registrada: index - 127.0.0.1
+2025-08-01 14:19:01,483 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:01] "GET / HTTP/1.1" 200 -
+2025-08-01 14:19:01,915 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:19:01,916 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:19:01,917 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:19:01,919 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:19:02,345 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:02] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:19:02,369 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:02] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:19:02,397 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:02] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:19:02,403 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:02] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:19:02,538 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:19:02,539 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:02] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:19:10,066 - INFO - Atividade registrada: clientes - 127.0.0.1
+2025-08-01 14:19:10,079 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:10] "GET /clientes HTTP/1.1" 200 -
+2025-08-01 14:19:10,318 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:19:10,319 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:19:10,322 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:10] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:19:10,325 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:10] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:19:10,412 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:19:10,414 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:19:10,414 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:19:10,417 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:10] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:19:10,420 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:10] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:19:10,421 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:10] "[36mGET /static/js/clientes.js HTTP/1.1[0m" 304 -
+2025-08-01 14:19:10,440 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:19:10,443 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:10] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:19:10,742 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 14:19:10,980 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:10] "GET /api/clientes HTTP/1.1" 200 -
+2025-08-01 14:19:15,461 - INFO - Atividade registrada: contratos - 127.0.0.1
+2025-08-01 14:19:15,473 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:15] "GET /contratos HTTP/1.1" 200 -
+2025-08-01 14:19:15,691 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:19:15,695 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:15] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-08-01 14:19:15,710 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:19:15,712 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:15] "[36mGET /static/js/locale-config.js HTTP/1.1[0m" 304 -
+2025-08-01 14:19:15,797 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:19:15,798 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:19:15,799 - INFO - Atividade registrada: static - 127.0.0.1
+2025-08-01 14:19:15,802 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:15] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025-08-01 14:19:15,804 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:15] "[36mGET /static/js/contratos.js?v=20250730121500 HTTP/1.1[0m" 304 -
+2025-08-01 14:19:15,806 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:15] "[36mGET /static/images/home.png HTTP/1.1[0m" 304 -
+2025-08-01 14:19:15,816 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:19:15,816 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:15] "GET /api/heartbeat HTTP/1.1" 200 -
+2025-08-01 14:19:16,125 - INFO - Atividade registrada: get_contratos - 127.0.0.1
+2025-08-01 14:19:16,127 - INFO - Atividade registrada: get_clientes - 127.0.0.1
+2025-08-01 14:19:16,129 - INFO - Atividade registrada: get_opcoes_filtros - 127.0.0.1
+2025-08-01 14:19:16,226 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:16] "GET /api/contratos HTTP/1.1" 200 -
+2025-08-01 14:19:16,231 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:16] "GET /api/clientes HTTP/1.1" 200 -
+2025-08-01 14:19:16,236 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:16] "GET /api/relatorios/opcoes-filtros HTTP/1.1" 200 -
+2025-08-01 14:19:31,125 - INFO - Atividade registrada: heartbeat - 127.0.0.1
+2025-08-01 14:19:31,126 - INFO - 127.0.0.1 - - [01/Aug/2025 14:19:31] "GET /api/heartbeat HTTP/1.1" 200 -
