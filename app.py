@@ -4,10 +4,93 @@ from datetime import datetime, date
 import json
 import webbrowser
 import threading
+import socket
+import sys
+import time
+import signal
+import atexit
+import logging
+from datetime import datetime
 from postgre import create_pg_connection, end_pg_connection
+
+# Configurar logging para debug
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('homemanager.log'),
+        logging.StreamHandler()
+    ]
+)
 
 app = Flask(__name__)
 CORS(app)
+
+# Variáveis globais para controle do servidor
+server_running = True
+last_activity = time.time()
+activity_timeout = 180  # 3 minutos sem atividade (tempo mais razoável)
+check_interval = 10     # Verificar a cada 10 segundos (mais responsivo)
+
+@app.before_request
+def track_activity():
+    """Registra atividade do usuário em cada requisição"""
+    global last_activity
+    last_activity = time.time()
+    logging.info(f"Atividade registrada: {request.endpoint} - {request.remote_addr}")
+
+def monitor_activity():
+    """Monitora atividade do servidor e para quando não há atividade"""
+    global server_running, last_activity
+    
+    logging.info(f"🔍 Monitor de atividade iniciado (timeout: {activity_timeout}s, check: {check_interval}s)")
+    print(f"🔍 Monitor de atividade iniciado (timeout: {activity_timeout}s, check: {check_interval}s)")
+    
+    while server_running:
+        time.sleep(check_interval)
+        
+        if server_running:
+            inactive_time = time.time() - last_activity
+            
+            # Log periódico de atividade (a cada minuto)
+            if int(inactive_time) % 60 == 0 and inactive_time > 0:
+                msg = f"⏱️  Sem atividade há {int(inactive_time)}s"
+                logging.info(msg)
+                print(msg)
+            
+            if inactive_time > activity_timeout:
+                msg = f"⏰ Nenhuma atividade detectada por {activity_timeout} segundos - Parando servidor"
+                logging.warning(msg)
+                print("\n" + "="*50)
+                print(f"⏰ Nenhuma atividade detectada por {activity_timeout} segundos")
+                print("🛑 Parando servidor automaticamente...")
+                print("="*50)
+                shutdown_server()
+                break
+
+def shutdown_server():
+    """Para o servidor Flask de forma limpa"""
+    global server_running
+    server_running = False
+    
+    try:
+        # Tentar parar o servidor de desenvolvimento do Flask
+        import os
+        os._exit(0)
+    except:
+        sys.exit(0)
+
+def signal_handler(signum, frame):
+    """Handler para sinais do sistema (Ctrl+C)"""
+    global server_running
+    server_running = False
+    print("\n" + "="*50)
+    print("🛑 Servidor interrompido pelo usuário")
+    print("="*50)
+    sys.exit(0)
+
+# Registrar handler para Ctrl+C
+signal.signal(signal.SIGINT, signal_handler)
 
 def get_db_connection():
     return create_pg_connection()
@@ -56,6 +139,26 @@ def validate_date_range(data_inicio, data_fim):
 @app.route('/')
 def index():
     return render_template('index.html')
+
+# Rota para verificar se o servidor está ativo (heartbeat)
+@app.route('/api/heartbeat')
+def heartbeat():
+    """Endpoint para manter o servidor ativo"""
+    global last_activity
+    last_activity = time.time()
+    return jsonify({'status': 'alive', 'timestamp': last_activity})
+
+# Rota para parar o servidor via API
+@app.route('/api/shutdown', methods=['POST'])
+def api_shutdown():
+    """Para o servidor via API"""
+    print("\n" + "="*50)
+    print("🛑 Servidor sendo parado via API...")
+    print("="*50)
+    
+    # Usar threading para parar o servidor após responder
+    threading.Timer(1.0, shutdown_server).start()
+    return jsonify({'message': 'Servidor sendo parado...'})
 
 # Rotas para clientes
 @app.route('/clientes')
@@ -2021,15 +2124,62 @@ def open_browser():
     """Abre o navegador após o servidor iniciar"""
     webbrowser.open('http://localhost:5000')
 
+def is_port_in_use(port):
+    """Verifica se uma porta está sendo utilizada"""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        try:
+            s.bind(('localhost', port))
+            return False
+        except socket.error:
+            return True
+
+def check_server_running(host='localhost', port=5000):
+    """Verifica se o servidor está rodando fazendo uma requisição HTTP"""
+    try:
+        import urllib.request
+        response = urllib.request.urlopen(f'http://{host}:{port}', timeout=2)
+        return response.status == 200
+    except:
+        return False
+
 if __name__ == '__main__':
+    PORT = 5000
+    HOST = 'localhost'
+    
+    # Verificar se a porta já está em uso
+    if is_port_in_use(PORT):
+        print("🏢 Sistema de Gerenciamento de Elevadores")
+        print("="*50)
+        print(f"ℹ️  Servidor já está rodando na porta {PORT}")
+        
+        # Verificar se é realmente nosso servidor
+        if check_server_running(HOST, PORT):
+            print(f"🌐 Abrindo navegador em: http://{HOST}:{PORT}")
+            print("="*50)
+            webbrowser.open(f'http://{HOST}:{PORT}')
+        else:
+            print(f"⚠️  Porta {PORT} está ocupada por outro processo")
+            print("   Tente usar uma porta diferente ou feche o outro processo")
+            print("="*50)
+        
+        sys.exit(0)
+    
     # Abrir navegador após 1 segundo (tempo para o servidor iniciar)
     threading.Timer(1, open_browser).start()
+    
+    # Iniciar thread de monitoramento de atividade
+    monitor_thread = threading.Thread(target=monitor_activity, daemon=True)
+    monitor_thread.start()
     
     print("🏢 Sistema de Gerenciamento de Elevadores")
     print("="*50)
     print("🚀 Iniciando servidor...")
     print("🌐 Acesse: http://localhost:5000")
     print("⏹️  Pressione Ctrl+C para parar o servidor")
+    print("🔄 Auto-desligamento: 3 minutos sem atividade")
     print("="*50)
     
-    app.run(debug=True, host='0.0.0.0', port=5000, use_reloader=False)
+    try:
+        app.run(debug=True, host='0.0.0.0', port=5000, use_reloader=False)
+    except KeyboardInterrupt:
+        signal_handler(signal.SIGINT, None)

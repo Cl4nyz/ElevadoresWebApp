@@ -74,6 +74,109 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/locale-config.js') }}"></script>
     <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    
+    <!-- Sistema de monitoramento do servidor -->
+    <script>
+        let heartbeatInterval;
+        let isPageVisible = true;
+        let heartbeatActive = true;
+        
+        // Enviar heartbeat para manter servidor ativo
+        function sendHeartbeat() {
+            if (isPageVisible && heartbeatActive) {
+                fetch('/api/heartbeat')
+                    .then(response => {
+                        if (response.ok) {
+                            console.log('Heartbeat enviado');
+                        }
+                    })
+                    .catch(error => console.log('Heartbeat failed:', error));
+            }
+        }
+        
+        // Parar servidor de forma segura
+        function stopServer() {
+            console.log('Parando servidor...');
+            heartbeatActive = false;
+            
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon('/api/shutdown', JSON.stringify({}));
+            } else {
+                // Fallback síncrono para garantir que seja enviado
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', '/api/shutdown', false); // false = síncrono
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify({}));
+            }
+        }
+        
+        // Detectar quando a página se torna visível/invisível
+        document.addEventListener('visibilitychange', function() {
+            const wasVisible = isPageVisible;
+            isPageVisible = !document.hidden;
+            
+            console.log('Visibilidade mudou:', isPageVisible ? 'visível' : 'invisível');
+            
+            if (isPageVisible && !wasVisible) {
+                // Página voltou a ficar visível, reiniciar heartbeat
+                sendHeartbeat();
+                if (!heartbeatInterval) {
+                    heartbeatInterval = setInterval(sendHeartbeat, 15000); // A cada 15 segundos
+                }
+            }
+        });
+        
+        // Detectar quando o usuário está saindo da página
+        window.addEventListener('beforeunload', function(e) {
+            console.log('beforeunload disparado');
+            stopServer();
+        });
+        
+        // Detectar quando a página está sendo descarregada (mais confiável)
+        window.addEventListener('unload', function(e) {
+            console.log('unload disparado');
+            stopServer();
+        });
+        
+        // Detectar quando a janela perde o foco
+        window.addEventListener('blur', function() {
+            console.log('Janela perdeu foco');
+            // Aguardar um pouco antes de verificar se deve parar
+            setTimeout(function() {
+                if (document.hidden) {
+                    console.log('Página oculta após blur - possível fechamento');
+                }
+            }, 1000);
+        });
+        
+        // Iniciar heartbeat quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Sistema de monitoramento iniciado');
+            sendHeartbeat();
+            heartbeatInterval = setInterval(sendHeartbeat, 15000); // A cada 15 segundos
+        });
+        
+        // Parar heartbeat quando a página for descarregada
+        window.addEventListener('unload', function() {
+            if (heartbeatInterval) {
+                clearInterval(heartbeatInterval);
+            }
+        });
+        
+        // Detectar fechamento de aba via Page Visibility API (mais moderno)
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden') {
+                // Aguardar um pouco para ver se a página volta a ficar visível
+                setTimeout(function() {
+                    if (document.visibilityState === 'hidden') {
+                        console.log('Página oculta por muito tempo - parando servidor');
+                        stopServer();
+                    }
+                }, 2000); // 2 segundos de espera
+            }
+        });
+    </script>
+    
     {% block scripts %}{% endblock %}
 </body>
 </html>
