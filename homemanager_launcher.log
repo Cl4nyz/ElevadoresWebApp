@@ -377,3 +377,23 @@
 01/08/2025 14:19:00 - Servidor OK - Status: 200
 01/08/2025 14:19:00 - Navegador aberto com sucesso
 01/08/2025 14:19:00 - === FINALIZANDO LAUNCHER ===
+01/08/2025 14:22:52 - === INICIANDO HOMEMANAGER ===
+01/08/2025 14:22:52 - Verificando se porta 5000 está disponível...
+01/08/2025 14:22:52 - Porta 5000 disponível - iniciando servidor
+01/08/2025 14:22:52 - Executando: C:\Users\PC\OneDrive\Documentos\ElevadoresWebApp\.venv\Scripts\pythonw.exe app.py --no-browser
+01/08/2025 14:22:52 - Comando executado com sucesso
+01/08/2025 14:22:52 - Aguardando servidor inicializar...
+01/08/2025 14:22:55 - Testando se servidor está respondendo...
+01/08/2025 14:22:58 - Servidor OK - Status: 200
+01/08/2025 14:22:58 - Navegador aberto com sucesso
+01/08/2025 14:22:58 - === FINALIZANDO LAUNCHER ===
+01/08/2025 14:36:02 - === INICIANDO HOMEMANAGER ===
+01/08/2025 14:36:02 - Verificando se porta 5000 está disponível...
+01/08/2025 14:36:02 - Porta 5000 disponível - iniciando servidor
+01/08/2025 14:36:02 - Executando: C:\Users\PC\OneDrive\Documentos\ElevadoresWebApp\.venv\Scripts\pythonw.exe app.py --no-browser
+01/08/2025 14:36:02 - Comando executado com sucesso
+01/08/2025 14:36:02 - Aguardando servidor inicializar...
+01/08/2025 14:36:05 - Testando se servidor está respondendo...
+01/08/2025 14:36:08 - Servidor OK - Status: 200
+01/08/2025 14:36:08 - Navegador aberto com sucesso
+01/08/2025 14:36:08 - === FINALIZANDO LAUNCHER ===
