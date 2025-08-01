@@ -856,6 +856,19 @@ def add_elevador():
         
         elevador_id = cursor.fetchone()[0]
         
+        # Verificar se já existem dados relacionados (evitar duplicatas)
+        cursor.execute("SELECT 1 FROM cabine WHERE id_elevador = %s", (elevador_id,))
+        if cursor.fetchone():
+            raise Exception(f"Dados da cabine já existem para o elevador {elevador_id}")
+        
+        cursor.execute("SELECT 1 FROM coluna WHERE id_elevador = %s", (elevador_id,))
+        if cursor.fetchone():
+            raise Exception(f"Dados da coluna já existem para o elevador {elevador_id}")
+        
+        cursor.execute("SELECT 1 FROM adicionais WHERE id_elevador = %s", (elevador_id,))
+        if cursor.fetchone():
+            raise Exception(f"Dados dos adicionais já existem para o elevador {elevador_id}")
+
         # Inserir dados da cabine
         cabine = data['cabine']
         cursor.execute("""
@@ -889,6 +902,16 @@ def add_elevador():
             INSERT INTO adicionais (id_elevador, cancela, porta, portao, barreira_eletronica,
                                   lados_enclausuramento, sensor_esmagamento, rampa_acesso, nobreak, galvanizada)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (id_elevador) DO UPDATE SET
+                cancela = EXCLUDED.cancela,
+                porta = EXCLUDED.porta,
+                portao = EXCLUDED.portao,
+                barreira_eletronica = EXCLUDED.barreira_eletronica,
+                lados_enclausuramento = EXCLUDED.lados_enclausuramento,
+                sensor_esmagamento = EXCLUDED.sensor_esmagamento,
+                rampa_acesso = EXCLUDED.rampa_acesso,
+                nobreak = EXCLUDED.nobreak,
+                galvanizada = EXCLUDED.galvanizada
         """, (
             elevador_id,
             adicionais.get('cancela', 0),
