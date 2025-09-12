@@ -1,0 +1,1 @@
+[ ] Criar pop ups menos invasivos, que alertam mas não proibem o uso do restante da aplicação
