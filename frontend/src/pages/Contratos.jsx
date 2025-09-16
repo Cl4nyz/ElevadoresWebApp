@@ -103,20 +103,20 @@ const Contratos = () => {
     return data;
   }
 
-  function calcularStatusContrato(contrato) {
-    const hoje = new Date();
-    const dataEntrega = contrato.data_entrega ? new Date(contrato.data_entrega + 'T00:00:00') : null;
+  // function calcularStatusContrato(contrato) {
+  //   const hoje = new Date();
+  //   const dataEntrega = contrato.data_entrega ? new Date(contrato.data_entrega + 'T00:00:00') : null;
     
-    if (!dataEntrega) {
-      return 'Sem data de entrega';
-    } else if (dataEntrega < hoje) {
-      return 'Atrasado';
-    } else if (dataEntrega.toDateString() === hoje.toDateString()) {
-      return 'Entrega hoje';
-    } else {
-      return 'Em andamento';
-    }
-  }
+  //   if (!dataEntrega) {
+  //     return 'Sem data de entrega';
+  //   } else if (dataEntrega < hoje) {
+  //     return 'Atrasado';
+  //   } else if (dataEntrega.toDateString() === hoje.toDateString()) {
+  //     return 'Entrega hoje';
+  //   } else {
+  //     return 'Em andamento';
+  //   }
+  // }
 
   function adicionarDiasUteis(dataInicial, diasUteis) {
     // Use the exact same function as original
@@ -151,12 +151,11 @@ const Contratos = () => {
       const data = await response.json();
       
       // Adicionar status calculado
-      const contratosComStatus = data.map(contrato => ({
-        ...contrato,
-        status: calcularStatusContrato(contrato)
+      const contratos = data.map(contrato => ({
+        ...contrato
       }));
       
-      setContratos(contratosComStatus);
+      setContratos(contratos);
     } catch (error) {
       console.error('Erro ao carregar contratos:', error);
       showToast('Erro ao carregar contratos: ' + error.message, 'error');
@@ -455,15 +454,15 @@ const Contratos = () => {
   };
 
   // Get status badge class
-  const getStatusBadgeClass = (status) => {
-    switch (status) {
-      case 'Sem data de entrega': return 'bg-secondary';
-      case 'Atrasado': return 'bg-danger';
-      case 'Entrega hoje': return 'bg-warning';
-      case 'Em andamento': return 'bg-success';
-      default: return 'bg-info';
-    }
-  };
+  // const getStatusBadgeClass = (status) => {
+  //   switch (status) {
+  //     case 'Sem data de entrega': return 'bg-secondary';
+  //     case 'Atrasado': return 'bg-danger';
+  //     case 'Entrega hoje': return 'bg-warning';
+  //     case 'Em andamento': return 'bg-success';
+  //     default: return 'bg-info';
+  //   }
+  // };
 
   if (loading) {
     return (
@@ -497,7 +496,6 @@ const Contratos = () => {
                   <th>Data da Venda</th>
                   <th>Data Entrega</th>
                   <th>Vendedor</th>
-                  <th>Status</th>
                   <th>Ações</th>
                 </tr>
               </thead>
@@ -514,11 +512,6 @@ const Contratos = () => {
                       <td>{formatDateBrazilian(contrato.data_venda)}</td>
                       <td>{formatDateBrazilian(contrato.data_entrega)}</td>
                       <td>{contrato.vendedor || '-'}</td>
-                      <td>
-                        <span className={`badge ${getStatusBadgeClass(contrato.status)}`}>
-                          {contrato.status}
-                        </span>
-                      </td>
                       <td>
                         <div className="btn-group" role="group">
                           <button 
@@ -973,14 +966,14 @@ const Contratos = () => {
                     <label className="form-label fw-bold">ID do Contrato:</label>
                     <p className="form-control-plaintext">{visualizandoContrato.id}</p>
                   </div>
-                  <div className="col-md-6">
+                  {/* <div className="col-md-6">
                     <label className="form-label fw-bold">Status:</label>
                     <p className="form-control-plaintext">
                       <span className={`badge ${getStatusBadgeClass(visualizandoContrato.status)}`}>
                         {visualizandoContrato.status}
                       </span>
                     </p>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="row mb-3">

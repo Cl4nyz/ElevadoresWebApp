@@ -1,0 +1,350 @@
+/* Cabin Drawing Styles */
+.cabine-desenho {
+    width: 200px;
+    height: 150px;
+    border: 3px solid #333;
+    position: relative;
+    margin: 20px auto 60px auto; /* Added bottom margin for column space */
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+}
+
+.cabine-desenho::before {
+    content: 'CABINE';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    font-weight: bold;
+    color: #6c757d;
+    z-index: 1;
+}
+
+/* Column rectangle - positioned outside and below the cabin */
+.coluna-desenho {
+    position: absolute;
+    top: 100%; /* Positions it right below the cabin */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 40px;
+    background-color: #6c757d;
+    border: 3px solid #495057;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    color: white;
+    z-index: 1;
+    margin-top: -3px; /* Connects to the cabin border */
+}
+
+/* Hide column when not present */
+.coluna-desenho.hidden {
+    display: none;
+}
+
+/* Arrow Styles */
+.seta-entrada, .seta-saida {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+.seta-entrada {
+    background-color: #28a745;
+    color: white;
+}
+
+.seta-saida {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Positioning for entrance arrows */
+.seta-entrada.esquerda {
+    left: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.seta-entrada.direita {
+    right: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.seta-entrada.oposta {
+    top: -15px;  /* Above the cabin */
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Positioning for exit arrows */
+.seta-saida.esquerda {
+    left: -15px;
+    bottom: 20px;
+}
+
+.seta-saida.direita {
+    right: -15px;
+    bottom: 20px;
+}
+
+.seta-saida.oposta {
+    top: -15px;  /* Below the cabin */
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Overlap handling - when entrance and exit are on the same side */
+.seta-entrada.com-saida.esquerda,
+.seta-entrada.com-saida.direita {
+    top: 30%;
+}
+
+.seta-saida.com-entrada.esquerda,
+.seta-saida.com-entrada.direita {
+    bottom: 30%;
+}
+
+.seta-entrada.com-saida.oposta {
+    left: 40%;
+}
+
+.seta-saida.com-entrada.oposta {
+    left: 60%;
+}
+
+/* Button group spacing */
+.btn-group .btn {
+    margin-right: 2px;
+}
+
+.btn-group .btn:last-child {
+    margin-right: 0;
+}
+
+/* Table responsiveness */
+.table-responsive {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Status badges */
+.badge {
+    font-size: 0.75em;
+}
+
+/* Modal styling */
+.modal-lg {
+    max-width: 80%;
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Card styling */
+.card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 0.75rem 1.25rem;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* Form styling */
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.form-control, .form-select {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 0.375rem 0.75rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Search styling */
+.search-container {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+/* Loading spinner */
+.spinner-border {
+    color: #007bff;
+}
+
+/* Alert styling */
+.alert {
+    border-radius: 8px;
+    border: none;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+/* Pagination styling */
+.pagination {
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.page-link {
+    color: #007bff;
+    border: 1px solid #dee2e6;
+}
+
+.page-link:hover {
+    color: #0056b3;
+    background-color: #e9ecef;
+}
+
+.page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/* Utility classes */
+.text-muted {
+    color: #6c757d !important;
+}
+
+.fw-bold {
+    font-weight: bold !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.mb-0 {
+    margin-bottom: 0 !important;
+}
+
+.me-2 {
+    margin-right: 0.5rem !important;
+}
+
+.ms-2 {
+    margin-left: 0.5rem !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .cabine-desenho {
+        width: 150px;
+        height: 112px;
+        margin: 15px auto 45px auto;
+    }
+    
+    .coluna-desenho {
+        width: 45px;
+        height: 30px;
+        font-size: 8px;
+    }
+    
+    .seta-entrada, .seta-saida {
+        width: 25px;
+        height: 25px;
+        font-size: 14px;
+    }
+    
+    .modal-lg {
+        max-width: 95%;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-group .btn {
+        margin-right: 0;
+        margin-bottom: 2px;
+        border-radius: 4px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .cabine-desenho {
+        width: 120px;
+        height: 90px;
+    }
+    
+    .coluna-desenho {
+        width: 36px;
+        height: 24px;
+        font-size: 6px;
+    }
+    
+    .seta-entrada, .seta-saida {
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+    }
+    
+    .card-body {
+        padding: 0.75rem;
+    }
+    
+    .search-container {
+        padding: 0.75rem;
+    }
+}

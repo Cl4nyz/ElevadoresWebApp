@@ -38,15 +38,15 @@ const Relatorios = () => {
       </div>
 
       {resumo && (
-        <div className="row g-4">
+        <div className="row g-4 justify-content-center">
           {/* Totals */}
-          <div className="col-12">
-            <div className="card">
+          <div className="col-12 d-flex justify-content-center">
+            <div className="card w-100" style={{ maxWidth: 900 }}>
               <div className="card-header">
-                <h5 className="mb-0">Resumo Geral</h5>
+                <h5 className="mb-0 text-center">Resumo Geral</h5>
               </div>
               <div className="card-body">
-                <div className="row text-center">
+                <div className="row text-center justify-content-center">
                   <div className="col-md-2">
                     <div className="p-3">
                       <i className="fas fa-users fa-2x text-primary mb-2"></i>
@@ -68,34 +68,20 @@ const Relatorios = () => {
                       <small>Elevadores</small>
                     </div>
                   </div>
-                  <div className="col-md-3">
-                    <div className="p-3">
-                      <i className="fas fa-cube fa-2x text-success mb-2"></i>
-                      <h4>{resumo.totals.cabines_montadas}</h4>
-                      <small>Cabines Montadas</small>
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    <div className="p-3">
-                      <i className="fas fa-columns fa-2x text-danger mb-2"></i>
-                      <h4>{resumo.totals.colunas_montadas}</h4>
-                      <small>Colunas Montadas</small>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Status dos Elevadores */}
-          <div className="col-md-6">
-            <div className="card h-100">
-              <div className="card-header">
+          {/* Status dos Elevadores
+          <div className="col-md-6 d-flex justify-content-center">
+            <div className="card h-100 w-100" style={{ maxWidth: 400 }}>
+              <div className="card-header text-center">
                 <h6 className="mb-0">Elevadores por Status</h6>
               </div>
               <div className="card-body">
                 {resumo.elevadores_por_status.length === 0 ? (
-                  <p className="text-muted">Nenhum dado disponível</p>
+                  <p className="text-muted text-center">Nenhum dado disponível</p>
                 ) : (
                   <div>
                     {resumo.elevadores_por_status.map((item, index) => (
@@ -108,17 +94,17 @@ const Relatorios = () => {
                 )}
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Top Estados */}
-          <div className="col-md-6">
-            <div className="card h-100">
-              <div className="card-header">
+          <div className="col-md-6 d-flex justify-content-center">
+            <div className="card h-100 w-100" style={{ maxWidth: 900 }}>
+              <div className="card-header text-center">
                 <h6 className="mb-0">Top Estados por Contratos</h6>
               </div>
               <div className="card-body">
                 {resumo.estados_top.length === 0 ? (
-                  <p className="text-muted">Nenhum dado disponível</p>
+                  <p className="text-muted text-center">Nenhum dado disponível</p>
                 ) : (
                   <div>
                     {resumo.estados_top.slice(0, 10).map((item, index) => (
@@ -134,21 +120,21 @@ const Relatorios = () => {
           </div>
 
           {/* Contratos por Mês */}
-          <div className="col-12">
-            <div className="card">
-              <div className="card-header">
+          <div className="col-12 d-flex justify-content-center">
+            <div className="card w-100" style={{ maxWidth: 900 }}>
+              <div className="card-header text-center">
                 <h6 className="mb-0">Contratos por Mês (Últimos 12 meses)</h6>
               </div>
               <div className="card-body">
                 {resumo.contratos_por_mes.length === 0 ? (
-                  <p className="text-muted">Nenhum dado disponível</p>
+                  <p className="text-muted text-center">Nenhum dado disponível</p>
                 ) : (
                   <div className="table-responsive">
-                    <table className="table table-sm">
+                    <table className="table table-sm text-center">
                       <thead>
                         <tr>
-                          <th>Mês</th>
-                          <th>Quantidade</th>
+                          <th className="text-center">Mês</th>
+                          <th className="text-center">Quantidade</th>
                         </tr>
                       </thead>
                       <tbody>

@@ -60,7 +60,7 @@ const Home = () => {
     <div>
       {/* Hero Section */}
       <div className="row">
-        <div className="col-md-12">
+        <div className="col-12">
           <div className="hero-section text-center mb-5">
             <h1 className="display-4 text-primary">
               <img 
@@ -81,9 +81,9 @@ const Home = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="row g-4 mb-5">
-        <div className="col-md-6 col-lg-2">
-          <div className="card bg-primary text-white">
+      <div className="row g-4 mb-5 justify-content-center">
+        <div className="col-12 col-sm-6 col-md-4 col-lg-2 d-flex">
+          <div className="card bg-primary text-white flex-fill">
             <div className="card-body text-center">
               <i className="fas fa-users fa-2x mb-2"></i>
               <h4>{loading ? '...' : stats.clientes}</h4>
@@ -91,8 +91,8 @@ const Home = () => {
             </div>
           </div>
         </div>
-        <div className="col-md-6 col-lg-2">
-          <div className="card bg-warning text-white">
+        <div className="col-12 col-sm-6 col-md-4 col-lg-2 d-flex">
+          <div className="card bg-warning text-white flex-fill">
             <div className="card-body text-center">
               <i className="fas fa-file-contract fa-2x mb-2"></i>
               <h4>{loading ? '...' : stats.contratos}</h4>
@@ -100,30 +100,12 @@ const Home = () => {
             </div>
           </div>
         </div>
-        <div className="col-md-6 col-lg-2">
-          <div className="card bg-info text-white">
+        <div className="col-12 col-sm-6 col-md-4 col-lg-2 d-flex">
+          <div className="card bg-info text-white flex-fill">
             <div className="card-body text-center">
               <i className="fas fa-elevator fa-2x mb-2"></i>
               <h4>{loading ? '...' : stats.elevadores}</h4>
               <small>Elevadores</small>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-6 col-lg-3">
-          <div className="card bg-success text-white">
-            <div className="card-body text-center">
-              <i className="fas fa-cube fa-2x mb-2"></i>
-              <h4>{loading ? '...' : stats.cabines_montadas}</h4>
-              <small>Cabines Montadas</small>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-6 col-lg-3">
-          <div className="card bg-danger text-white">
-            <div className="card-body text-center">
-              <i className="fas fa-columns fa-2x mb-2"></i>
-              <h4>{loading ? '...' : stats.colunas_montadas}</h4>
-              <small>Colunas Montadas</small>
             </div>
           </div>
         </div>

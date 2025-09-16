@@ -7,6 +7,7 @@ import Contratos from './pages/Contratos';
 import Elevadores from './pages/Elevadores';
 import Calendario from './pages/Calendario';
 import Relatorios from './pages/Relatorios';
+import ElevatorPDFPreview from './pages/ElevatorPDFPreview';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './App.css';
@@ -15,13 +16,14 @@ function App() {
   return (
     <Router>
       <Layout>
-                  <Routes>
+          <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/clientes" element={<Clientes />} />
             <Route path="/contratos" element={<Contratos />} />
             <Route path="/elevadores" element={<Elevadores />} />
             <Route path="/calendario" element={<Calendario />} />
             <Route path="/relatorios" element={<Relatorios />} />
+            <Route path="/elevadores/:id/pdf" element={<ElevatorPDFPreview />} />
           </Routes>
       </Layout>
     </Router>

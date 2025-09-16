@@ -1,4 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import ElevatorPDF from '../components/ElevatorPDF';
+import '../styles/elevadores.css'
 
 const Elevadores = () => {
   const [elevadores, setElevadores] = useState([]);
@@ -12,6 +16,7 @@ const Elevadores = () => {
   const [visualizandoElevador, setVisualizandoElevador] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredElevadores, setFilteredElevadores] = useState([]);
+  const navigate = useNavigate();
 
   // Estados para os formulários
   const [formData, setFormData] = useState({
@@ -75,6 +80,69 @@ const Elevadores = () => {
       setFilteredElevadores(filtered);
     }
   }, [searchTerm, elevadores, contratos, clientes]);
+
+  useEffect(() => {
+    const handleEscKey = (event) => {
+      if (event.key === 'Escape') {
+        // Check which modals are open and close them
+        if (showModal) {
+          setShowModal(false);
+          setEditingElevador(null);
+          // Reset form data when closing edit modal
+          setFormData({
+            id_contrato: '',
+            comando: '',
+            porta_inferior: '',
+            porta_superior: '',
+            cor: '',
+            status: 'Não iniciado',
+            observacao: '',
+            cabine: {
+              altura: '',
+              largura: '',
+              profundidade: '',
+              piso: '',
+              montada: false,
+              lado_entrada: '',
+              lado_saida: ''
+            },
+            coluna: {
+              elevacao: '',
+              montada: false
+            },
+            adicionais: {
+              cancela: 0,
+              porta: 0,
+              portao: 0,
+              barreira_eletronica: 0,
+              lados_enclausuramento: 0,
+              sensor_esmagamento: 0,
+              rampa_acesso: 0,
+              nobreak: 0,
+              galvanizada: false
+            }
+          });
+        }
+        
+        if (showVisualizarModal) {
+          setShowVisualizarModal(false);
+          setVisualizandoElevador(null);
+        }
+        
+        if (showSelecionarContratoModal) {
+          setShowSelecionarContratoModal(false);
+        }
+      }
+    };
+
+    // Add event listener when component mounts
+    document.addEventListener('keydown', handleEscKey);
+
+    // Cleanup event listener when component unmounts
+    return () => {
+      document.removeEventListener('keydown', handleEscKey);
+    };
+  }, [showModal, showVisualizarModal, showSelecionarContratoModal]); // Dependencies include modal states
 
   // Funções de carregamento de dados
   const carregarDados = async () => {
@@ -204,11 +272,20 @@ const Elevadores = () => {
       }
     });
     setShowModal(true);
+    
+    // Add this setTimeout to call the cabin drawing after modal is shown
+    setTimeout(() => {
+      atualizarDesenhoCabineEdicao(elevador);
+    }, 300);
   };
 
   const visualizarElevador = (elevador) => {
     setVisualizandoElevador(elevador);
     setShowVisualizarModal(true);
+
+    setTimeout(() => {
+      atualizarDesenhoCabineVisualizacao(elevador);
+    }, 300);
   };
 
   // Função de notificação
@@ -332,6 +409,212 @@ const Elevadores = () => {
     return date.toLocaleDateString('pt-BR');
   };
 
+  const atualizarDesenhoCabineVisualizacao = (elevador) => {    
+    // Hide all arrows initially and remove overlap classes
+    const setasEntrada = ['viewEntradaEsquerda', 'viewEntradaDireita', 'viewEntradaOposta'];
+    const setasSaida = ['viewSaidaEsquerda', 'viewSaidaDireita', 'viewSaidaOposta'];
+    
+    // Always hide all arrows first
+    [...setasEntrada, ...setasSaida].forEach(id => {
+      const elemento = document.getElementById(id);
+      if (elemento) {
+        elemento.style.display = 'none';
+        elemento.classList.remove('com-saida', 'com-entrada');
+      }
+    });
+    
+    // Handle column display - ADD THIS MISSING LOGIC
+    const colunaElement = document.getElementById('viewColuna');
+    if (colunaElement) {
+      if (elevador.coluna && elevador.coluna.elevacao) {
+        colunaElement.classList.remove('hidden');
+        colunaElement.style.display = 'flex';
+      } else {
+        colunaElement.classList.add('hidden');
+        colunaElement.style.display = 'none';
+      }
+    }
+    
+    let setaEntrada = null;
+    let setaSaida = null;
+    let ladoEntrada = null;
+    let ladoSaida = null;
+    
+    // Determine which entrance arrow to show ONLY if there's a valid value
+    if (elevador.cabine && elevador.cabine.lado_entrada && elevador.cabine.lado_entrada.trim()) {
+      ladoEntrada = elevador.cabine.lado_entrada.toLowerCase().trim();
+      switch(ladoEntrada) {
+        case 'esquerda':
+        case 'esquerdo':
+          setaEntrada = document.getElementById('viewEntradaEsquerda');
+          break;
+        case 'direita':
+        case 'direito':
+          setaEntrada = document.getElementById('viewEntradaDireita');
+          break;
+        case 'oposta':
+        case 'oposto':
+          setaEntrada = document.getElementById('viewEntradaOposta');
+          break;
+      }
+    }
+    
+    // Determine which exit arrow to show ONLY if there's a valid value
+    if (elevador.cabine && elevador.cabine.lado_saida && elevador.cabine.lado_saida.trim()) {
+      ladoSaida = elevador.cabine.lado_saida.toLowerCase().trim();
+      switch(ladoSaida) {
+        case 'esquerda':
+        case 'esquerdo':
+          setaSaida = document.getElementById('viewSaidaEsquerda');
+          break;
+        case 'direita':
+        case 'direito':
+          setaSaida = document.getElementById('viewSaidaDireita');
+          break;
+        case 'oposta':
+        case 'oposto':
+          setaSaida = document.getElementById('viewSaidaOposta');
+          break;
+      }
+    }
+    
+    // Check for overlap (same side)
+    const mesmoLado = ladoEntrada && ladoSaida && 
+      ((ladoEntrada === 'esquerda' || ladoEntrada === 'esquerdo') && (ladoSaida === 'esquerda' || ladoSaida === 'esquerdo')) ||
+      ((ladoEntrada === 'direita' || ladoEntrada === 'direito') && (ladoSaida === 'direita' || ladoSaida === 'direito')) ||
+      ((ladoEntrada === 'oposta' || ladoEntrada === 'oposto') && (ladoSaida === 'oposta' || ladoSaida === 'oposto'));
+    
+    // Show and position arrows ONLY if found
+    if (setaEntrada) {
+      setaEntrada.style.display = 'flex';
+      
+      // If there's overlap, apply class for repositioning
+      if (mesmoLado && setaSaida) {
+        setaEntrada.classList.add('com-saida');
+      }
+    }
+    
+    if (setaSaida) {
+      setaSaida.style.display = 'flex';
+      
+      // If there's overlap, apply class for repositioning
+      if (mesmoLado && setaEntrada) {
+        setaSaida.classList.add('com-entrada');
+      }
+    }
+  };
+
+  const atualizarDesenhoCabineEdicao = (elevador) => {    
+    // Hide all arrows initially and remove overlap classes
+    const setasEntrada = ['editEntradaEsquerda', 'editEntradaDireita', 'editEntradaOposta'];
+    const setasSaida = ['editSaidaEsquerda', 'editSaidaDireita', 'editSaidaOposta'];
+    
+    // Always hide all arrows first
+    [...setasEntrada, ...setasSaida].forEach(id => {
+      const elemento = document.getElementById(id);
+      if (elemento) {
+        elemento.style.display = 'none';
+        elemento.classList.remove('com-saida', 'com-entrada');
+      }
+    });
+
+    // Handle column display
+    const colunaElement = document.getElementById('editColuna');
+    if (colunaElement) {
+      if (elevador.coluna && elevador.coluna.elevacao) {
+        colunaElement.classList.remove('hidden');
+        colunaElement.style.display = 'flex';
+      } else {
+        colunaElement.classList.add('hidden');
+        colunaElement.style.display = 'none';
+      }
+    }
+    
+    let setaEntrada = null;
+    let setaSaida = null;
+    let ladoEntrada = null;
+    let ladoSaida = null;
+    
+    // Determine which entrance arrow to show ONLY if there's a valid value
+    if (elevador.cabine && elevador.cabine.lado_entrada && elevador.cabine.lado_entrada.trim()) {
+      ladoEntrada = elevador.cabine.lado_entrada.toLowerCase().trim();
+      switch(ladoEntrada) {
+        case 'esquerda':
+        case 'esquerdo':
+          setaEntrada = document.getElementById('editEntradaEsquerda');
+          break;
+        case 'direita':
+        case 'direito':
+          setaEntrada = document.getElementById('editEntradaDireita');
+          break;
+        case 'oposta':
+        case 'oposto':
+          setaEntrada = document.getElementById('editEntradaOposta');
+          break;
+      }
+    }
+    
+    // Determine which exit arrow to show ONLY if there's a valid value
+    if (elevador.cabine && elevador.cabine.lado_saida && elevador.cabine.lado_saida.trim()) {
+      ladoSaida = elevador.cabine.lado_saida.toLowerCase().trim();
+      switch(ladoSaida) {
+        case 'esquerda':
+        case 'esquerdo':
+          setaSaida = document.getElementById('editSaidaEsquerda');
+          break;
+        case 'direita':
+        case 'direito':
+          setaSaida = document.getElementById('editSaidaDireita');
+          break;
+        case 'oposta':
+        case 'oposto':
+          setaSaida = document.getElementById('editSaidaOposta');
+          break;
+      }
+    }
+    
+    // Check for overlap (same side)
+    const mesmoLado = ladoEntrada && ladoSaida && 
+      ((ladoEntrada === 'esquerda' || ladoEntrada === 'esquerdo') && (ladoSaida === 'esquerda' || ladoSaida === 'esquerdo')) ||
+      ((ladoEntrada === 'direita' || ladoEntrada === 'direito') && (ladoSaida === 'direita' || ladoSaida === 'direito')) ||
+      ((ladoEntrada === 'oposta' || ladoEntrada === 'oposto') && (ladoSaida === 'oposta' || ladoSaida === 'oposto'));
+    
+    // Show and position arrows ONLY if found
+    if (setaEntrada) {
+      setaEntrada.style.display = 'flex';
+      
+      // If there's overlap, apply class for repositioning
+      if (mesmoLado && setaSaida) {
+        setaEntrada.classList.add('com-saida');
+      }
+    }
+    
+    if (setaSaida) {
+      setaSaida.style.display = 'flex';
+      
+      // If there's overlap, apply class for repositioning
+      if (mesmoLado && setaEntrada) {
+        setaSaida.classList.add('com-entrada');
+      }
+    }
+  };
+
+  const atualizarDesenhoCabineEdicaoLive = () => {
+    setTimeout(() => {
+      const tempElevador = {
+        cabine: {
+          lado_entrada: formData.cabine.lado_entrada,
+          lado_saida: formData.cabine.lado_saida
+        },
+        coluna: {
+          elevacao: formData.coluna.elevacao
+        }
+      };
+      
+      atualizarDesenhoCabineEdicao(tempElevador);
+    }, 50)
+  };
+
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{ height: '400px' }}>
@@ -447,27 +730,35 @@ const Elevadores = () => {
                       </td>
                       <td>
                         <div className="btn-group" role="group">
-                        <button 
-                          className="btn btn-sm btn-outline-primary"
-                          onClick={() => visualizarElevador(elevador)}
-                          title="Visualizar"
-                        >
-                          <i className="fas fa-eye"></i>
-                        </button>
-                        <button 
-                          className="btn btn-sm btn-outline-warning"
-                          onClick={() => editarElevador(elevador)}
-                          title="Editar"
-                        >
-                          <i className="fas fa-edit"></i>
-                        </button>
-                        <button 
-                          className="btn btn-sm btn-outline-danger"
-                          onClick={() => excluirElevador(elevador.id)}
-                          title="Excluir"
-                        >
-                          <i className="fas fa-trash"></i>
-                        </button>
+                          <button 
+                            className="btn btn-sm btn-outline-primary"
+                            onClick={() => visualizarElevador(elevador)}
+                            title="Visualizar"
+                          >
+                            <i className="fas fa-eye"></i>
+                          </button>
+                          <button 
+                            className="btn btn-sm btn-outline-warning"
+                            onClick={() => editarElevador(elevador)}
+                            title="Editar"
+                          >
+                            <i className="fas fa-edit"></i>
+                          </button>
+                          {/* ADD PDF BUTTON HERE */}
+                          <button
+                            className="btn btn-outline-info btn-sm"
+                            title="Visualizar PDF"
+                            onClick={() => navigate(`/elevadores/${elevador.id}/pdf`)}
+                          >
+                            <i className="fas fa-file-pdf"></i>
+                          </button>
+                          <button 
+                            className="btn btn-sm btn-outline-danger"
+                            onClick={() => excluirElevador(elevador.id)}
+                            title="Excluir"
+                          >
+                            <i className="fas fa-trash"></i>
+                          </button>
                         </div>
                       </td>
                       </tr>
@@ -646,8 +937,36 @@ const Elevadores = () => {
                       <h6 className="mb-0"><i className="fas fa-cube"></i> Cabine</h6>
                     </div>
                     <div className="card-body">
+                      {/* Cabin Drawing Section */}
+                      <div className="row mb-4">
+                        <div className="col-md-12">
+                          <label className="form-label fw-bold">Desenho da Cabine:</label>
+                          <div className="cabine-desenho">
+                            {/* Entrance arrows */}
+                            <div id="editEntradaEsquerda" className="seta-entrada esquerda">E</div>
+                            <div id="editEntradaDireita" className="seta-entrada direita">E</div>
+                            <div id="editEntradaOposta" className="seta-entrada oposta">E</div>
+                            
+                            {/* Exit arrows */}
+                            <div id="editSaidaEsquerda" className="seta-saida esquerda">S</div>
+                            <div id="editSaidaDireita" className="seta-saida direita">S</div>
+                            <div id="editSaidaOposta" className="seta-saida oposta">S</div>
+                            
+                            {/* Column rectangle */}
+                            <div id="editColuna" className="coluna-desenho">COL</div>
+                          </div>
+                          <div className="text-center">
+                            <small className="text-muted">
+                              <span className="badge bg-success me-2">E</span> Entrada
+                              <span className="badge bg-danger me-2">S</span> Saída
+                              <span className="badge bg-secondary">COL</span> Coluna
+                            </small>
+                          </div>
+                        </div>
+                      </div>
+
                       <div className="row">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <div className="mb-3">
                             <label className="form-label">Altura (mm)</label>
                             <input 
@@ -658,7 +977,7 @@ const Elevadores = () => {
                             />
                           </div>
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <div className="mb-3">
                             <label className="form-label">Largura (mm)</label>
                             <input 
@@ -669,7 +988,7 @@ const Elevadores = () => {
                             />
                           </div>
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <div className="mb-3">
                             <label className="form-label">Profundidade (mm)</label>
                             <input 
@@ -680,7 +999,10 @@ const Elevadores = () => {
                             />
                           </div>
                         </div>
-                        <div className="col-md-3">
+                      </div>
+
+                      <div className="row">
+                        <div className="col-md-4">
                           <div className="mb-3">
                             <label className="form-label">Piso</label>
                             <input 
@@ -691,16 +1013,28 @@ const Elevadores = () => {
                             />
                           </div>
                         </div>
-                      </div>
-
-                      <div className="row">
                         <div className="col-md-4">
                           <div className="mb-3">
                             <label className="form-label">Lado Entrada</label>
                             <select 
                               className="form-select" 
                               value={formData.cabine.lado_entrada}
-                              onChange={(e) => handleFormDataChange('cabine', 'lado_entrada', e.target.value)}
+                              onChange={(e) => {
+                                handleFormDataChange('cabine', 'lado_entrada', e.target.value);
+                                // Trigger update immediately after state change
+                                setTimeout(() => {
+                                  const tempElevador = {
+                                    cabine: {
+                                      lado_entrada: e.target.value, // Use the new value directly
+                                      lado_saida: formData.cabine.lado_saida
+                                    },
+                                    coluna: {
+                                      elevacao: formData.coluna.elevacao
+                                    }
+                                  };
+                                  atualizarDesenhoCabineEdicao(tempElevador);
+                                }, 10);
+                              }}
                             >
                               <option value="">Selecione...</option>
                               <option value="Esquerdo">Esquerdo</option>
@@ -715,7 +1049,22 @@ const Elevadores = () => {
                             <select 
                               className="form-select" 
                               value={formData.cabine.lado_saida}
-                              onChange={(e) => handleFormDataChange('cabine', 'lado_saida', e.target.value)}
+                              onChange={(e) => {
+                                handleFormDataChange('cabine', 'lado_saida', e.target.value);
+                                // Trigger update immediately after state change
+                                setTimeout(() => {
+                                  const tempElevador = {
+                                    cabine: {
+                                      lado_entrada: formData.cabine.lado_entrada,
+                                      lado_saida: e.target.value // Use the new value directly
+                                    },
+                                    coluna: {
+                                      elevacao: formData.coluna.elevacao
+                                    }
+                                  };
+                                  atualizarDesenhoCabineEdicao(tempElevador);
+                                }, 10);
+                              }}
                             >
                               <option value="">Selecione...</option>
                               <option value="Esquerdo">Esquerdo</option>
@@ -724,9 +1073,12 @@ const Elevadores = () => {
                             </select>
                           </div>
                         </div>
+                      </div>
+
+                      <div className="row">
                         <div className="col-md-4">
                           <div className="mb-3">
-                            <div className="form-check mt-4">
+                            <div className="form-check">
                               <input 
                                 className="form-check-input" 
                                 type="checkbox" 
@@ -975,6 +1327,35 @@ const Elevadores = () => {
                       <h6 className="mb-0"><i className="fas fa-cube"></i> Cabine</h6>
                     </div>
                     <div className="card-body">
+                      {/* Cabin Drawing Section */}
+                      <div className="row mb-4">
+                        <div className="col-md-12">
+                          <label className="form-label fw-bold">Desenho da Cabine:</label>
+                          <div className="cabine-desenho">
+                            {/* Entrance arrows */}
+                            <div id="viewEntradaEsquerda" className="seta-entrada esquerda">E</div>
+                            <div id="viewEntradaDireita" className="seta-entrada direita">E</div>
+                            <div id="viewEntradaOposta" className="seta-entrada oposta">E</div>
+                            
+                            {/* Exit arrows */}
+                            <div id="viewSaidaEsquerda" className="seta-saida esquerda">S</div>
+                            <div id="viewSaidaDireita" className="seta-saida direita">S</div>
+                            <div id="viewSaidaOposta" className="seta-saida oposta">S</div>
+                            
+                            {/* Column rectangle */}
+                            <div id="viewColuna" className="coluna-desenho">COL</div>
+                          </div>
+                          <div className="text-center">
+                            <small className="text-muted">
+                              <span className="badge bg-success me-2">E</span> Entrada
+                              <span className="badge bg-danger me-2">S</span> Saída
+                              <span className="badge bg-secondary">COL</span> Coluna
+                            </small>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Existing cabin data */}
                       <div className="row">
                         <div className="col-md-3">
                           <p><strong>Altura:</strong> {visualizandoElevador.cabine.altura || 'N/A'} mm</p>
