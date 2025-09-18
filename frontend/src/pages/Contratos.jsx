@@ -270,7 +270,7 @@ const Contratos = () => {
     }
 
     const dataFinal = calcularDataComDiasUteis(dataInicial, quantidadeDias);
-    setPreviewData(`${formatarDataBrasileira(dataFinal)} (${quantidadeDias} dias úteis a partir de ${dataBaseTexto})`);
+    setPreviewData(`${dataFinal.toLocaleDateString('pt-BR')} (${quantidadeDias} dias úteis a partir de ${dataBaseTexto})`);
   };
 
   const adicionarDiasUteisToForm = () => {
@@ -304,7 +304,7 @@ const Contratos = () => {
     }));
 
     setShowDiasUteisModal(false);
-    showToast(`${quantidadeDias} dias úteis adicionados. Data de entrega: ${formatarDataBrasileira(dataFinal)}`, 'success');
+    showToast(`${quantidadeDias} dias úteis adicionados. Data de entrega: ${dataFinal.toLocaleDateString('pt-BR')}`, 'success');
   };
 
   // Client functions
@@ -509,8 +509,8 @@ const Contratos = () => {
                     <tr key={contrato.id}>
                       <td>{contrato.id}</td>
                       <td>{contrato.cliente_nome || 'Cliente não encontrado'}</td>
-                      <td>{formatDateBrazilian(contrato.data_venda)}</td>
-                      <td>{formatDateBrazilian(contrato.data_entrega)}</td>
+                      <td>{contrato.data_venda ? new Date(contrato.data_venda).toLocaleDateString('pt-BR') : '-'}</td>
+                      <td>{contrato.data_entrega ? new Date(contrato.data_entrega).toLocaleDateString('pt-BR') : '-'}</td>
                       <td>{contrato.vendedor || '-'}</td>
                       <td>
                         <div className="btn-group" role="group">
@@ -600,7 +600,7 @@ const Contratos = () => {
                     />
                     {formData.data_venda && (
                       <div className="form-text">
-                        <i className="fas fa-calendar"></i> {formatDateBrazilian(formData.data_venda)}
+                        <i className="fas fa-calendar"></i> {new Date(formData.data_venda).toLocaleDateString('pt-BR')}
                       </div>
                     )}
                   </div>
@@ -625,7 +625,7 @@ const Contratos = () => {
                     </div>
                     {formData.data_entrega && (
                       <div className="form-text">
-                        <i className="fas fa-calendar"></i> {formatDateBrazilian(formData.data_entrega)}
+                        <i className="fas fa-calendar"></i> {new Date(formData.data_entrega).toLocaleDateString('pt-BR')}
                       </div>
                     )}
                   </div>
@@ -988,11 +988,15 @@ const Contratos = () => {
                 <div className="row mb-3">
                   <div className="col-md-6">
                     <label className="form-label fw-bold">Data da Venda:</label>
-                    <p className="form-control-plaintext">{formatDateBrazilian(visualizandoContrato.data_venda)}</p>
+                    <p className="form-control-plaintext">
+                      {visualizandoContrato.data_venda ? new Date(visualizandoContrato.data_venda).toLocaleDateString('pt-BR') : '-'}
+                    </p>
                   </div>
                   <div className="col-md-6">
                     <label className="form-label fw-bold">Data de Entrega:</label>
-                    <p className="form-control-plaintext">{formatDateBrazilian(visualizandoContrato.data_entrega)}</p>
+                    <p className="form-control-plaintext">
+                      {visualizandoContrato.data_entrega ? new Date(visualizandoContrato.data_entrega).toLocaleDateString('pt-BR') : '-'}
+                    </p>
                   </div>
                 </div>
 

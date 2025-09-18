@@ -225,7 +225,7 @@ const Home = () => {
                     {updateInfo ? (
                       <div>
                         <p><strong>Versão Atual:</strong> {updateInfo.versao_atual}</p>
-                        <p><strong>Última Verificação:</strong> {new Date(updateInfo.data_verificacao).toLocaleString()}</p>
+                        <p><strong>Última Verificação:</strong> {new Date(updateInfo.data_verificacao).toLocaleString('pt-BR')}</p>
                         {updateInfo.atualizacao_disponivel ? (
                           <div className="alert alert-info">
                             <i className="fas fa-download me-2"></i>

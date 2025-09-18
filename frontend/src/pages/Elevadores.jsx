@@ -16,6 +16,8 @@ const Elevadores = () => {
   const [visualizandoElevador, setVisualizandoElevador] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredElevadores, setFilteredElevadores] = useState([]);
+  const [corCustomMode, setCorCustomMode] = useState(false);
+  const [pisoCustomMode, setPisoCustomMode] = useState(false);
   const navigate = useNavigate();
 
   // Estados para os formulários
@@ -391,6 +393,21 @@ const Elevadores = () => {
         [field]: value
       }));
     }
+  };
+
+  const toggleCorCustom = () => {
+    setCorCustomMode(!corCustomMode);
+    setFormData(prev => ({ ...prev, cor: '' }));
+  };
+
+  const togglePisoCustom = () => {
+    setCorCustomMode(!pisoCustomMode);
+    setFormData(prev => ({
+      ...prev,
+      cabine: {
+        ...prev.cabine,
+        piso: ''
+      } }));
   };
 
   const obterCorStatus = (status) => {
@@ -872,10 +889,8 @@ const Elevadores = () => {
                               onChange={(e) => handleFormDataChange(null, 'porta_inferior', e.target.value)}
                             >
                               <option value="">Selecione...</option>
-                              <option value="600mm">600mm</option>
-                              <option value="700mm">700mm</option>
-                              <option value="800mm">800mm</option>
-                              <option value="900mm">900mm</option>
+                              <option value="Esquerda">Esquerda</option>
+                              <option value="Direita">Direita</option>
                             </select>
                           </div>
                         </div>
@@ -888,10 +903,8 @@ const Elevadores = () => {
                               onChange={(e) => handleFormDataChange(null, 'porta_superior', e.target.value)}
                             >
                               <option value="">Selecione...</option>
-                              <option value="600mm">600mm</option>
-                              <option value="700mm">700mm</option>
-                              <option value="800mm">800mm</option>
-                              <option value="900mm">900mm</option>
+                              <option value="Esquerda">Esquerda</option>
+                              <option value="Direita">Direita</option>
                             </select>
                           </div>
                         </div>
@@ -901,19 +914,37 @@ const Elevadores = () => {
                         <div className="col-md-6">
                           <div className="mb-3">
                             <label className="form-label">Cor</label>
-                            <select 
-                              className="form-select" 
-                              value={formData.cor}
-                              onChange={(e) => handleFormDataChange(null, 'cor', e.target.value)}
-                            >
-                              <option value="">Selecione...</option>
-                              <option value="Branco">Branco</option>
-                              <option value="Preto">Preto</option>
-                              <option value="Azul">Azul</option>
-                              <option value="Verde">Verde</option>
-                              <option value="Vermelho">Vermelho</option>
-                              <option value="Amarelo">Amarelo</option>
-                            </select>
+                            <div className="input-group">
+                              {!corCustomMode ? (
+                                <select 
+                                  className="form-select" 
+                                  value={formData.cor}
+                                  onChange={(e) => handleFormDataChange(null, 'cor', e.target.value)}
+                                >
+                                  <option value="">Selecione...</option>
+                                  <option value="Branco">Branco</option>
+                                  <option value="Preto">Preto</option>
+                                  <option value="Cinza">Cinza</option>
+                                </select>
+                              ) : (
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="Outra cor"
+                                  value={formData.cor}
+                                  onChange={(e) => handleFormDataChange(null, 'cor', e.target.value)}
+                                />
+                              )}
+                              <button
+                                type="button"
+                                className="btn btn-outline-secondary"
+                                onClick={toggleCorCustom}
+                                title="Outra cor"
+                              >
+                                <i className="fas fa-edit"></i>
+                              </button>
+                            </div>
+                            <div className="form-text">Selecione uma cor predefinida ou digite uma nova cor</div>
                           </div>
                         </div>
                         <div className="col-md-6">
@@ -959,7 +990,6 @@ const Elevadores = () => {
                             <small className="text-muted">
                               <span className="badge bg-success me-2">E</span> Entrada
                               <span className="badge bg-danger me-2">S</span> Saída
-                              <span className="badge bg-secondary">COL</span> Coluna
                             </small>
                           </div>
                         </div>
@@ -1005,12 +1035,36 @@ const Elevadores = () => {
                         <div className="col-md-4">
                           <div className="mb-3">
                             <label className="form-label">Piso</label>
-                            <input 
-                              type="text" 
-                              className="form-control"
-                              value={formData.cabine.piso}
-                              onChange={(e) => handleFormDataChange('cabine', 'piso', e.target.value)}
-                            />
+                            <div className="input-group">
+                              {!pisoCustomMode ? (
+                                <select 
+                                  className="form-select" 
+                                  value={formData.cabine.piso}
+                                  onChange={(e) => handleFormDataChange('cabine', 'piso', e.target.value)}
+                                >
+                                  <option value="">Selecione...</option>
+                                  <option value="Borracha">Borracha</option>
+                                  <option value="Alumínio">Alumínio</option>
+                                </select>
+                              ) : (
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="Outro piso"
+                                  value={formData.cabine.piso}
+                                  onChange={(e) => handleFormDataChange('cabine', 'piso', e.target.value)}
+                                />
+                              )}
+                              <button
+                                type="button"
+                                className="btn btn-outline-secondary"
+                                onClick={togglePisoCustom}
+                                title="Outro piso"
+                              >
+                                <i className="fas fa-edit"></i>
+                              </button>
+                            </div>
+                            <div className="form-text">Selecione um material predefinido ou digite um novo</div>
                           </div>
                         </div>
                         <div className="col-md-4">
@@ -1349,7 +1403,6 @@ const Elevadores = () => {
                             <small className="text-muted">
                               <span className="badge bg-success me-2">E</span> Entrada
                               <span className="badge bg-danger me-2">S</span> Saída
-                              <span className="badge bg-secondary">COL</span> Coluna
                             </small>
                           </div>
                         </div>

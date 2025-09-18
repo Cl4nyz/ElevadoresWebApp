@@ -333,14 +333,6 @@ const ElevatorPDF = ({ elevador, cliente, contrato }) => {
 				</Text>
 			</View>
 			)}
-			{elevador.coluna?.elevacao && (
-			<View style={styles.legendItem}>
-				<View style={[styles.legendColor, styles.arrowColuna]} />
-				<Text style={styles.legendText}>
-				Coluna: {elevador.coluna.elevacao}mm
-				</Text>
-			</View>
-			)}
 		</View>
 		</View>
 	);
@@ -350,12 +342,12 @@ const ElevatorPDF = ({ elevador, cliente, contrato }) => {
     <Document>
       <Page size="A4" style={styles.page}>
         {/* Watermark Layer */}
-        <View style={styles.watermarkContainer}>
+        {/* <View style={styles.watermarkContainer}>
           <Image 
             style={styles.watermarkImage}
             src={LOGO_BASE64} // Use the base64 string
           />
-        </View>
+        </View> */}
       
       {/* Main Content Layer */}
       <View style={styles.pageContent}>

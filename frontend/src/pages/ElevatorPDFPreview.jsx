@@ -149,7 +149,7 @@ const ElevatorPDFPreview = () => {
               </button>
               <PDFDownloadLink
                 document={<ElevatorPDF elevador={elevador} cliente={cliente} contrato={contrato} />}
-                fileName={`elevador_${elevador.id}_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.pdf`}
+                fileName={`OS#${elevador.id}_${cliente?.nome ? cliente.nome.replace(/\s+/g, '_') : 'Cliente_Desconhecido'}.pdf`}
                 className="btn btn-success"
               >
                 {({ blob, url, loading, error }) => (
