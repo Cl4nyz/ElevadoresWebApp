@@ -4,7 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import ptBrLocale from '@fullcalendar/core/locales/pt-br';
-import { contratosApi, elevadoresApi } from '../services/api';
+import { elevadoresApi } from '../services/api';
 
 const Calendario = () => {
   const calendarRef = useRef(null);
@@ -67,33 +67,36 @@ const Calendario = () => {
 
   const loadEvents = async () => {
     try {
-      const [contratosResponse, elevadoresResponse] = await Promise.all([
-        contratosApi.getAll(),
-        elevadoresApi.getAll()
-      ]);
-
-      const contratos = contratosResponse.data;
+      const elevadoresResponse = await elevadoresApi.getAll();
       const elevadores = elevadoresResponse.data;
 
-      const events = contratos.map(contrato => {
-        const cliente = contrato.cliente_nome || 'Cliente não encontrado';
-        const status = getContractStatus(contrato);
-        const color = getStatusColor(status);
+      const events = elevadores.map(elevador => {
+      const cliente = elevador.cliente_nome || 'Cliente não encontrado';
+      const status = getElevatorStatus(elevador);
+      const color = getStatusColor(status);
+      
+      // Ensure the date is formatted as YYYY-MM-DD (all-day format)
+      let eventDate = elevador.data_entrega || elevador.data_venda;
+      if (eventDate) {
+          // Convert to YYYY-MM-DD format to ensure it's treated as all-day
+          eventDate = new Date(eventDate).toISOString().split('T')[0];
+      }
 
-        return {
-          id: `contrato-${contrato.id}`,
-          title: `${cliente} - Contrato #${contrato.id}`,
-          start: contrato.data_entrega || contrato.data_venda,
+      return {
+          id: `elevador-${elevador.id}`,
+          title: `${cliente}`,
+          start: eventDate,
+          allDay: true, // Explicitly mark as all-day event
           backgroundColor: color,
           borderColor: color,
           extendedProps: {
-            tipo: 'contrato',
-            contrato: contrato,
-            status: status,
-            cliente: cliente
+              tipo: 'elevador',
+              elevador: elevador,
+              status: status,
+              cliente: cliente
           }
-        };
-      });
+      };
+  });
 
       setEventos(events);
     } catch (error) {
@@ -101,9 +104,9 @@ const Calendario = () => {
     }
   };
 
-  const getContractStatus = (contrato) => {
+  const getElevatorStatus = (elevador) => {
     const hoje = new Date();
-    const dataEntrega = contrato.data_entrega ? new Date(contrato.data_entrega) : null;
+    const dataEntrega = elevador.data_entrega ? new Date(elevador.data_entrega) : null;
     
     if (!dataEntrega) {
       return 'Não iniciado';
@@ -133,9 +136,9 @@ const Calendario = () => {
 
   const handleEventClick = (event) => {
     const props = event.extendedProps;
-    if (props.tipo === 'contrato') {
-      const contrato = props.contrato;
-      alert(`Contrato #${contrato.id}\nCliente: ${props.cliente}\nData de Entrega: ${formatDate(contrato.data_entrega)}\nStatus: ${props.status}`);
+    if (props.tipo === 'elevador') {
+      const elevador = props.elevador;
+      alert(`Elevador #${elevador.id}\nCliente: ${props.cliente}\nData de Entrega: ${formatDate(elevador.data_entrega)}\nStatus: ${props.status}`);
     }
   };
 
@@ -203,7 +206,7 @@ const Calendario = () => {
     <div className={isFullscreen ? 'position-fixed top-0 start-0 w-100 h-100 bg-white p-3' : ''} 
          style={{ zIndex: isFullscreen ? 9999 : 'auto' }}>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2><i className="fas fa-calendar me-2"></i>Calendário de Entregas</h2>
+        <h2><i className="fas fa-calendar me-2"></i>Calendário de Entregas - Elevadores</h2>
         <div className="d-flex gap-2">
           <div className="btn-group">
             <button className="btn btn-outline-primary" onClick={() => changeView('dayGridMonth')}>

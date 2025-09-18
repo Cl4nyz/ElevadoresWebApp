@@ -413,7 +413,7 @@ const Elevadores = () => {
   const obterCorStatus = (status) => {
     switch (status) {
       case 'Não iniciado': return 'bg-secondary';
-      case 'Em andamento': return 'bg-warning';
+      case 'Em produção': return 'bg-warning';
       case 'Concluído': return 'bg-success';
       case 'Entregue': return 'bg-primary';
       default: return 'bg-secondary';
@@ -874,7 +874,7 @@ const Elevadores = () => {
                               required
                             >
                               <option value="Não iniciado">Não iniciado</option>
-                              <option value="Em andamento">Em andamento</option>
+                              <option value="Em produção">Em produção</option>
                               <option value="Concluído">Concluído</option>
                               <option value="Entregue">Entregue</option>
                             </select>

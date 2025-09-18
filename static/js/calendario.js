@@ -6,7 +6,7 @@ let eventoAtual = null;
 // Inicializar calendário ao carregar a página
 document.addEventListener('DOMContentLoaded', function() {
     inicializarCalendario();
-    carregarEventosComFiltro(); // Usar a nova função
+    carregarEventosComFiltro();
     
     // Aguardar um pouco mais para garantir que todos os elementos estejam renderizados
     setTimeout(() => {
@@ -94,46 +94,26 @@ function inicializarCalendario() {
         },
         // Configurações para eventos de dia inteiro
         allDaySlot: true,
-        slotLabelFormat: {
-            hour: 'numeric',
-            minute: '2-digit',
-            meridiem: false
-        },
-        // Configuração para visualização de lista sem horários
-        listDayFormat: {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        },
-        listDaySideFormat: false,
-        // Remover exibição de horários em todas as visualizações
+        // Remove exibição de horários em todas as visualizações
         displayEventTime: false,
         // Configurações específicas para visualização por semana
         views: {
             timeGridWeek: {
-                allDaySlot: false, // Remove a linha "todo o dia"
-                slotMinTime: '00:00:00',
-                slotMaxTime: '24:00:00',
+                allDaySlot: false,
                 displayEventTime: false
             },
             dayGridWeek: {
-                displayEventTime: false // Remove horários na visualização de semana em grade
+                displayEventTime: false
             },
             dayGridMonth: {
-                displayEventTime: false // Remove horários na visualização mensal
+                displayEventTime: false
             },
             listWeek: {
-                displayEventTime: false // Remove horários na visualização de lista
+                displayEventTime: false
             }
         },
         // Configuração global para eventos
         eventDisplay: 'block',
-        eventTimeFormat: {
-            hour: 'numeric',
-            minute: '2-digit',
-            meridiem: false
-        },
         height: 'auto',
         events: [],
         eventClick: function(info) {
@@ -146,17 +126,31 @@ function inicializarCalendario() {
         dateClick: function(info) {
             // Opcional: criar novo evento ao clicar em uma data
             console.log('Data clicada:', info.dateStr);
+        },
+        // Add this callback to force hide time elements
+        eventDidMount: function(info) {
+            // Remove any time elements that might still appear
+            const timeElements = info.el.querySelectorAll('.fc-event-time');
+            timeElements.forEach(el => el.remove());
         }
     });
     
     calendar.render();
     
-    // Forçar remoção de horários após renderização
-    setTimeout(() => {
-        document.querySelectorAll('.fc-event-time').forEach(el => el.remove());
-        document.querySelectorAll('.fc-daygrid-event-time').forEach(el => el.remove());
-        document.querySelectorAll('.fc-list-event-time').forEach(el => el.remove());
-    }, 100);
+    // Add CSS to hide time elements globally
+    const style = document.createElement('style');
+    style.textContent = `
+        .fc-event-time {
+            display: none !important;
+        }
+        .fc-daygrid-event-time {
+            display: none !important;
+        }
+        .fc-list-event-time {
+            display: none !important;
+        }
+    `;
+    document.head.appendChild(style);
     
     // Inicializar destaque do botão ativo
     atualizarBotaoAtivo('dayGridMonth');
@@ -169,13 +163,6 @@ async function carregarEventos() {
         calendar.removeAllEvents();
         calendar.addEventSource(eventos);
         atualizarEstatisticas();
-        
-        // Forçar remoção de horários após adicionar eventos
-        setTimeout(() => {
-            document.querySelectorAll('.fc-event-time').forEach(el => el.remove());
-            document.querySelectorAll('.fc-daygrid-event-time').forEach(el => el.remove());
-            document.querySelectorAll('.fc-list-event-time').forEach(el => el.remove());
-        }, 200);
         
     } catch (error) {
         console.error('Erro ao carregar eventos:', error);
@@ -646,9 +633,6 @@ function createFullscreenOverlay() {
         if (calendar) {
             const originalCalendar = document.getElementById('calendar');
             if (originalCalendar) {
-                // Salvar o HTML do calendário original
-                const calendarHTML = originalCalendar.innerHTML;
-                
                 // Destruir calendário atual
                 calendar.destroy();
                 
@@ -667,6 +651,7 @@ function createFullscreenOverlay() {
                         week: 'Semana',
                         list: 'Lista'
                     },
+                    displayEventTime: false,
                     height: '100%',
                     events: eventos || [],
                     eventClick: function(info) {
@@ -713,6 +698,7 @@ function restoreOriginalCalendar() {
                 week: 'Semana',
                 list: 'Lista'
             },
+            displayEventTime: false,
             height: 'auto',
             events: eventos || [],
             eventClick: function(info) {
@@ -859,13 +845,6 @@ async function carregarEventosComFiltro() {
         calendar.removeAllEvents();
         calendar.addEventSource(eventos);
         atualizarEstatisticas();
-        
-        // Forçar remoção de horários após adicionar eventos
-        setTimeout(() => {
-            document.querySelectorAll('.fc-event-time').forEach(el => el.remove());
-            document.querySelectorAll('.fc-daygrid-event-time').forEach(el => el.remove());
-            document.querySelectorAll('.fc-list-event-time').forEach(el => el.remove());
-        }, 200);
         
     } catch (error) {
         console.error('Erro ao carregar eventos:', error);
