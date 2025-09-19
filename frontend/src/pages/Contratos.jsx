@@ -40,60 +40,23 @@ const Contratos = () => {
 
   const [previewData, setPreviewData] = useState('');
 
-  // Helper functions - COPIED FROM ORIGINAL contratos.js
-  function formatarDataParaInput(data) {
-    const ano = data.getFullYear();
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const dia = String(data.getDate()).padStart(2, '0');
-    return `${ano}-${mes}-${dia}`;
-  }
-
-  function formatarDataBrasileira(data) {
-    const dia = String(data.getDate()).padStart(2, '0');
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const ano = data.getFullYear();
-    return `${dia}/${mes}/${ano}`;
-  }
-
   function getTodayForInput() {
     return new Date().toISOString().split('T')[0];
   }
 
   function formatDateForInput(date) {
     if (!date) return '';
-    if (typeof date === 'string') return date; // Already in YYYY-MM-DD format
-    return formatarDataParaInput(new Date(date));
+    const dt = new Date(date).toISOString().split('T')[0];
+    console.log(dt);
+    return dt;
   }
 
-  function formatDateBrazilian(dateInput) {
-    if (!dateInput) return '-';
-    
-    let date;
-    if (typeof dateInput === 'string') {
-      // Handle YYYY-MM-DD format
-      if (dateInput.includes('-')) {
-        const [year, month, day] = dateInput.split('T')[0].split('-');
-        date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-      } else {
-        date = new Date(dateInput);
-      }
-    } else {
-      date = new Date(dateInput);
-    }
-    
-    if (isNaN(date.getTime())) return '-';
-    return formatarDataBrasileira(date);
-  }
-
-  // Business days calculation - COPIED FROM ORIGINAL
   function calcularDataComDiasUteis(dataInicial, diasUteis) {
     let data = new Date(dataInicial);
     let diasAdicionados = 0;
     
     while (diasAdicionados < diasUteis) {
       data.setDate(data.getDate() + 1);
-      
-      // Verificar se é dia útil (1=segunda, 2=terça, ..., 5=sexta)
       const diaSemana = data.getDay();
       if (diaSemana >= 1 && diaSemana <= 5) {
         diasAdicionados++;
@@ -101,26 +64,6 @@ const Contratos = () => {
     }
     
     return data;
-  }
-
-  // function calcularStatusContrato(contrato) {
-  //   const hoje = new Date();
-  //   const dataEntrega = contrato.data_entrega ? new Date(contrato.data_entrega + 'T00:00:00') : null;
-    
-  //   if (!dataEntrega) {
-  //     return 'Sem data de entrega';
-  //   } else if (dataEntrega < hoje) {
-  //     return 'Atrasado';
-  //   } else if (dataEntrega.toDateString() === hoje.toDateString()) {
-  //     return 'Entrega hoje';
-  //   } else {
-  //     return 'Em andamento';
-  //   }
-  // }
-
-  function adicionarDiasUteis(dataInicial, diasUteis) {
-    // Use the exact same function as original
-    return calcularDataComDiasUteis(dataInicial, diasUteis);
   }
 
   function showToast(message, type = 'info') {
@@ -300,7 +243,7 @@ const Contratos = () => {
     // Definir no campo de data de entrega
     setFormData(prev => ({
       ...prev,
-      data_entrega: formatarDataParaInput(dataFinal)
+      data_entrega: new Date(dataFinal).toISOString().split('T')[0]
     }));
 
     setShowDiasUteisModal(false);
@@ -381,12 +324,8 @@ const Contratos = () => {
       return;
     }
 
-    // Validate dates if both are provided - COPIED FROM ORIGINAL
     if (formData.data_venda && formData.data_entrega) {
-      const dataVenda = new Date(formData.data_venda + 'T00:00:00');
-      const dataEntrega = new Date(formData.data_entrega + 'T00:00:00');
-      
-      if (dataEntrega < dataVenda) {
+      if (formData.data_entrega < formData.data_venda) {
         showToast('A data de entrega não pode ser anterior à data da venda', 'error');
         return;
       }
@@ -452,17 +391,6 @@ const Contratos = () => {
       showToast('Erro ao excluir contrato: ' + error.message, 'error');
     }
   };
-
-  // Get status badge class
-  // const getStatusBadgeClass = (status) => {
-  //   switch (status) {
-  //     case 'Sem data de entrega': return 'bg-secondary';
-  //     case 'Atrasado': return 'bg-danger';
-  //     case 'Entrega hoje': return 'bg-warning';
-  //     case 'Em andamento': return 'bg-success';
-  //     default: return 'bg-info';
-  //   }
-  // };
 
   if (loading) {
     return (
@@ -596,13 +524,11 @@ const Contratos = () => {
                       type="date" 
                       className="form-control"
                       value={formData.data_venda}
-                      onChange={(e) => setFormData(prev => ({ ...prev, data_venda: e.target.value }))}
+                      onChange={(e) => {
+                        console.log('Data venda:', e.target.value);
+                        setFormData(prev => ({ ...prev, data_venda: e.target.value }));
+                      }}
                     />
-                    {formData.data_venda && (
-                      <div className="form-text">
-                        <i className="fas fa-calendar"></i> {new Date(formData.data_venda).toLocaleDateString('pt-BR')}
-                      </div>
-                    )}
                   </div>
 
                   <div className="mb-3">
@@ -623,11 +549,6 @@ const Contratos = () => {
                         <i className="fas fa-calendar-plus"></i> + Dias Úteis
                       </button>
                     </div>
-                    {formData.data_entrega && (
-                      <div className="form-text">
-                        <i className="fas fa-calendar"></i> {new Date(formData.data_entrega).toLocaleDateString('pt-BR')}
-                      </div>
-                    )}
                   </div>
 
                   <div className="mb-3">

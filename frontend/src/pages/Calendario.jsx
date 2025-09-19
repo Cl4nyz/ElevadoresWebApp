@@ -14,7 +14,7 @@ const Calendario = () => {
     todos: true,
     'Não iniciado': true,
     'Em produção': true,
-    'Pronto': true,
+    'Concluído': true,
     'Entregue': true
   });
   const [stats, setStats] = useState({
@@ -105,30 +105,14 @@ const Calendario = () => {
   };
 
   const getElevatorStatus = (elevador) => {
-    const hoje = new Date();
-    const dataEntrega = elevador.data_entrega ? new Date(elevador.data_entrega) : null;
-    
-    if (!dataEntrega) {
-      return 'Não iniciado';
-    } else if (dataEntrega < hoje) {
-      return 'Entregue';
-    } else {
-      const diasRestantes = Math.ceil((dataEntrega - hoje) / (1000 * 60 * 60 * 24));
-      if (diasRestantes <= 7) {
-        return 'Pronto';
-      } else if (diasRestantes <= 30) {
-        return 'Em produção';
-      } else {
-        return 'Não iniciado';
-      }
-    }
+    return elevador.status;
   };
 
   const getStatusColor = (status) => {
     const colors = {
       'Não iniciado': '#6c757d',
       'Em produção': '#ffc107',
-      'Pronto': '#28a745',
+      'Concluído': '#28a745',
       'Entregue': '#17a2b8'
     };
     return colors[status] || '#6c757d';
@@ -176,7 +160,7 @@ const Calendario = () => {
         todos: newValue,
         'Não iniciado': newValue,
         'Em produção': newValue,
-        'Pronto': newValue,
+        'Concluído': newValue,
         'Entregue': newValue
       });
     } else {
@@ -289,12 +273,12 @@ const Calendario = () => {
                     <input 
                       className="form-check-input" 
                       type="checkbox" 
-                      id="status-pronto"
-                      checked={filtros['Pronto']}
-                      onChange={() => handleFilterChange('Pronto')}
+                      id="status-concluido"
+                      checked={filtros['Concluído']}
+                      onChange={() => handleFilterChange('Concluído')}
                     />
-                    <label className="form-check-label" htmlFor="status-pronto">
-                      <span className="badge bg-success me-1">■</span>Pronto
+                    <label className="form-check-label" htmlFor="status-concluido">
+                      <span className="badge bg-success me-1">■</span>Concluído
                     </label>
                   </div>
                   

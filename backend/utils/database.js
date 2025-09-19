@@ -66,10 +66,7 @@ const parseDateSafe = (dateString) => {
 // Date range validation
 const validateDateRange = (dataInicio, dataFim) => {
   if (dataInicio && dataFim) {
-    const inicio = typeof dataInicio === 'string' ? parseDateSafe(dataInicio) : dataInicio;
-    const fim = typeof dataFim === 'string' ? parseDateSafe(dataFim) : dataFim;
-    
-    if (fim < inicio) {
+    if (new Date(dataFim) < new Date(dataInicio)) {
       throw new Error('Data de fim deve ser posterior à data de início');
     }
   }
