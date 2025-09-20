@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SortableTable from '../components/SortableTable';
 
 const Contratos = () => {
   const [contratos, setContratos] = useState([]);
@@ -392,6 +393,58 @@ const Contratos = () => {
     }
   };
 
+  // Define table columns
+  const columns = [
+    {
+      key: 'id',
+      label: 'ID'
+    },
+    {
+      key: 'cliente_nome',
+      label: 'Cliente',
+      render: (contrato) => contrato.cliente_nome || 'Cliente não encontrado'
+    },
+    {
+      key: 'data_venda',
+      label: 'Data da Venda',
+      type: 'date'
+    },
+    {
+      key: 'data_entrega',
+      label: 'Data Entrega',
+      type: 'date'
+    },
+    {
+      key: 'vendedor',
+      label: 'Vendedor'
+    }
+  ];
+
+  // Define table actions
+  const actions = [
+    {
+      icon: 'fas fa-eye',
+      className: 'btn btn-sm btn-outline-info',
+      title: 'Visualizar',
+      onClick: visualizarContrato
+    },
+    {
+      icon: 'fas fa-edit',
+      className: 'btn btn-sm btn-outline-primary',
+      title: 'Editar',
+      onClick: editarContrato
+    },
+    {
+      icon: 'fas fa-trash',
+      className: 'btn btn-sm btn-outline-danger',
+      title: 'Excluir',
+      onClick: (contrato) => excluirContrato(contrato.id)
+    }
+  ];
+
+  // Define searchable fields
+  const searchableFields = ['id', 'cliente_nome', 'vendedor'];
+
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{ height: '400px' }}>
@@ -415,62 +468,13 @@ const Contratos = () => {
       {/* Main Table Card */}
       <div className="card">
         <div className="card-body">
-          <div className="table-responsive">
-            <table className="table table-striped">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Cliente</th>
-                  <th>Data da Venda</th>
-                  <th>Data Entrega</th>
-                  <th>Vendedor</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {contratos.length === 0 ? (
-                  <tr>
-                    <td colSpan="7" className="text-center">Nenhum contrato encontrado</td>
-                  </tr>
-                ) : (
-                  contratos.map(contrato => (
-                    <tr key={contrato.id}>
-                      <td>{contrato.id}</td>
-                      <td>{contrato.cliente_nome || 'Cliente não encontrado'}</td>
-                      <td>{contrato.data_venda ? new Date(contrato.data_venda).toLocaleDateString('pt-BR') : '-'}</td>
-                      <td>{contrato.data_entrega ? new Date(contrato.data_entrega).toLocaleDateString('pt-BR') : '-'}</td>
-                      <td>{contrato.vendedor || '-'}</td>
-                      <td>
-                        <div className="btn-group" role="group">
-                          <button 
-                            className="btn btn-sm btn-outline-info"
-                            onClick={() => visualizarContrato(contrato)}
-                            title="Visualizar"
-                          >
-                            <i className="fas fa-eye"></i>
-                          </button>
-                          <button 
-                            className="btn btn-sm btn-outline-primary"
-                            onClick={() => editarContrato(contrato)}
-                            title="Editar"
-                          >
-                            <i className="fas fa-edit"></i>
-                          </button>
-                          <button 
-                            className="btn btn-sm btn-outline-danger"
-                            onClick={() => excluirContrato(contrato.id)}
-                            title="Excluir"
-                          >
-                            <i className="fas fa-trash"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+          <SortableTable
+            data={contratos}
+            columns={columns}
+            searchableFields={searchableFields}
+            actions={actions}
+            emptyMessage="Nenhum contrato encontrado"
+          />
         </div>
       </div>
 

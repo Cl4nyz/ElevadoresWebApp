@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { clientesApi } from '../services/api';
 import { handleFormDataChange, handleArrayFieldChange, addArrayItem, removeArrayItem } from '../utils/formUtils';
+import SortableTable from '../components/SortableTable';
 
 const Clientes = () => {
   const [clientes, setClientes] = useState([]);
@@ -111,6 +112,70 @@ const Clientes = () => {
     handleArrayFieldChange(formData, setFormData, 'enderecos', index, field, value);
   };
 
+  // Define table columns
+  const columns = [
+    {
+      key: 'nome',
+      label: 'Nome'
+    },
+    {
+      key: 'tipo',
+      label: 'Tipo',
+      render: (cliente) => (
+        <span className={`badge ${cliente.comercial ? 'bg-info' : 'bg-secondary'}`}>
+          {cliente.comercial ? 'Comercial' : 'Pessoa Física'}
+        </span>
+      )
+    },
+    {
+      key: 'documento',
+      label: 'CPF/CNPJ'
+    },
+    {
+      key: 'email',
+      label: 'Email'
+    },
+    {
+      key: 'enderecos',
+      label: 'Endereços',
+      sortable: false,
+      render: (cliente) => (
+        <div>
+          {cliente.enderecos?.map((endereco, index) => (
+            <div key={index} className="small">
+              {endereco.rua}, {endereco.numero} - {endereco.cidade}/{endereco.estado}
+            </div>
+          ))}
+        </div>
+      )
+    }
+  ];
+
+  // Define table actions
+  const actions = [
+    {
+      icon: 'fas fa-eye',
+      className: 'btn btn-sm btn-outline-info',
+      title: 'Visualizar',
+      onClick: handleVisualize
+    },
+    {
+      icon: 'fas fa-edit',
+      className: 'btn btn-sm btn-outline-primary',
+      title: 'Editar',
+      onClick: handleEdit
+    },
+    {
+      icon: 'fas fa-trash',
+      className: 'btn btn-sm btn-outline-danger',
+      title: 'Excluir',
+      onClick: (cliente) => handleDelete(cliente.id)
+    }
+  ];
+
+  // Define searchable fields
+  const searchableFields = ['nome', 'documento', 'email', 'enderecos.rua', 'enderecos.cidade', 'enderecos.estado'];
+
   if (loading) {
     return (
       <div className="text-center py-5">
@@ -132,73 +197,13 @@ const Clientes = () => {
 
       <div className="card">
         <div className="card-body">
-          {clientes.length === 0 ? (
-            <div className="text-center py-4">
-              <i className="fas fa-users fa-3x text-muted mb-3"></i>
-              <p className="text-muted">Nenhum cliente cadastrado</p>
-            </div>
-          ) : (
-            <div className="table-responsive">
-              <table className="table table-hover">
-                <thead>
-                  <tr>
-                    <th>Nome</th>
-                    <th>Tipo</th>
-                    <th>CPF/CNPJ</th>
-                    <th>Email</th>
-                    <th>Endereços</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {clientes.map((cliente) => (
-                    <tr key={cliente.id}>
-                      <td>{cliente.nome}</td>
-                      <td>
-                        <span className={`badge ${cliente.comercial ? 'bg-info' : 'bg-secondary'}`}>
-                          {cliente.comercial ? 'Comercial' : 'Pessoa Física'}
-                        </span>
-                      </td>
-                      <td>{cliente.documento}</td>
-                      <td>{cliente.email}</td>
-                      <td>
-                        {cliente.enderecos.map((endereco, index) => (
-                          <div key={index} className="small">
-                            {endereco.rua}, {endereco.numero} - {endereco.cidade}/{endereco.estado}
-                          </div>
-                        ))}
-                      </td>
-                      <td>
-                        <div className="btn-group" role="group">
-                          <button 
-                            className="btn btn-sm btn-outline-info"
-                            onClick={() => handleVisualize(cliente)}
-                            title="Visualizar"
-                          >
-                            <i className="fas fa-eye"></i>
-                          </button>
-                          <button 
-                            className="btn btn-sm btn-outline-primary" 
-                            onClick={() => handleEdit(cliente)}
-                            title="Editar"
-                          >
-                            <i className="fas fa-edit"></i>
-                          </button>
-                          <button 
-                            className="btn btn-sm btn-outline-danger" 
-                            onClick={() => handleDelete(cliente.id)}
-                            title="Excluir"
-                          >
-                            <i className="fas fa-trash"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+          <SortableTable
+            data={clientes}
+            columns={columns}
+            searchableFields={searchableFields}
+            actions={actions}
+            emptyMessage="Nenhum cliente cadastrado"
+          />
         </div>
       </div>
 

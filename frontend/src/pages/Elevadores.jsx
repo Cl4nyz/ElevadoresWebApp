@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { elevadoresApi, contratosApi, clientesApi } from '../services/api';
 import { handleFormDataChange as utilHandleFormDataChange } from '../utils/formUtils';
+import SortableTable from '../components/SortableTable';
 import '../styles/elevadores.css'
 
 const Elevadores = () => {
@@ -14,8 +15,6 @@ const Elevadores = () => {
   const [showSelecionarContratoModal, setShowSelecionarContratoModal] = useState(false);
   const [editingElevador, setEditingElevador] = useState(null);
   const [visualizandoElevador, setVisualizandoElevador] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filteredElevadores, setFilteredElevadores] = useState([]);
   const [corCustomMode, setCorCustomMode] = useState(false);
   const [pisoCustomMode, setPisoCustomMode] = useState(false);
   const navigate = useNavigate();
@@ -59,29 +58,6 @@ const Elevadores = () => {
   useEffect(() => {
     carregarDados();
   }, []);
-
-  // Hook para filtrar elevadores
-  useEffect(() => {
-    if (!searchTerm) {
-      setFilteredElevadores(elevadores);
-    } else {
-      const filtered = elevadores.filter(elevador => {
-        const contrato = contratos.find(c => c.id === elevador.id_contrato);
-        const cliente = contrato ? clientes.find(c => c.id === contrato.id_cliente) : null;
-        const clienteNome = cliente ? cliente.nome : elevador.cliente_nome || '';
-        
-        return (
-          clienteNome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          elevador.id.toString().includes(searchTerm) ||
-          elevador.id_contrato.toString().includes(searchTerm) ||
-          (elevador.cor || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-          (elevador.status || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-          (elevador.comando || '').toLowerCase().includes(searchTerm.toLowerCase())
-        );
-      });
-      setFilteredElevadores(filtered);
-    }
-  }, [searchTerm, elevadores, contratos, clientes]);
 
   useEffect(() => {
     const handleEscKey = (event) => {
@@ -609,6 +585,128 @@ const Elevadores = () => {
     );
   }
 
+  // Define table columns
+  const columns = [
+    {
+      key: 'id',
+      label: 'ID'
+    },
+    {
+      key: 'cliente_nome',
+      label: 'Cliente',
+      render: (elevador) => {
+        const contrato = contratos.find(c => c.id === elevador.id_contrato);
+        const cliente = contrato ? clientes.find(c => c.id === contrato.id_cliente) : null;
+        return cliente ? cliente.nome : elevador.cliente_nome || (
+          <span className="badge bg-secondary">N/A</span>
+        );
+      }
+    },
+    {
+      key: 'id_contrato',
+      label: 'Contrato',
+      render: (elevador) => `#${elevador.id_contrato}`
+    },
+    {
+      key: 'comando',
+      label: 'Comando',
+      render: (elevador) => elevador.comando || <span className="badge bg-secondary">N/A</span>
+    },
+    {
+      key: 'cabine_descricao',
+      label: 'Cabine (A×L×P)',
+      sortable: false,
+      render: (elevador) => {
+        const cabineDesc = elevador.cabine ? 
+          `${elevador.cabine.altura || '?'}×${elevador.cabine.largura || '?'}×${elevador.cabine.profundidade || '?'}mm` : 
+          'N/A';
+        return cabineDesc === 'N/A' ? <span className="badge bg-secondary">N/A</span> : cabineDesc;
+      }
+    },
+    {
+      key: 'elevacao',
+      label: 'Elevação',
+      render: (elevador) => {
+        return elevador.coluna?.elevacao
+          ? `${elevador.coluna.elevacao}mm`
+          : <span className="badge bg-secondary">N/A</span>;
+      }
+    },
+    {
+      key: 'cor',
+      label: 'Cor',
+      render: (elevador) => {
+        return elevador.cor ? (
+          <span 
+            className="badge"
+            style={{ 
+              backgroundColor: elevador.cor.toLowerCase(),
+              color: elevador.cor.toLowerCase() === 'white' || elevador.cor.toLowerCase() === 'branco' ? 'black' : 'white'
+            }}
+          >
+            {elevador.cor}
+          </span>
+        ) : <span className="badge bg-secondary">N/A</span>;
+      }
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      render: (elevador) => (
+        <span className={`badge ${obterCorStatus(elevador.status)}`}>
+          {elevador.status || 'N/A'}
+        </span>
+      )
+    },
+    {
+      key: 'data_entrega',
+      label: 'Data Entrega',
+      type: 'date'
+    }
+  ];
+
+  // Define table actions
+  const actions = [
+    {
+      icon: 'fas fa-eye',
+      className: 'btn btn-sm btn-outline-info',
+      title: 'Visualizar',
+      onClick: visualizarElevador
+    },
+    {
+      icon: 'fas fa-edit',
+      className: 'btn btn-sm btn-outline-primary',
+      title: 'Editar',
+      onClick: editarElevador
+    },
+    {
+      icon: 'fas fa-file-pdf',
+      className: 'btn btn-sm btn-outline-info',
+      title: 'Visualizar PDF',
+      onClick: (elevador) => navigate(`/elevadores/${elevador.id}/pdf`)
+    },
+    {
+      icon: 'fas fa-trash',
+      className: 'btn btn-sm btn-outline-danger',
+      title: 'Excluir',
+      onClick: (elevador) => excluirElevador(elevador.id)
+    }
+  ];
+
+  // Define searchable fields (preserve existing search behavior)
+  const searchableFields = ['id', 'cliente_nome', 'id_contrato', 'cor', 'status', 'comando'];
+
+  const enrichedElevadores = elevadores.map(elevador => {
+    const contrato = contratos.find(c => c.id === elevador.id_contrato);
+    const cliente = contrato ? clientes.find(c => c.id === contrato.id_cliente) : null;
+    
+    return {
+      ...elevador,
+      cliente_nome: cliente ? cliente.nome : 'Cliente não encontrado',
+      data_entrega: contrato ? contrato.data_entrega : null
+    };
+  });
+
   return (
     <div className="container-fluid">
       {/* Header */}
@@ -622,136 +720,13 @@ const Elevadores = () => {
       {/* Card Principal */}
       <div className="card">
         <div className="card-body">
-          {/* Busca */}
-          <div className="row mb-3">
-            <div className="col-md-6">
-              <div className="input-group">
-                <span className="input-group-text">
-                  <i className="fas fa-search"></i>
-                </span>
-                <input 
-                  type="text" 
-                  className="form-control" 
-                  placeholder="Buscar por cliente, contrato, cabine, cor ou status..." 
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Tabela */}
-          <div className="table-responsive">
-            <table className="table table-striped">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Cliente</th>
-                  <th>Contrato</th>
-                  <th>Comando</th>
-                  <th>Cabine (A×L×P)</th>
-                  <th>Elevação</th>
-                  <th>Cor</th>
-                  <th>Status</th>
-                  <th>Data Entrega</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredElevadores.length === 0 ? (
-                  <tr>
-                    <td colSpan="10" className="text-center">
-                      {elevadores.length === 0 ? 'Nenhum elevador cadastrado' : 'Nenhum elevador encontrado'}
-                    </td>
-                  </tr>
-                ) : (
-                  filteredElevadores.map(elevador => {
-                    const contrato = contratos.find(c => c.id === elevador.id_contrato);
-                    const cliente = contrato ? clientes.find(c => c.id === contrato.id_cliente) : null;
-                    const cabineDesc = elevador.cabine ? 
-                      `${elevador.cabine.altura || '?'}×${elevador.cabine.largura || '?'}×${elevador.cabine.profundidade || '?'}mm` : 
-                      'N/A';
-                    
-                    return (
-                      <tr key={elevador.id}>
-                      <td>{elevador.id}</td>
-                      <td>
-                        {cliente ? cliente.nome : elevador.cliente_nome || (
-                        <span className="badge bg-secondary">N/A</span>
-                        )}
-                      </td>
-                      <td>#{elevador.id_contrato}</td>
-                      <td>{elevador.comando || <span className="badge bg-secondary">N/A</span>}</td>
-                      <td>{cabineDesc === 'N/A' ? <span className="badge bg-secondary">N/A</span> : cabineDesc}</td>
-                      <td>
-                        {elevador.coluna?.elevacao
-                        ? `${elevador.coluna.elevacao}mm`
-                        : <span className="badge bg-secondary">N/A</span>
-                        }
-                      </td>
-                      <td>
-                        {elevador.cor ? (
-                        <span 
-                          style={{ 
-                          backgroundColor: elevador.cor.toLowerCase(),
-                          color: 'black'
-                          }}
-                        >
-                          {elevador.cor}
-                        </span>
-                        ) : <span className="badge bg-secondary">N/A</span>}
-                      </td>
-                      <td>
-                        <span className={`badge ${obterCorStatus(elevador.status)}`}>
-                        {elevador.status || 'Não iniciado'}
-                        </span>
-                      </td>
-                      <td>
-                        {contrato && contrato.data_entrega
-                        ? formatarData(contrato.data_entrega)
-                        : <span className="badge bg-secondary">N/A</span>
-                        }
-                      </td>
-                      <td>
-                        <div className="btn-group" role="group">
-                          <button 
-                            className="btn btn-sm btn-outline-primary"
-                            onClick={() => visualizarElevador(elevador)}
-                            title="Visualizar"
-                          >
-                            <i className="fas fa-eye"></i>
-                          </button>
-                          <button 
-                            className="btn btn-sm btn-outline-warning"
-                            onClick={() => editarElevador(elevador)}
-                            title="Editar"
-                          >
-                            <i className="fas fa-edit"></i>
-                          </button>
-                          {/* ADD PDF BUTTON HERE */}
-                          <button
-                            className="btn btn-outline-info btn-sm"
-                            title="Visualizar PDF"
-                            onClick={() => navigate(`/elevadores/${elevador.id}/pdf`)}
-                          >
-                            <i className="fas fa-file-pdf"></i>
-                          </button>
-                          <button 
-                            className="btn btn-sm btn-outline-danger"
-                            onClick={() => excluirElevador(elevador.id)}
-                            title="Excluir"
-                          >
-                            <i className="fas fa-trash"></i>
-                          </button>
-                        </div>
-                      </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
+          <SortableTable
+            data={enrichedElevadores}
+            columns={columns}
+            searchableFields={searchableFields}
+            actions={actions}
+            emptyMessage="Nenhum elevador cadastrado"
+          />
         </div>
       </div>
 
