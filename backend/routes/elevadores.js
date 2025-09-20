@@ -111,6 +111,115 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Add this route to your elevadores.js file:
+
+// GET /api/elevadores/:id - Get single elevator by ID
+router.get('/:id', async (req, res) => {
+  const elevadorId = parseInt(req.params.id);
+  
+  try {
+    // Get elevator with related data
+    const elevador = await queryOne(`
+      SELECT e.*, 
+             c.data_venda, c.data_entrega,
+             cl.id as cliente_id, cl.nome as cliente_nome, cl.comercial, cl.documento, cl.email
+      FROM elevador e
+      LEFT JOIN contrato c ON e.id_contrato = c.id
+      LEFT JOIN cliente cl ON c.id_cliente = cl.id
+      WHERE e.id = $1
+    `, [elevadorId]);
+    
+    if (!elevador) {
+      return res.status(404).json({ error: 'Elevador não encontrado' });
+    }
+    
+    // Get cabine data
+    const cabineData = await queryOne(`
+      SELECT altura, largura, profundidade, piso, montada, 
+             lado_entrada, lado_saida
+      FROM cabine WHERE id_elevador = $1
+    `, [elevadorId]);
+    
+    // Get coluna data
+    const colunaData = await queryOne(`
+      SELECT elevacao, montada
+      FROM coluna WHERE id_elevador = $1
+    `, [elevadorId]);
+    
+    // Get adicionais data
+    const adicionaisData = await queryOne(`
+      SELECT cancela, porta, portao, barreira_eletronica,
+             lados_enclausuramento, sensor_esmagamento,
+             rampa_acesso, nobreak, galvanizada
+      FROM adicionais WHERE id_elevador = $1
+    `, [elevadorId]);
+    
+    // Get client addresses
+    const enderecos = await queryMany(`
+      SELECT en.*, est.sigla as estado_sigla, est.nome as estado_nome
+      FROM endereco en
+      LEFT JOIN estado est ON en.estado = est.sigla
+      WHERE en.id_cliente = $1
+    `, [elevador.cliente_id]);
+    
+    // Structure the response to match PDF expectations
+    const response = {
+      id: elevador.id,
+      id_contrato: elevador.id_contrato,
+      comando: elevador.comando,
+      observacao: elevador.observacao,
+      porta_inferior: elevador.porta_inferior,
+      porta_superior: elevador.porta_superior,
+      cor: elevador.cor,
+      status: elevador.status,
+      cabine: cabineData ? {
+        altura: cabineData.altura,
+        largura: cabineData.largura,
+        profundidade: cabineData.profundidade,
+        piso: cabineData.piso,
+        montada: cabineData.montada || false,
+        lado_entrada: cabineData.lado_entrada,
+        lado_saida: cabineData.lado_saida
+      } : null,
+      coluna: colunaData ? {
+        elevacao: colunaData.elevacao,
+        montada: colunaData.montada || false
+      } : null,
+      adicionais: adicionaisData ? {
+        cancela: adicionaisData.cancela || 0,
+        porta: adicionaisData.porta || 0,
+        portao: adicionaisData.portao || 0,
+        barreira_eletronica: adicionaisData.barreira_eletronica || 0,
+        lados_enclausuramento: adicionaisData.lados_enclausuramento || 0,
+        sensor_esmagamento: adicionaisData.sensor_esmagamento || 0,
+        rampa_acesso: adicionaisData.rampa_acesso || 0,
+        nobreak: adicionaisData.nobreak || 0,
+        galvanizada: adicionaisData.galvanizada || false
+      } : null,
+      cliente: {
+        id: elevador.cliente_id,
+        nome: elevador.cliente_nome,
+        comercial: elevador.comercial,
+        documento: elevador.documento,
+        email: elevador.email,
+        enderecos: enderecos
+      },
+      contrato: {
+        id: elevador.id_contrato,
+        data_venda: elevador.data_venda,
+        data_entrega: elevador.data_entrega,
+        valor_total: elevador.valor_total,
+        observacao: elevador.contrato_observacao
+      }
+    };
+    
+    res.json(response);
+  } catch (error) {
+    console.error('Error getting elevator:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // POST /api/elevadores - Create new elevator
 router.post('/', async (req, res) => {
   try {

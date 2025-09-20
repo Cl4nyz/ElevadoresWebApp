@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import ElevatorPDF from '../components/ElevatorPDF';
+import { elevadoresApi, contratosApi, clientesApi } from '../services/api';
 import '../styles/elevadores.css'
 
 const Elevadores = () => {
@@ -165,10 +164,8 @@ const Elevadores = () => {
 
   const carregarElevadores = async () => {
     try {
-      const response = await fetch('/api/elevadores');
-      if (!response.ok) throw new Error('Erro ao carregar elevadores');
-      const data = await response.json();
-      setElevadores(data);
+      const response = await elevadoresApi.getAll();
+      setElevadores(response.data);
     } catch (error) {
       console.error('Erro ao carregar elevadores:', error);
       throw error;
@@ -177,10 +174,8 @@ const Elevadores = () => {
 
   const carregarContratos = async () => {
     try {
-      const response = await fetch('/api/contratos');
-      if (!response.ok) throw new Error('Erro ao carregar contratos');
-      const data = await response.json();
-      setContratos(data);
+      const response = await contratosApi.getAll();
+      setContratos(response.data);
     } catch (error) {
       console.error('Erro ao carregar contratos:', error);
       throw error;
@@ -189,10 +184,8 @@ const Elevadores = () => {
 
   const carregarClientes = async () => {
     try {
-      const response = await fetch('/api/clientes');
-      if (!response.ok) throw new Error('Erro ao carregar clientes');
-      const data = await response.json();
-      setClientes(data);
+      const response = await clientesApi.getAll();
+      setClientes(response.data);
     } catch (error) {
       console.error('Erro ao carregar clientes:', error);
       throw error;
@@ -323,23 +316,17 @@ const Elevadores = () => {
         return;
       }
 
-      const url = editingElevador 
-        ? `/api/elevadores/${editingElevador.id}`
-        : '/api/elevadores';
+      //const url = editingElevador 
+      //  ? `/api/elevadores/${editingElevador.id}`
+      //  : '/api/elevadores';
+
       
-      const method = editingElevador ? 'PUT' : 'POST';
       
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Erro ao salvar elevador');
+
+      if (editingElevador) {
+        await elevadoresApi.update(editingElevador.id, formData);
+      } else {
+        await elevadoresApi.create(formData);
       }
       
       showToast(
@@ -361,15 +348,7 @@ const Elevadores = () => {
     }
     
     try {
-      const response = await fetch(`/api/elevadores/${elevadorId}`, {
-        method: 'DELETE'
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Erro ao excluir elevador');
-      }
-      
+      await elevadoresApi.delete(elevadorId);      
       showToast('Elevador excluído com sucesso!', 'success');
       await carregarElevadores();
     } catch (error) {

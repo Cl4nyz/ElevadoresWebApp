@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
+import { elevadoresApi } from '../services/api';
 import ElevatorPDF from '../components/ElevatorPDF';
 
 const ElevatorPDFPreview = () => {
@@ -18,15 +19,11 @@ const ElevatorPDFPreview = () => {
 		setLoading(true);
 		
 		// Load elevator data with all related info
-		const elevadorResponse = await fetch(`/api/elevadores/${id}`);
-		if (!elevadorResponse.ok) {
-			throw new Error('Elevador não encontrado');
-		}
-		const elevadorData = await elevadorResponse.json();
+		const response = await elevadoresApi.getById(id);
 		
-		setElevador(elevadorData);
-		setCliente(elevadorData.cliente);
-		setContrato(elevadorData.contrato);
+		setElevador(response.data);
+		setCliente(response.data.cliente);
+		setContrato(response.data.contrato);
 		
 		} catch (err) {
 		setError(err.message);
