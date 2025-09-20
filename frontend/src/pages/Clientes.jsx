@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { clientesApi } from '../services/api';
+import { handleFormDataChange, handleArrayFieldChange, addArrayItem, removeArrayItem } from '../utils/formUtils';
 
 const Clientes = () => {
   const [clientes, setClientes] = useState([]);
@@ -99,21 +100,15 @@ const Clientes = () => {
   };
 
   const addEndereco = () => {
-    setFormData({
-      ...formData,
-      enderecos: [...formData.enderecos, { rua: '', numero: '', cidade: '', estado: '', complemento: '', cep: '' }]
-    });
+    addArrayItem(formData, setFormData, 'enderecos', { rua: '', numero: '', cidade: '', estado: '', complemento: '', cep: '' });
   };
 
   const removeEndereco = (index) => {
-    const newEnderecos = formData.enderecos.filter((_, i) => i !== index);
-    setFormData({ ...formData, enderecos: newEnderecos });
+    removeArrayItem(formData, setFormData, 'enderecos', index);
   };
 
   const updateEndereco = (index, field, value) => {
-    const newEnderecos = [...formData.enderecos];
-    newEnderecos[index] = { ...newEnderecos[index], [field]: value };
-    setFormData({ ...formData, enderecos: newEnderecos });
+    handleArrayFieldChange(formData, setFormData, 'enderecos', index, field, value);
   };
 
   if (loading) {
@@ -232,7 +227,7 @@ const Clientes = () => {
                           type="text"
                           className="form-control"
                           value={formData.nome}
-                          onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+                          onChange={(e) => handleFormDataChange(formData, setFormData, null, 'nome', e.target.value)}
                           required
                         />
                       </div>
@@ -244,7 +239,7 @@ const Clientes = () => {
                           type="email"
                           className="form-control"
                           value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          onChange={(e) => handleFormDataChange(formData, setFormData, null, 'email', e.target.value)}
                         />
                       </div>
                     </div>
@@ -258,7 +253,7 @@ const Clientes = () => {
                             className="form-check-input"
                             type="checkbox"
                             checked={formData.comercial}
-                            onChange={(e) => setFormData({ ...formData, comercial: e.target.checked })}
+                            onChange={(e) => handleFormDataChange(formData, setFormData, null, 'comercial', e.target.checked)}
                           />
                           <label className="form-check-label">
                             Comercial (CNPJ)
@@ -275,7 +270,7 @@ const Clientes = () => {
                           type="text"
                           className="form-control"
                           value={formData.documento}
-                          onChange={(e) => setFormData({ ...formData, documento: e.target.value })}
+                          onChange={(e) => handleFormDataChange(formData, setFormData, null, 'documento', e.target.value)}
                           maxLength={formData.comercial ? 14 : 11}
                         />
                       </div>
@@ -340,13 +335,40 @@ const Clientes = () => {
                         <div className="col-md-3">
                           <div className="mb-3">
                             <label className="form-label">Estado</label>
-                            <input
-                              type="text"
-                              className="form-control"
+                            <select
+                              className="form-select"
                               value={endereco.estado}
                               onChange={(e) => updateEndereco(index, 'estado', e.target.value)}
-                              maxLength={2}
-                            />
+                            >
+                              <option value="">Selecione...</option>
+                              <option value="AC">AC - Acre</option>
+                              <option value="AL">AL - Alagoas</option>
+                              <option value="AP">AP - Amapá</option>
+                              <option value="AM">AM - Amazonas</option>
+                              <option value="BA">BA - Bahia</option>
+                              <option value="CE">CE - Ceará</option>
+                              <option value="DF">DF - Distrito Federal</option>
+                              <option value="ES">ES - Espírito Santo</option>
+                              <option value="GO">GO - Goiás</option>
+                              <option value="MA">MA - Maranhão</option>
+                              <option value="MT">MT - Mato Grosso</option>
+                              <option value="MS">MS - Mato Grosso do Sul</option>
+                              <option value="MG">MG - Minas Gerais</option>
+                              <option value="PA">PA - Pará</option>
+                              <option value="PB">PB - Paraíba</option>
+                              <option value="PR">PR - Paraná</option>
+                              <option value="PE">PE - Pernambuco</option>
+                              <option value="PI">PI - Piauí</option>
+                              <option value="RJ">RJ - Rio de Janeiro</option>
+                              <option value="RN">RN - Rio Grande do Norte</option>
+                              <option value="RS">RS - Rio Grande do Sul</option>
+                              <option value="RO">RO - Rondônia</option>
+                              <option value="RR">RR - Roraima</option>
+                              <option value="SC">SC - Santa Catarina</option>
+                              <option value="SP">SP - São Paulo</option>
+                              <option value="SE">SE - Sergipe</option>
+                              <option value="TO">TO - Tocantins</option>
+                            </select>
                           </div>
                         </div>
                         <div className="col-md-3">

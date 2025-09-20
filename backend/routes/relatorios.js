@@ -127,8 +127,7 @@ router.get('/resumo', async (req, res) => {
     const estadosTop = await queryMany(`
       SELECT e.estado, COUNT(DISTINCT c.id) as contratos
       FROM contrato c
-      LEFT JOIN cliente cl ON c.id_cliente = cl.id
-      LEFT JOIN endereco e ON cl.id = e.id_cliente
+      LEFT JOIN endereco e ON e.id_cliente = c.id_cliente
       WHERE e.estado IS NOT NULL
       GROUP BY e.estado
       ORDER BY contratos DESC

@@ -134,7 +134,7 @@ router.post('/', async (req, res) => {
         id_cliente,
         data_venda,
         data_entrega,
-        vendedor || 'Sistema' // Use provided vendedor or default to 'Sistema'
+        vendedor || '-'
       ]
     );
 
@@ -196,7 +196,7 @@ router.put('/:id', async (req, res) => {
         id_cliente,
         parsedDataVenda,
         parsedDataEntrega,
-        vendedor || 'Sistema', // Use provided vendedor or default to 'Sistema'
+        vendedor || '-',
         contratoId
       ]
     );

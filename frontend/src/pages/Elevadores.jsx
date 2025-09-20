@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { elevadoresApi, contratosApi, clientesApi } from '../services/api';
+import { handleFormDataChange as utilHandleFormDataChange } from '../utils/formUtils';
 import '../styles/elevadores.css'
 
 const Elevadores = () => {
@@ -358,20 +359,7 @@ const Elevadores = () => {
   };
 
   const handleFormDataChange = (section, field, value) => {
-    if (section) {
-      setFormData(prev => ({
-        ...prev,
-        [section]: {
-          ...prev[section],
-          [field]: value
-        }
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [field]: value
-      }));
-    }
+    utilHandleFormDataChange(formData, setFormData, section, field, value);
   };
 
   const toggleCorCustom = () => {

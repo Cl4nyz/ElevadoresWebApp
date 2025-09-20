@@ -73,29 +73,6 @@ const Relatorios = () => {
             </div>
           </div>
 
-          {/* Status dos Elevadores
-          <div className="col-md-6 d-flex justify-content-center">
-            <div className="card h-100 w-100" style={{ maxWidth: 400 }}>
-              <div className="card-header text-center">
-                <h6 className="mb-0">Elevadores por Status</h6>
-              </div>
-              <div className="card-body">
-                {resumo.elevadores_por_status.length === 0 ? (
-                  <p className="text-muted text-center">Nenhum dado disponível</p>
-                ) : (
-                  <div>
-                    {resumo.elevadores_por_status.map((item, index) => (
-                      <div key={index} className="d-flex justify-content-between align-items-center mb-2">
-                        <span>{item.status || 'Sem status'}</span>
-                        <span className="badge bg-primary">{item.quantidade}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div> */}
-
           {/* Top Estados */}
           <div className="col-md-6 d-flex justify-content-center">
             <div className="card h-100 w-100" style={{ maxWidth: 900 }}>

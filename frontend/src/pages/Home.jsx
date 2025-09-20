@@ -213,7 +213,6 @@ const Home = () => {
                     {systemInfo && (
                       <ul className="list-unstyled">
                         <li><strong>Nome:</strong> {systemInfo.nome}</li>
-                        <li><strong>Versão:</strong> {systemInfo.versao}</li>
                         <li><strong>Tecnologia:</strong> {systemInfo.tecnologia}</li>
                         <li><strong>Ambiente:</strong> {systemInfo.ambiente}</li>
                       </ul>
