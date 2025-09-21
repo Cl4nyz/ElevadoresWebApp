@@ -177,18 +177,41 @@ const Calendario = () => {
     }
   };
 
+  // ...existing code...
+  // ...existing code...
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
+    
+    // Destroy the current calendar instance
+    if (calendar) {
+      calendar.destroy();
+    }
+    
+    // Reinitialize the calendar after the DOM update
     setTimeout(() => {
-      if (calendar) {
-        calendar.updateSize();
-      }
+      initializeCalendar();
     }, 100);
   };
 
+  // Add effect to reinitialize calendar when fullscreen changes
+  useEffect(() => {
+    if (calendar) {
+      // Apply current events to the new calendar instance
+      calendar.removeAllEvents();
+      const filteredEvents = eventos.filter(evento => {
+        if (filtros.todos) return true;
+        return filtros[evento.extendedProps.status] || false;
+      });
+      calendar.addEventSource(filteredEvents);
+    }
+  }, [calendar]);
+
   return (
-    <div className={isFullscreen ? 'position-fixed top-0 start-0 w-100 h-100 bg-white p-3' : ''} 
-         style={{ zIndex: isFullscreen ? 9999 : 'auto' }}>
+    <div className={isFullscreen ? 'position-fixed top-0 start-0 w-100 h-100 bg-white' : ''} 
+         style={{ 
+           zIndex: isFullscreen ? 9999 : 'auto',
+           padding: isFullscreen ? '20px' : '0'
+         }}>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2><i className="fas fa-calendar me-2"></i>Calendário de Entregas - Elevadores</h2>
         <div className="d-flex gap-2">
@@ -212,9 +235,9 @@ const Calendario = () => {
 
       <div className="row">
         <div className={isFullscreen ? 'col-12' : 'col-md-9'}>
-          <div className="card">
+          <div className="card" style={{ height: isFullscreen ? 'calc(100vh - 120px)' : 'auto' }}>
             <div className="card-body">
-              <div ref={calendarRef}></div>
+              <div ref={calendarRef} style={{ height: isFullscreen ? '100%' : 'auto' }}></div>
             </div>
           </div>
         </div>
