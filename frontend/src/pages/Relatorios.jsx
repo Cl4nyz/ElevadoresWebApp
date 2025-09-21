@@ -84,7 +84,7 @@ const Relatorios = () => {
                   <p className="text-muted text-center">Nenhum dado disponível</p>
                 ) : (
                   <div>
-                    {resumo.estados_top.slice(0, 10).map((item, index) => (
+                    {resumo.estados_top.slice().map((item, index) => (
                       <div key={index} className="d-flex justify-content-between align-items-center mb-2">
                         <span>{item.estado}</span>
                         <span className="badge bg-success">{item.contratos}</span>

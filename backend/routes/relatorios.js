@@ -131,7 +131,6 @@ router.get('/resumo', async (req, res) => {
       WHERE e.estado IS NOT NULL
       GROUP BY e.estado
       ORDER BY contratos DESC
-      LIMIT 10
     `);
 
     const result = {
