@@ -227,7 +227,7 @@ router.delete('/:id', async (req, res) => {
 
     // Check if client has elevators
     const elevadores = await queryMany(
-      'SELECT id FROM elevador WHERE id_cliente = $1',
+      'SELECT e.id FROM elevador e LEFT JOIN contrato c ON id_contrato = c.id WHERE c.id_cliente = $1',
       [clienteId]
     );
 

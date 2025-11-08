@@ -14,8 +14,8 @@ router.get('/', async (req, res) => {
 
     res.json(contratos.map(row => ({
       id: row.id,
-      data_venda: row.data_venda ? row.data_venda.toISOString().split('T')[0] + 'T00:00:00.000Z' : null,
-      data_entrega: row.data_entrega ? row.data_entrega.toISOString().split('T')[0] + 'T00:00:00.000Z' : null,
+      data_venda: row.data_venda ? row.data_venda : null,
+      data_entrega: row.data_entrega ? row.data_entrega : null,
       id_cliente: row.id_cliente,
       cliente_nome: row.nome,
       vendedor: row.vendedor
@@ -58,8 +58,8 @@ router.get('/:id', async (req, res) => {
 
     const result = {
       ...contrato,
-      data_venda: contrato.data_venda?.toISOString?.()?.split('T')[0],
-      data_entrega: contrato.data_entrega?.toISOString?.()?.split('T')[0],
+      data_venda: contrato.data_venda,
+      data_entrega: contrato.data_entrega,
       elevadores: elevadores.map(elev => ({
         id: elev.id,
         comando: elev.comando,
@@ -132,9 +132,9 @@ router.post('/', async (req, res) => {
        VALUES ($1, $2, $3, $4) RETURNING id`,
       [
         id_cliente,
-        parsedDataVenda,
-        parsedDataEntrega,
-        vendedor || 'Sistema' // Use provided vendedor or default to 'Sistema'
+        data_venda,
+        data_entrega,
+        vendedor || '-'
       ]
     );
 
@@ -196,7 +196,7 @@ router.put('/:id', async (req, res) => {
         id_cliente,
         parsedDataVenda,
         parsedDataEntrega,
-        vendedor || 'Sistema', // Use provided vendedor or default to 'Sistema'
+        vendedor || '-',
         contratoId
       ]
     );

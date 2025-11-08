@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { clientesApi } from '../services/api';
+import { handleFormDataChange, handleArrayFieldChange, addArrayItem, removeArrayItem } from '../utils/formUtils';
+import SortableTable from '../components/SortableTable';
 
 const Clientes = () => {
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showVisualizarModal, setShowVisualizarModal] = useState(false);
   const [editingCliente, setEditingCliente] = useState(null);
+  const [visualizandoCliente, setVisualizandoCliente] = useState(null);
   const [formData, setFormData] = useState({
     nome: '',
     comercial: false,
@@ -41,6 +45,16 @@ const Clientes = () => {
       enderecos: cliente.enderecos.length > 0 ? cliente.enderecos : [{ rua: '', numero: '', cidade: '', estado: '', complemento: '', cep: '' }]
     });
     setShowModal(true);
+  };
+
+  const handleVisualize = (cliente) => {
+    setVisualizandoCliente(cliente);
+    setShowVisualizarModal(true);
+  };
+
+  const editarClienteFromView = () => {
+    setShowVisualizarModal(false);
+    handleEdit(visualizandoCliente);
   };
 
   const handleCreate = () => {
@@ -87,22 +101,80 @@ const Clientes = () => {
   };
 
   const addEndereco = () => {
-    setFormData({
-      ...formData,
-      enderecos: [...formData.enderecos, { rua: '', numero: '', cidade: '', estado: '', complemento: '', cep: '' }]
-    });
+    addArrayItem(formData, setFormData, 'enderecos', { rua: '', numero: '', cidade: '', estado: '', complemento: '', cep: '' });
   };
 
   const removeEndereco = (index) => {
-    const newEnderecos = formData.enderecos.filter((_, i) => i !== index);
-    setFormData({ ...formData, enderecos: newEnderecos });
+    removeArrayItem(formData, setFormData, 'enderecos', index);
   };
 
   const updateEndereco = (index, field, value) => {
-    const newEnderecos = [...formData.enderecos];
-    newEnderecos[index] = { ...newEnderecos[index], [field]: value };
-    setFormData({ ...formData, enderecos: newEnderecos });
+    handleArrayFieldChange(formData, setFormData, 'enderecos', index, field, value);
   };
+
+  // Define table columns
+  const columns = [
+    {
+      key: 'nome',
+      label: 'Nome'
+    },
+    {
+      key: 'tipo',
+      label: 'Tipo',
+      render: (cliente) => (
+        <span className={`badge ${cliente.comercial ? 'bg-info' : 'bg-secondary'}`}>
+          {cliente.comercial ? 'Comercial' : 'Pessoa Física'}
+        </span>
+      )
+    },
+    {
+      key: 'documento',
+      label: 'CPF/CNPJ'
+    },
+    {
+      key: 'email',
+      label: 'Email'
+    },
+    {
+      key: 'enderecos',
+      label: 'Endereços',
+      sortable: false,
+      render: (cliente) => (
+        <div>
+          {cliente.enderecos?.map((endereco, index) => (
+            <div key={index} className="small">
+              {endereco.rua}, {endereco.numero} - {endereco.cidade}/{endereco.estado}
+            </div>
+          ))}
+        </div>
+      )
+    }
+  ];
+
+  // Define table actions
+  const actions = [
+    {
+      icon: 'fas fa-eye',
+      className: 'btn btn-sm btn-outline-info',
+      title: 'Visualizar',
+      onClick: handleVisualize
+    },
+    {
+      icon: 'fas fa-edit',
+      className: 'btn btn-sm btn-outline-primary',
+      title: 'Editar',
+      onClick: handleEdit
+    },
+    {
+      icon: 'fas fa-trash',
+      className: 'btn btn-sm btn-outline-danger',
+      title: 'Excluir',
+      onClick: (cliente) => handleDelete(cliente.id)
+    }
+  ];
+
+  // Define searchable fields
+  const searchableFields = ['nome', 'documento', 'email', 'enderecos.rua', 'enderecos.cidade', 'enderecos.estado'];
 
   if (loading) {
     return (
@@ -125,66 +197,17 @@ const Clientes = () => {
 
       <div className="card">
         <div className="card-body">
-          {clientes.length === 0 ? (
-            <div className="text-center py-4">
-              <i className="fas fa-users fa-3x text-muted mb-3"></i>
-              <p className="text-muted">Nenhum cliente cadastrado</p>
-            </div>
-          ) : (
-            <div className="table-responsive">
-              <table className="table table-hover">
-                <thead>
-                  <tr>
-                    <th>Nome</th>
-                    <th>Tipo</th>
-                    <th>Documento</th>
-                    <th>Email</th>
-                    <th>Endereços</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {clientes.map((cliente) => (
-                    <tr key={cliente.id}>
-                      <td>{cliente.nome}</td>
-                      <td>
-                        <span className={`badge ${cliente.comercial ? 'bg-info' : 'bg-secondary'}`}>
-                          {cliente.comercial ? 'Comercial' : 'Pessoa Física'}
-                        </span>
-                      </td>
-                      <td>{cliente.documento}</td>
-                      <td>{cliente.email}</td>
-                      <td>
-                        {cliente.enderecos.map((endereco, index) => (
-                          <div key={index} className="small">
-                            {endereco.rua}, {endereco.numero} - {endereco.cidade}/{endereco.estado}
-                          </div>
-                        ))}
-                      </td>
-                      <td>
-                        <button 
-                          className="btn btn-sm btn-outline-primary me-2" 
-                          onClick={() => handleEdit(cliente)}
-                        >
-                          <i className="fas fa-edit"></i>
-                        </button>
-                        <button 
-                          className="btn btn-sm btn-outline-danger" 
-                          onClick={() => handleDelete(cliente.id)}
-                        >
-                          <i className="fas fa-trash"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+          <SortableTable
+            data={clientes}
+            columns={columns}
+            searchableFields={searchableFields}
+            actions={actions}
+            emptyMessage="Nenhum cliente cadastrado"
+          />
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Edit/Create Modal */}
       {showModal && (
         <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
           <div className="modal-dialog modal-lg">
@@ -209,7 +232,7 @@ const Clientes = () => {
                           type="text"
                           className="form-control"
                           value={formData.nome}
-                          onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+                          onChange={(e) => handleFormDataChange(formData, setFormData, null, 'nome', e.target.value)}
                           required
                         />
                       </div>
@@ -221,7 +244,7 @@ const Clientes = () => {
                           type="email"
                           className="form-control"
                           value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          onChange={(e) => handleFormDataChange(formData, setFormData, null, 'email', e.target.value)}
                         />
                       </div>
                     </div>
@@ -235,7 +258,7 @@ const Clientes = () => {
                             className="form-check-input"
                             type="checkbox"
                             checked={formData.comercial}
-                            onChange={(e) => setFormData({ ...formData, comercial: e.target.checked })}
+                            onChange={(e) => handleFormDataChange(formData, setFormData, null, 'comercial', e.target.checked)}
                           />
                           <label className="form-check-label">
                             Comercial (CNPJ)
@@ -252,7 +275,7 @@ const Clientes = () => {
                           type="text"
                           className="form-control"
                           value={formData.documento}
-                          onChange={(e) => setFormData({ ...formData, documento: e.target.value })}
+                          onChange={(e) => handleFormDataChange(formData, setFormData, null, 'documento', e.target.value)}
                           maxLength={formData.comercial ? 14 : 11}
                         />
                       </div>
@@ -317,13 +340,40 @@ const Clientes = () => {
                         <div className="col-md-3">
                           <div className="mb-3">
                             <label className="form-label">Estado</label>
-                            <input
-                              type="text"
-                              className="form-control"
+                            <select
+                              className="form-select"
                               value={endereco.estado}
                               onChange={(e) => updateEndereco(index, 'estado', e.target.value)}
-                              maxLength={2}
-                            />
+                            >
+                              <option value="">Selecione...</option>
+                              <option value="AC">AC - Acre</option>
+                              <option value="AL">AL - Alagoas</option>
+                              <option value="AP">AP - Amapá</option>
+                              <option value="AM">AM - Amazonas</option>
+                              <option value="BA">BA - Bahia</option>
+                              <option value="CE">CE - Ceará</option>
+                              <option value="DF">DF - Distrito Federal</option>
+                              <option value="ES">ES - Espírito Santo</option>
+                              <option value="GO">GO - Goiás</option>
+                              <option value="MA">MA - Maranhão</option>
+                              <option value="MT">MT - Mato Grosso</option>
+                              <option value="MS">MS - Mato Grosso do Sul</option>
+                              <option value="MG">MG - Minas Gerais</option>
+                              <option value="PA">PA - Pará</option>
+                              <option value="PB">PB - Paraíba</option>
+                              <option value="PR">PR - Paraná</option>
+                              <option value="PE">PE - Pernambuco</option>
+                              <option value="PI">PI - Piauí</option>
+                              <option value="RJ">RJ - Rio de Janeiro</option>
+                              <option value="RN">RN - Rio Grande do Norte</option>
+                              <option value="RS">RS - Rio Grande do Sul</option>
+                              <option value="RO">RO - Rondônia</option>
+                              <option value="RR">RR - Roraima</option>
+                              <option value="SC">SC - Santa Catarina</option>
+                              <option value="SP">SP - São Paulo</option>
+                              <option value="SE">SE - Sergipe</option>
+                              <option value="TO">TO - Tocantins</option>
+                            </select>
                           </div>
                         </div>
                         <div className="col-md-3">
@@ -372,6 +422,132 @@ const Clientes = () => {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Visualize Modal */}
+      {showVisualizarModal && visualizandoCliente && (
+        <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">
+                  <i className="fas fa-eye me-2"></i>Visualizar Cliente
+                </h5>
+                <button 
+                  type="button" 
+                  className="btn-close" 
+                  onClick={() => setShowVisualizarModal(false)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <div className="row mb-3">
+                  <div className="col-md-6">
+                    <label className="form-label fw-bold">ID do Cliente:</label>
+                    <p className="form-control-plaintext">{visualizandoCliente.id}</p>
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label fw-bold">Tipo:</label>
+                    <p className="form-control-plaintext">
+                      <span className={`badge ${visualizandoCliente.comercial ? 'bg-info' : 'bg-secondary'}`}>
+                        {visualizandoCliente.comercial ? 'Comercial' : 'Pessoa Física'}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="row mb-3">
+                  <div className="col-md-12">
+                    <label className="form-label fw-bold">Nome:</label>
+                    <p className="form-control-plaintext">{visualizandoCliente.nome}</p>
+                  </div>
+                </div>
+
+                <div className="row mb-3">
+                  <div className="col-md-6">
+                    <label className="form-label fw-bold">
+                      {visualizandoCliente.comercial ? 'CNPJ:' : 'CPF:'}
+                    </label>
+                    <p className="form-control-plaintext">{visualizandoCliente.documento || '-'}</p>
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label fw-bold">Email:</label>
+                    <p className="form-control-plaintext">{visualizandoCliente.email || '-'}</p>
+                  </div>
+                </div>
+
+                <hr />
+                <h6 className="fw-bold">
+                  <i className="fas fa-map-marker-alt me-2"></i>Endereços
+                </h6>
+                
+                {visualizandoCliente.enderecos && visualizandoCliente.enderecos.length > 0 ? (
+                  visualizandoCliente.enderecos.map((endereco, index) => (
+                    <div key={index} className="card mb-3">
+                      <div className="card-body">
+                        <h6 className="card-title">Endereço {index + 1}</h6>
+                        <div className="row">
+                          <div className="col-md-8">
+                            <p className="mb-1">
+                              <strong>Rua:</strong> {endereco.rua || '-'}
+                            </p>
+                          </div>
+                          <div className="col-md-4">
+                            <p className="mb-1">
+                              <strong>Número:</strong> {endereco.numero || '-'}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-md-6">
+                            <p className="mb-1">
+                              <strong>Cidade:</strong> {endereco.cidade || '-'}
+                            </p>
+                          </div>
+                          <div className="col-md-3">
+                            <p className="mb-1">
+                              <strong>Estado:</strong> {endereco.estado || '-'}
+                            </p>
+                          </div>
+                          <div className="col-md-3">
+                            <p className="mb-1">
+                              <strong>CEP:</strong> {endereco.cep || '-'}
+                            </p>
+                          </div>
+                        </div>
+                        {endereco.complemento && (
+                          <p className="mb-1">
+                            <strong>Complemento:</strong> {endereco.complemento}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="alert alert-info">
+                    <i className="fas fa-info-circle me-2"></i>
+                    Nenhum endereço cadastrado para este cliente.
+                  </div>
+                )}
+              </div>
+              <div className="modal-footer">
+                <button 
+                  type="button" 
+                  className="btn btn-secondary" 
+                  onClick={() => setShowVisualizarModal(false)}
+                >
+                  Fechar
+                </button>
+                <button 
+                  type="button" 
+                  className="btn btn-primary" 
+                  onClick={editarClienteFromView}
+                >
+                  <i className="fas fa-edit me-2"></i>Editar
+                </button>
+              </div>
             </div>
           </div>
         </div>

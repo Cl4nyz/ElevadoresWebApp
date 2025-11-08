@@ -4,7 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import ptBrLocale from '@fullcalendar/core/locales/pt-br';
-import { contratosApi, elevadoresApi } from '../services/api';
+import { elevadoresApi } from '../services/api';
 
 const Calendario = () => {
   const calendarRef = useRef(null);
@@ -14,7 +14,7 @@ const Calendario = () => {
     todos: true,
     'Não iniciado': true,
     'Em produção': true,
-    'Pronto': true,
+    'Concluído': true,
     'Entregue': true
   });
   const [stats, setStats] = useState({
@@ -67,33 +67,36 @@ const Calendario = () => {
 
   const loadEvents = async () => {
     try {
-      const [contratosResponse, elevadoresResponse] = await Promise.all([
-        contratosApi.getAll(),
-        elevadoresApi.getAll()
-      ]);
-
-      const contratos = contratosResponse.data;
+      const elevadoresResponse = await elevadoresApi.getAll();
       const elevadores = elevadoresResponse.data;
 
-      const events = contratos.map(contrato => {
-        const cliente = contrato.cliente_nome || 'Cliente não encontrado';
-        const status = getContractStatus(contrato);
-        const color = getStatusColor(status);
+      const events = elevadores.map(elevador => {
+      const cliente = elevador.cliente_nome || 'Cliente não encontrado';
+      const status = getElevatorStatus(elevador);
+      const color = getStatusColor(status);
+      
+      // Ensure the date is formatted as YYYY-MM-DD (all-day format)
+      let eventDate = elevador.data_entrega || elevador.data_venda;
+      if (eventDate) {
+          // Convert to YYYY-MM-DD format to ensure it's treated as all-day
+          eventDate = new Date(eventDate).toISOString().split('T')[0];
+      }
 
-        return {
-          id: `contrato-${contrato.id}`,
-          title: `${cliente} - Contrato #${contrato.id}`,
-          start: contrato.data_entrega || contrato.data_venda,
+      return {
+          id: `elevador-${elevador.id}`,
+          title: `${cliente}`,
+          start: eventDate,
+          allDay: true, // Explicitly mark as all-day event
           backgroundColor: color,
           borderColor: color,
           extendedProps: {
-            tipo: 'contrato',
-            contrato: contrato,
-            status: status,
-            cliente: cliente
+              tipo: 'elevador',
+              elevador: elevador,
+              status: status,
+              cliente: cliente
           }
-        };
-      });
+      };
+  });
 
       setEventos(events);
     } catch (error) {
@@ -101,31 +104,15 @@ const Calendario = () => {
     }
   };
 
-  const getContractStatus = (contrato) => {
-    const hoje = new Date();
-    const dataEntrega = contrato.data_entrega ? new Date(contrato.data_entrega) : null;
-    
-    if (!dataEntrega) {
-      return 'Não iniciado';
-    } else if (dataEntrega < hoje) {
-      return 'Entregue';
-    } else {
-      const diasRestantes = Math.ceil((dataEntrega - hoje) / (1000 * 60 * 60 * 24));
-      if (diasRestantes <= 7) {
-        return 'Pronto';
-      } else if (diasRestantes <= 30) {
-        return 'Em produção';
-      } else {
-        return 'Não iniciado';
-      }
-    }
+  const getElevatorStatus = (elevador) => {
+    return elevador.status;
   };
 
   const getStatusColor = (status) => {
     const colors = {
       'Não iniciado': '#6c757d',
       'Em produção': '#ffc107',
-      'Pronto': '#28a745',
+      'Concluído': '#28a745',
       'Entregue': '#17a2b8'
     };
     return colors[status] || '#6c757d';
@@ -133,9 +120,9 @@ const Calendario = () => {
 
   const handleEventClick = (event) => {
     const props = event.extendedProps;
-    if (props.tipo === 'contrato') {
-      const contrato = props.contrato;
-      alert(`Contrato #${contrato.id}\nCliente: ${props.cliente}\nData de Entrega: ${formatDate(contrato.data_entrega)}\nStatus: ${props.status}`);
+    if (props.tipo === 'elevador') {
+      const elevador = props.elevador;
+      alert(`Elevador #${elevador.id}\nCliente: ${props.cliente}\nData de Entrega: ${formatDate(elevador.data_entrega)}\nStatus: ${props.status}`);
     }
   };
 
@@ -173,7 +160,7 @@ const Calendario = () => {
         todos: newValue,
         'Não iniciado': newValue,
         'Em produção': newValue,
-        'Pronto': newValue,
+        'Concluído': newValue,
         'Entregue': newValue
       });
     } else {
@@ -190,20 +177,43 @@ const Calendario = () => {
     }
   };
 
+  // ...existing code...
+  // ...existing code...
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
+    
+    // Destroy the current calendar instance
+    if (calendar) {
+      calendar.destroy();
+    }
+    
+    // Reinitialize the calendar after the DOM update
     setTimeout(() => {
-      if (calendar) {
-        calendar.updateSize();
-      }
+      initializeCalendar();
     }, 100);
   };
 
+  // Add effect to reinitialize calendar when fullscreen changes
+  useEffect(() => {
+    if (calendar) {
+      // Apply current events to the new calendar instance
+      calendar.removeAllEvents();
+      const filteredEvents = eventos.filter(evento => {
+        if (filtros.todos) return true;
+        return filtros[evento.extendedProps.status] || false;
+      });
+      calendar.addEventSource(filteredEvents);
+    }
+  }, [calendar]);
+
   return (
-    <div className={isFullscreen ? 'position-fixed top-0 start-0 w-100 h-100 bg-white p-3' : ''} 
-         style={{ zIndex: isFullscreen ? 9999 : 'auto' }}>
+    <div className={isFullscreen ? 'position-fixed top-0 start-0 w-100 h-100 bg-white' : ''} 
+         style={{ 
+           zIndex: isFullscreen ? 9999 : 'auto',
+           padding: isFullscreen ? '20px' : '0'
+         }}>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2><i className="fas fa-calendar me-2"></i>Calendário de Entregas</h2>
+        <h2><i className="fas fa-calendar me-2"></i>Calendário de Entregas - Elevadores</h2>
         <div className="d-flex gap-2">
           <div className="btn-group">
             <button className="btn btn-outline-primary" onClick={() => changeView('dayGridMonth')}>
@@ -225,9 +235,9 @@ const Calendario = () => {
 
       <div className="row">
         <div className={isFullscreen ? 'col-12' : 'col-md-9'}>
-          <div className="card">
+          <div className="card" style={{ height: isFullscreen ? 'calc(100vh - 120px)' : 'auto' }}>
             <div className="card-body">
-              <div ref={calendarRef}></div>
+              <div ref={calendarRef} style={{ height: isFullscreen ? '100%' : 'auto' }}></div>
             </div>
           </div>
         </div>
@@ -286,12 +296,12 @@ const Calendario = () => {
                     <input 
                       className="form-check-input" 
                       type="checkbox" 
-                      id="status-pronto"
-                      checked={filtros['Pronto']}
-                      onChange={() => handleFilterChange('Pronto')}
+                      id="status-concluido"
+                      checked={filtros['Concluído']}
+                      onChange={() => handleFilterChange('Concluído')}
                     />
-                    <label className="form-check-label" htmlFor="status-pronto">
-                      <span className="badge bg-success me-1">■</span>Pronto
+                    <label className="form-check-label" htmlFor="status-concluido">
+                      <span className="badge bg-success me-1">■</span>Concluído
                     </label>
                   </div>
                   

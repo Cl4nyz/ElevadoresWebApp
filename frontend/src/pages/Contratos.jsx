@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SortableTable from '../components/SortableTable';
 
 const Contratos = () => {
   const [contratos, setContratos] = useState([]);
@@ -40,60 +41,23 @@ const Contratos = () => {
 
   const [previewData, setPreviewData] = useState('');
 
-  // Helper functions - COPIED FROM ORIGINAL contratos.js
-  function formatarDataParaInput(data) {
-    const ano = data.getFullYear();
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const dia = String(data.getDate()).padStart(2, '0');
-    return `${ano}-${mes}-${dia}`;
-  }
-
-  function formatarDataBrasileira(data) {
-    const dia = String(data.getDate()).padStart(2, '0');
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const ano = data.getFullYear();
-    return `${dia}/${mes}/${ano}`;
-  }
-
   function getTodayForInput() {
     return new Date().toISOString().split('T')[0];
   }
 
   function formatDateForInput(date) {
     if (!date) return '';
-    if (typeof date === 'string') return date; // Already in YYYY-MM-DD format
-    return formatarDataParaInput(new Date(date));
+    const dt = new Date(date).toISOString().split('T')[0];
+    console.log(dt);
+    return dt;
   }
 
-  function formatDateBrazilian(dateInput) {
-    if (!dateInput) return '-';
-    
-    let date;
-    if (typeof dateInput === 'string') {
-      // Handle YYYY-MM-DD format
-      if (dateInput.includes('-')) {
-        const [year, month, day] = dateInput.split('T')[0].split('-');
-        date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-      } else {
-        date = new Date(dateInput);
-      }
-    } else {
-      date = new Date(dateInput);
-    }
-    
-    if (isNaN(date.getTime())) return '-';
-    return formatarDataBrasileira(date);
-  }
-
-  // Business days calculation - COPIED FROM ORIGINAL
   function calcularDataComDiasUteis(dataInicial, diasUteis) {
     let data = new Date(dataInicial);
     let diasAdicionados = 0;
     
     while (diasAdicionados < diasUteis) {
       data.setDate(data.getDate() + 1);
-      
-      // Verificar se é dia útil (1=segunda, 2=terça, ..., 5=sexta)
       const diaSemana = data.getDay();
       if (diaSemana >= 1 && diaSemana <= 5) {
         diasAdicionados++;
@@ -101,26 +65,6 @@ const Contratos = () => {
     }
     
     return data;
-  }
-
-  // function calcularStatusContrato(contrato) {
-  //   const hoje = new Date();
-  //   const dataEntrega = contrato.data_entrega ? new Date(contrato.data_entrega + 'T00:00:00') : null;
-    
-  //   if (!dataEntrega) {
-  //     return 'Sem data de entrega';
-  //   } else if (dataEntrega < hoje) {
-  //     return 'Atrasado';
-  //   } else if (dataEntrega.toDateString() === hoje.toDateString()) {
-  //     return 'Entrega hoje';
-  //   } else {
-  //     return 'Em andamento';
-  //   }
-  // }
-
-  function adicionarDiasUteis(dataInicial, diasUteis) {
-    // Use the exact same function as original
-    return calcularDataComDiasUteis(dataInicial, diasUteis);
   }
 
   function showToast(message, type = 'info') {
@@ -300,7 +244,7 @@ const Contratos = () => {
     // Definir no campo de data de entrega
     setFormData(prev => ({
       ...prev,
-      data_entrega: formatarDataParaInput(dataFinal)
+      data_entrega: new Date(dataFinal).toISOString().split('T')[0]
     }));
 
     setShowDiasUteisModal(false);
@@ -381,12 +325,8 @@ const Contratos = () => {
       return;
     }
 
-    // Validate dates if both are provided - COPIED FROM ORIGINAL
     if (formData.data_venda && formData.data_entrega) {
-      const dataVenda = new Date(formData.data_venda + 'T00:00:00');
-      const dataEntrega = new Date(formData.data_entrega + 'T00:00:00');
-      
-      if (dataEntrega < dataVenda) {
+      if (formData.data_entrega < formData.data_venda) {
         showToast('A data de entrega não pode ser anterior à data da venda', 'error');
         return;
       }
@@ -453,16 +393,57 @@ const Contratos = () => {
     }
   };
 
-  // Get status badge class
-  // const getStatusBadgeClass = (status) => {
-  //   switch (status) {
-  //     case 'Sem data de entrega': return 'bg-secondary';
-  //     case 'Atrasado': return 'bg-danger';
-  //     case 'Entrega hoje': return 'bg-warning';
-  //     case 'Em andamento': return 'bg-success';
-  //     default: return 'bg-info';
-  //   }
-  // };
+  // Define table columns
+  const columns = [
+    {
+      key: 'id',
+      label: 'ID'
+    },
+    {
+      key: 'cliente_nome',
+      label: 'Cliente',
+      render: (contrato) => contrato.cliente_nome || 'Cliente não encontrado'
+    },
+    {
+      key: 'data_venda',
+      label: 'Data da Venda',
+      type: 'date'
+    },
+    {
+      key: 'data_entrega',
+      label: 'Data Entrega',
+      type: 'date'
+    },
+    {
+      key: 'vendedor',
+      label: 'Vendedor'
+    }
+  ];
+
+  // Define table actions
+  const actions = [
+    {
+      icon: 'fas fa-eye',
+      className: 'btn btn-sm btn-outline-info',
+      title: 'Visualizar',
+      onClick: visualizarContrato
+    },
+    {
+      icon: 'fas fa-edit',
+      className: 'btn btn-sm btn-outline-primary',
+      title: 'Editar',
+      onClick: editarContrato
+    },
+    {
+      icon: 'fas fa-trash',
+      className: 'btn btn-sm btn-outline-danger',
+      title: 'Excluir',
+      onClick: (contrato) => excluirContrato(contrato.id)
+    }
+  ];
+
+  // Define searchable fields
+  const searchableFields = ['id', 'cliente_nome', 'vendedor'];
 
   if (loading) {
     return (
@@ -487,62 +468,13 @@ const Contratos = () => {
       {/* Main Table Card */}
       <div className="card">
         <div className="card-body">
-          <div className="table-responsive">
-            <table className="table table-striped">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Cliente</th>
-                  <th>Data da Venda</th>
-                  <th>Data Entrega</th>
-                  <th>Vendedor</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {contratos.length === 0 ? (
-                  <tr>
-                    <td colSpan="7" className="text-center">Nenhum contrato encontrado</td>
-                  </tr>
-                ) : (
-                  contratos.map(contrato => (
-                    <tr key={contrato.id}>
-                      <td>{contrato.id}</td>
-                      <td>{contrato.cliente_nome || 'Cliente não encontrado'}</td>
-                      <td>{contrato.data_venda ? new Date(contrato.data_venda).toLocaleDateString('pt-BR') : '-'}</td>
-                      <td>{contrato.data_entrega ? new Date(contrato.data_entrega).toLocaleDateString('pt-BR') : '-'}</td>
-                      <td>{contrato.vendedor || '-'}</td>
-                      <td>
-                        <div className="btn-group" role="group">
-                          <button 
-                            className="btn btn-sm btn-outline-info"
-                            onClick={() => visualizarContrato(contrato)}
-                            title="Visualizar"
-                          >
-                            <i className="fas fa-eye"></i>
-                          </button>
-                          <button 
-                            className="btn btn-sm btn-outline-primary"
-                            onClick={() => editarContrato(contrato)}
-                            title="Editar"
-                          >
-                            <i className="fas fa-edit"></i>
-                          </button>
-                          <button 
-                            className="btn btn-sm btn-outline-danger"
-                            onClick={() => excluirContrato(contrato.id)}
-                            title="Excluir"
-                          >
-                            <i className="fas fa-trash"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+          <SortableTable
+            data={contratos}
+            columns={columns}
+            searchableFields={searchableFields}
+            actions={actions}
+            emptyMessage="Nenhum contrato encontrado"
+          />
         </div>
       </div>
 
@@ -596,13 +528,11 @@ const Contratos = () => {
                       type="date" 
                       className="form-control"
                       value={formData.data_venda}
-                      onChange={(e) => setFormData(prev => ({ ...prev, data_venda: e.target.value }))}
+                      onChange={(e) => {
+                        console.log('Data venda:', e.target.value);
+                        setFormData(prev => ({ ...prev, data_venda: e.target.value }));
+                      }}
                     />
-                    {formData.data_venda && (
-                      <div className="form-text">
-                        <i className="fas fa-calendar"></i> {new Date(formData.data_venda).toLocaleDateString('pt-BR')}
-                      </div>
-                    )}
                   </div>
 
                   <div className="mb-3">
@@ -623,11 +553,6 @@ const Contratos = () => {
                         <i className="fas fa-calendar-plus"></i> + Dias Úteis
                       </button>
                     </div>
-                    {formData.data_entrega && (
-                      <div className="form-text">
-                        <i className="fas fa-calendar"></i> {new Date(formData.data_entrega).toLocaleDateString('pt-BR')}
-                      </div>
-                    )}
                   </div>
 
                   <div className="mb-3">

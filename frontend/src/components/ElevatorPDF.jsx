@@ -214,6 +214,24 @@ watermarkContainer: {
 });
 
 const ElevatorPDF = ({ elevador, cliente, contrato }) => {
+  const adicionaisArray = [
+    elevador.adicionais.cancela ? parseInt(elevador.adicionais.cancela) : 0, 
+    elevador.adicionais.porta ? parseInt(elevador.adicionais.porta) : 0, 
+    elevador.adicionais.portao ? parseInt(elevador.adicionais.portao) : 0, 
+    elevador.adicionais.barreira_eletronica ? parseInt(elevador.adicionais.barreira_eletronica) : 0,
+    elevador.adicionais.lados_enclausuramento ? parseInt(elevador.adicionais.lados_enclausuramento) : 0, 
+    elevador.adicionais.sensor_esmagamento ? parseInt(elevador.adicionais.sensor_esmagamento) : 0, 
+    elevador.adicionais.rampa_acesso ? parseInt(elevador.adicionais.rampa_acesso) : 0,
+    elevador.adicionais.nobreak ? parseInt(elevador.adicionais.nobreak) : 0, 
+    elevador.adicionais.galvanizada || false
+  ];
+  const adicionaisLabels = [
+    'Cancela', 'Porta', 'Portão',
+    'Barreira Eletrônica', 'Lados Encausuramento', 'Sensor Esmagamento',
+    'Rampa de Acesso', 'Nobreak', 'Galvanizada'
+  ]
+  const posicao = 0;
+
   const formatarData = (data) => {
     if (!data) return 'N/A';
     return new Date(data).toLocaleDateString('pt-BR');
@@ -295,7 +313,7 @@ const ElevatorPDF = ({ elevador, cliente, contrato }) => {
 			<View style={[
 				styles.arrow, 
 				styles.arrowSaida, 
-				styles.arrowBottom,
+				styles.arrowTop,
 				mesmoLado && styles.arrowBottomRight
 			]}>
 				<Text style={styles.arrowText}>S</Text>
@@ -448,48 +466,32 @@ const ElevatorPDF = ({ elevador, cliente, contrato }) => {
           {elevador.adicionais && (
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Adicionais</Text>
-              <View style={styles.row}>
-                <View style={styles.column}>
-                  <Text style={styles.label}>Cancela:</Text>
-                  <Text style={styles.value}>{elevador.adicionais.cancela || 0}</Text>
-                </View>
-                <View style={styles.column}>
-                  <Text style={styles.label}>Porta:</Text>
-                  <Text style={styles.value}>{elevador.adicionais.porta || 0}</Text>
-                </View>
-                <View style={styles.column}>
-                  <Text style={styles.label}>Portão:</Text>
-                  <Text style={styles.value}>{elevador.adicionais.portao || 0}</Text>
-                </View>
-              </View>
-              <View style={styles.row}>
-                <View style={styles.column}>
-                  <Text style={styles.label}>Barreira Eletrônica:</Text>
-                  <Text style={styles.value}>{elevador.adicionais.barreira_eletronica || 0}</Text>
-                </View>
-                <View style={styles.column}>
-                  <Text style={styles.label}>Lados Enclausuramento:</Text>
-                  <Text style={styles.value}>{elevador.adicionais.lados_enclausuramento || 0}</Text>
-                </View>
-                <View style={styles.column}>
-                  <Text style={styles.label}>Sensor Esmagamento:</Text>
-                  <Text style={styles.value}>{elevador.adicionais.sensor_esmagamento || 0}</Text>
-                </View>
-              </View>
-              <View style={styles.row}>
-                <View style={styles.column}>
-                  <Text style={styles.label}>Rampa Acesso:</Text>
-                  <Text style={styles.value}>{elevador.adicionais.rampa_acesso || 0}</Text>
-                </View>
-                <View style={styles.column}>
-                  <Text style={styles.label}>Nobreak:</Text>
-                  <Text style={styles.value}>{elevador.adicionais.nobreak || 0}</Text>
-                </View>
-                <View style={styles.column}>
-                  <Text style={styles.label}>Galvanizada:</Text>
-                  <Text style={styles.value}>{elevador.adicionais.galvanizada ? 'Sim' : 'Não'}</Text>
-                </View>
-              </View>
+              {(() => {
+                const activeAdicionais = [];
+                adicionaisArray.forEach((value, index) => {
+                  if (value) {
+                    activeAdicionais.push({
+                      label: adicionaisLabels[index],
+                      value: typeof value === 'boolean' ? (value ? 'Sim' : 'Não') : value
+                    });
+                  }
+                });
+
+                const rows = [];
+                for (let i = 0; i < activeAdicionais.length; i += 3) {
+                  rows.push(
+                    <View key={i} style={styles.row}>
+                      {activeAdicionais.slice(i, i + 3).map((adicional, index) => (
+                        <View key={index} style={styles.column}>
+                          <Text style={styles.label}>{adicional.label}:</Text>
+                          <Text style={styles.value}>{adicional.value}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  );
+                }
+                return rows;
+              })()}
             </View>
           )}
         </View>

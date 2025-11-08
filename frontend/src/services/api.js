@@ -59,6 +59,7 @@ export const elevadoresApi = {
     const params = contratoId ? { contrato: contratoId } : {};
     return api.get('/elevadores', { params });
   },
+  getById: (id) => api.get(`/elevadores/${id}`),
   create: (data) => api.post('/elevadores', data),
   update: (id, data) => api.put(`/elevadores/${id}`, data),
   delete: (id) => api.delete(`/elevadores/${id}`),
