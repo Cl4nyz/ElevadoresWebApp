@@ -68,6 +68,24 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET single client by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const result = await query('SELECT * FROM cliente WHERE id = $1', [id]);
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Cliente não encontrado' });
+    }
+    
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error fetching client:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
 // POST /api/clientes - Create new client
 router.post('/', async (req, res) => {
   const { nome, comercial, documento, email, enderecos } = req.body;

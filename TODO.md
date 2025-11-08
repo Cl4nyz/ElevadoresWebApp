@@ -1,1 +1,3 @@
-[ ] Criar pop ups menos invasivos, que alertam mas não proibem o uso do restante da aplicação
+-  [ ] Criar pop ups menos invasivos, que alertam mas não proibem o uso do restante da aplicação
+- [ ] Remover quadros de cabines e colunas montadas da home
+- [ ] vendedor null -> sistema ?

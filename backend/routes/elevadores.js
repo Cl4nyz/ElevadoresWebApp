@@ -111,6 +111,96 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET single elevator by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const result = await query(`
+      SELECT 
+        e.*,
+        c.altura as cabine_altura,
+        c.largura as cabine_largura,
+        c.profundidade as cabine_profundidade,
+        c.piso as cabine_piso,
+        c.montada as cabine_montada,
+        c.lado_entrada as cabine_lado_entrada,
+        c.lado_saida as cabine_lado_saida,
+        col.elevacao as coluna_elevacao,
+        col.montada as coluna_montada,
+        a.cancela, a.porta, a.portao, a.barreira_eletronica,
+        a.lados_enclausuramento, a.sensor_esmagamento,
+        a.rampa_acesso, a.nobreak, a.galvanizada,
+        cont.data_entrega, cont.data_venda, cont.id_cliente,
+        cli.nome as cliente_nome
+      FROM elevador e
+      LEFT JOIN cabine c ON e.id = c.id_elevador
+      LEFT JOIN coluna col ON e.id = col.id_elevador
+      LEFT JOIN adicionais a ON e.id = a.id_elevador
+      LEFT JOIN contrato cont ON e.id_contrato = cont.id
+      LEFT JOIN cliente cli ON cont.id_cliente = cli.id
+      WHERE e.id = $1
+    `, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Elevador não encontrado' });
+    }
+
+    const elevador = result.rows[0];
+    
+    // Format the response
+    const response = {
+      id: elevador.id,
+      id_contrato: elevador.id_contrato,
+      comando: elevador.comando,
+      porta_inferior: elevador.porta_inferior,
+      porta_superior: elevador.porta_superior,
+      cor: elevador.cor,
+      status: elevador.status,
+      observacao: elevador.observacao,
+      cabine: elevador.cabine_altura ? {
+        altura: elevador.cabine_altura,
+        largura: elevador.cabine_largura,
+        profundidade: elevador.cabine_profundidade,
+        piso: elevador.cabine_piso,
+        montada: elevador.cabine_montada,
+        lado_entrada: elevador.cabine_lado_entrada,
+        lado_saida: elevador.cabine_lado_saida
+      } : null,
+      coluna: elevador.coluna_elevacao ? {
+        elevacao: elevador.coluna_elevacao,
+        montada: elevador.coluna_montada
+      } : null,
+      adicionais: {
+        cancela: elevador.cancela || 0,
+        porta: elevador.porta || 0,
+        portao: elevador.portao || 0,
+        barreira_eletronica: elevador.barreira_eletronica || 0,
+        lados_enclausuramento: elevador.lados_enclausuramento || 0,
+        sensor_esmagamento: elevador.sensor_esmagamento || 0,
+        rampa_acesso: elevador.rampa_acesso || 0,
+        nobreak: elevador.nobreak || 0,
+        galvanizada: elevador.galvanizada || false
+      },
+      // Include client and contract data directly
+      cliente: elevador.cliente_nome ? {
+        nome: elevador.cliente_nome
+      } : null,
+      contrato: elevador.data_entrega ? {
+        id: elevador.id_contrato,
+        data_entrega: elevador.data_entrega,
+        data_venda: elevador.data_venda,
+        id_cliente: elevador.id_cliente
+      } : null
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.error('Error fetching elevator with details:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
 // POST /api/elevadores - Create new elevator
 router.post('/', async (req, res) => {
   try {
